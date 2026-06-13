@@ -25,8 +25,12 @@
   @media(max-width:900px){ .app{grid-template-columns:1fr} }
   .panel{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px;}
   .panel + .panel{margin-top:18px;}
-  .ptitle{font-family:"Fraunces",serif; font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;}
-  .ptitle::before{content:""; width:7px;height:7px;border-radius:50%;background:var(--ink);}
+  .ptitle{font-family:"Fraunces",serif; font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;}
+  .ptitle::before{content:""; width:7px;height:7px;border-radius:50%;background:var(--ink); flex:0 0 auto;}
+  .ptitle::after{content:'▾'; margin-left:auto; color:var(--soft); font-size:11px; transition:transform .18s;}
+  .panel.collapsed .ptitle{margin-bottom:0;}
+  .panel.collapsed .ptitle::after{transform:rotate(-90deg);}
+  .panel.collapsed > :not(.ptitle){display:none;}
   .field{margin-bottom:15px;} .field:last-child{margin-bottom:0;}
   label{display:block; font-size:12.5px; font-weight:500; color:var(--soft); margin-bottom:6px; letter-spacing:.03em;}
   input[type=text], input[type=date], textarea{ width:100%; font-family:inherit; font-size:14.5px; color:var(--ink);
@@ -76,6 +80,9 @@
   #wmPos button{flex:0 0 calc(16.66% - 6px); font-size:15px; padding:7px 2px;}
   .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   input[type=range]{width:100%; accent-color:var(--ink);}
+  .adjrow{margin-bottom:11px;} .adjrow:last-of-type{margin-bottom:14px;}
+  .adjrow label{display:flex; justify-content:space-between; margin-bottom:3px;}
+  .adjrow .av{color:var(--ink); font-variant-numeric:tabular-nums;}
 
   .captionbox{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:11px 12px; font-size:13px; color:#6b6675; white-space:pre-wrap; max-height:150px; overflow:auto; line-height:1.55;}
   .btn{font-family:inherit; font-weight:500; font-size:14.5px; cursor:pointer; border:none; padding:12px; border-radius:11px; transition:.15s; width:100%;}
@@ -89,8 +96,8 @@
   .modetabs{display:flex; gap:8px;}
   .modetabs button{font-family:inherit; font-size:13.5px; padding:8px 18px; border-radius:20px; cursor:pointer; background:#fff; border:1px solid var(--line); color:var(--soft); transition:.15s;}
   .modetabs button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
-  .canvas-wrap{background:#fff; border-radius:6px; border:1px solid var(--line); overflow:hidden; box-shadow:0 16px 40px -26px rgba(61,58,68,.5);}
-  canvas{display:block; width:100%; height:auto; max-width:430px;}
+  .canvas-wrap{background:#2a2730; border-radius:14px; border:none; padding:18px; box-shadow:0 18px 50px -28px rgba(0,0,0,.6);}
+  canvas{display:block; width:100%; height:auto; max-width:430px; border-radius:4px; box-shadow:0 8px 28px -10px rgba(0,0,0,.5);}
   canvas.pan{cursor:grab;} canvas.pan:active{cursor:grabbing;}
   .imgctrl{display:flex; align-items:center; gap:10px; width:100%; max-width:430px; font-size:12px; color:var(--soft);}
   .imgctrl input[type=range]{flex:1;}
@@ -204,6 +211,17 @@
       </div>
     </div>
 
+    <!-- 图像调整 -->
+    <div class="panel">
+      <div class="ptitle" data-i18n="secAdjust">Adjust</div>
+      <div class="adjrow"><label><span data-i18n="adjExposure">Exposure</span><span class="av" id="vEx">0</span></label><input type="range" id="aEx" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjBrightness">Brightness</span><span class="av" id="vBr">0</span></label><input type="range" id="aBr" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjContrast">Contrast</span><span class="av" id="vCt">0</span></label><input type="range" id="aCt" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjSaturation">Saturation</span><span class="av" id="vSa">0</span></label><input type="range" id="aSa" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjTemp">Warmth</span><span class="av" id="vTp">0</span></label><input type="range" id="aTp" min="-100" max="100" value="0"></div>
+      <button class="btn line" id="adjReset" data-i18n="adjReset">Reset adjustments</button>
+    </div>
+
     <!-- 文案 + 标签 -->
     <div class="panel">
       <div class="ptitle" data-i18n="secCaption">Caption / hashtags</div>
@@ -256,6 +274,7 @@ const LANG = {
     hint:'Local HTML file — double-click to use, no deployment. Drag the artwork on the canvas to reposition, scroll / slider to zoom. Images & settings saved locally. On phone, “Share” sends image + caption straight to Instagram.',
     generating:'Generating…', needImg:'Please upload at least one work first', videoDone:'✓ Video ready',
     shareHint:'Image saved & caption copied. Open Instagram and create a post — paste the caption.', shared:'✓ Shared',
+    secAdjust:'Adjust image (current work)', adjExposure:'Exposure', adjBrightness:'Brightness', adjContrast:'Contrast', adjSaturation:'Saturation', adjTemp:'Warmth', adjReset:'Reset adjustments',
     phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
   zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
     secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期',
@@ -268,6 +287,7 @@ const LANG = {
     hint:'本地网页文件，双击即用，无需部署。可在画布上拖动作品调整位置，滚轮/滑杆缩放。图片与设置本地保存。手机上点“分享”可把图片+文案直接发到 Instagram。',
     generating:'生成中…', needImg:'请先上传至少一幅作品', videoDone:'✓ 视频已生成',
     shareHint:'图片已保存、文案已复制。打开 Instagram 发帖并粘贴文案即可。', shared:'✓ 已分享',
+    secAdjust:'图像调整（当前作品）', adjExposure:'曝光', adjBrightness:'亮度', adjContrast:'对比度', adjSaturation:'饱和度', adjTemp:'色温', adjReset:'重置调整',
     phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
   ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
     secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付',
@@ -280,6 +300,7 @@ const LANG = {
     hint:'ローカルHTMLファイル。ダブルクリックで使え、デプロイ不要。キャンバス上で作品をドラッグして位置調整、ホイール/スライダーで拡大。画像と設定はローカル保存。スマホでは「共有」で画像＋文を Instagram へ直接送れます。',
     generating:'生成中…', needImg:'先に作品を1枚以上アップロードしてください', videoDone:'✓ 動画を作成しました',
     shareHint:'画像を保存し、投稿文をコピーしました。Instagram で投稿し、文を貼り付けてください。', shared:'✓ 共有しました',
+    secAdjust:'画像調整（現在の作品）', adjExposure:'露出', adjBrightness:'明るさ', adjContrast:'コントラスト', adjSaturation:'彩度', adjTemp:'色温', adjReset:'調整をリセット',
     phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
   ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
     secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜',
@@ -292,6 +313,7 @@ const LANG = {
     hint:'로컬 HTML 파일 — 더블클릭으로 실행, 배포 불필요. 캔버스에서 작품을 드래그해 위치 조정, 스크롤/슬라이더로 확대. 이미지와 설정은 로컬 저장. 모바일에서 “공유”로 이미지+캡션을 인스타그램에 바로 보낼 수 있습니다.',
     generating:'생성 중…', needImg:'먼저 작품을 한 점 이상 업로드하세요', videoDone:'✓ 영상 완료',
     shareHint:'이미지 저장 및 캡션 복사 완료. 인스타그램에서 게시물을 만들고 캡션을 붙여넣으세요.', shared:'✓ 공유됨',
+    secAdjust:'이미지 보정 (현재 작품)', adjExposure:'노출', adjBrightness:'밝기', adjContrast:'대비', adjSaturation:'채도', adjTemp:'색온도', adjReset:'보정 초기화',
     phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
   es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
     secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha',
@@ -304,6 +326,7 @@ const LANG = {
     hint:'Archivo HTML local — doble clic para usar, sin despliegue. Arrastra la obra en el lienzo para recolocar, rueda/control para acercar. Imágenes y ajustes guardados localmente. En el móvil, “Compartir” envía imagen + texto directo a Instagram.',
     generating:'Generando…', needImg:'Sube al menos una obra primero', videoDone:'✓ Vídeo listo',
     shareHint:'Imagen guardada y texto copiado. Abre Instagram, crea una publicación y pega el texto.', shared:'✓ Compartido',
+    secAdjust:'Ajustar imagen (obra actual)', adjExposure:'Exposición', adjBrightness:'Brillo', adjContrast:'Contraste', adjSaturation:'Saturación', adjTemp:'Calidez', adjReset:'Restablecer ajustes',
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
 };
 const DEFAULT_TAGS = '#art #artwork #illustration #drawing #sketchbook #originalart #artistsoninstagram #contemporaryart';
@@ -332,10 +355,10 @@ const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3,
   seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8,
-  works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0}}], current:0
+  works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
-if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0}}];
-S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0}; });
+if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
+S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0}; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; });
 uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
 function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
@@ -419,10 +442,16 @@ function renderWorks(){
   });
   const add=document.createElement('div'); add.className='wk add'; add.textContent='+'; add.onclick=addWork; worksEl.appendChild(add);
 }
-function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
+function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function removeWork(i){ const rid=S.works[i].id; delete _images[rid]; idbDel(rid); S.works.splice(i,1); if(!S.works.length){ addWork(); return; } if(S.current>=S.works.length)S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function selectWork(i){ S.current=i; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
-function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; }
+function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; fillAdj(); }
+
+// ---------------- image adjustment sliders ----------------
+const ADJ=[['aEx','ex','vEx'],['aBr','br','vBr'],['aCt','ct','vCt'],['aSa','sa','vSa'],['aTp','tp','vTp']];
+ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ if(!cur().adj)cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; cur().adj[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; save(); draw(); }); });
+function fillAdj(){ const a=cur().adj||{ex:0,br:0,ct:0,sa:0,tp:0}; ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).value=a[key]||0; document.getElementById(vid).textContent=a[key]||0; }); }
+document.getElementById('adjReset').onclick=()=>{ cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; fillAdj(); save(); draw(); };
 
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
 ['sign','seriesTitle','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
@@ -473,11 +502,28 @@ function drawWatermark(g,x,y,w,h){
   }
   g.restore();
 }
-function drawArtImage(g,im,x,y,w,h,tx){
+// ---------------- image adjustments (brightness / contrast / saturation / exposure / warmth) ----------------
+function filterStr(a){ if(!a) return 'none';
+  const b=(1+(a.br||0)/200).toFixed(3), c=(1+(a.ct||0)/150).toFixed(3), s=Math.max(0,1+(a.sa||0)/100).toFixed(3);
+  return `brightness(${b}) contrast(${c}) saturate(${s})`; }
+function applyOverlays(g,x,y,w,h,a){ if(!a) return;
+  const e=(a.ex||0)/100, tp=(a.tp||0)/100;
+  if(e!==0){ g.save(); g.globalCompositeOperation = e>0?'screen':'multiply'; g.globalAlpha=Math.min(0.6,Math.abs(e)*0.55); g.fillStyle = e>0?'#ffffff':'#000000'; g.fillRect(x,y,w,h); g.restore(); }
+  if(tp!==0){ g.save(); g.globalCompositeOperation='soft-light'; g.globalAlpha=Math.min(0.75,Math.abs(tp)*0.7); g.fillStyle = tp>0?'#ff7a2f':'#3a8bff'; g.fillRect(x,y,w,h); g.restore(); }
+}
+// draw an image into a fixed box with adjustments + clip (used by grid / video)
+function drawImgAdj(g,im,x,y,w,h,a){
+  g.save(); g.beginPath(); g.rect(x,y,w,h); g.clip();
+  g.filter=filterStr(a); g.drawImage(im,x,y,w,h); g.filter='none';
+  applyOverlays(g,x,y,w,h,a); g.restore();
+}
+// single mode: pan/zoom transform + adjustments
+function drawArtImage(g,im,x,y,w,h,tx,a){
   clampTx(tx);
   g.save(); g.beginPath(); g.rect(x,y,w,h); g.clip();
   const dw=w*tx.s, dh=h*tx.s, dx=x+(w-dw)/2+tx.x*w, dy=y+(h-dh)/2+tx.y*h;
-  g.drawImage(im,dx,dy,dw,dh); g.restore();
+  g.filter=filterStr(a); g.drawImage(im,dx,dy,dw,dh); g.filter='none';
+  applyOverlays(g,x,y,w,h,a); g.restore();
 }
 
 // ---------------- single render ----------------
@@ -497,7 +543,7 @@ function drawSingle(g, work){
   cv.width=W; cv.height=H;
   _lay={artX,artY,artW,artH};
   g.fillStyle=S.bg; g.fillRect(0,0,W,H);
-  if(im){ drawArtImage(g,im,artX,artY,artW,artH,txOf(work)); drawWatermark(g,artX,artY,artW,artH); }
+  if(im){ drawArtImage(g,im,artX,artY,artW,artH,txOf(work),work.adj); drawWatermark(g,artX,artY,artW,artH); }
   else{ g.fillStyle=T.ph; g.fillRect(artX,artY,artW,artH); g.fillStyle=T.soft; g.font="500 25px 'Fredoka',sans-serif"; g.textAlign='center'; g.fillText(t('uploadHere'),artX+artW/2,artY+artH/2); g.textAlign='left'; }
   g.strokeStyle=T.key; g.lineWidth=1.5; g.strokeRect(artX+.75,artY+.75,artW-1.5,artH-1.5);
   const cxL=alignC?W/2:artX; g.textAlign=alignC?'center':'left'; g.textBaseline='top'; let y=capTop;
@@ -529,7 +575,7 @@ function drawGrid(g){
     const x=pad+c*(cellW+gap), y=top+r*(cellH+gap);
     const im=_images[w.id]; const {w:dw,h:dh}=contain(im.width,im.height,cellW,artBox);
     const dx=x+(cellW-dw)/2, dy=y+(artBox-dh)/2;
-    g.drawImage(im,dx,dy,dw,dh); drawWatermark(g,dx,dy,dw,dh);
+    drawImgAdj(g,im,dx,dy,dw,dh,w.adj); drawWatermark(g,dx,dy,dw,dh);
     g.strokeStyle=T.key; g.lineWidth=1.5; g.strokeRect(dx+.75,dy+.75,dw-1.5,dh-1.5);
     if(w.title){ g.fillStyle=T.idea; g.font=ideaFont(Math.round(W*0.019)); g.textAlign='center'; g.textBaseline='middle'; g.fillText(w.title,x+cellW/2,y+artBox+tH*0.5,cellW); }
   });
@@ -551,7 +597,7 @@ function drawVideoFrame(g,W,H,work){
   const gap=Math.round(M*0.7), artMaxH=H-2*M-capH-gap;
   const {w:dw,h:dh}=contain(im.width,im.height,W-2*M,artMaxH);
   const blockH=dh+gap+capH, topY=Math.max(M,(H-blockH)/2), dx=(W-dw)/2, dy=topY;
-  g.drawImage(im,dx,dy,dw,dh); drawWatermark(g,dx,dy,dw,dh);
+  drawImgAdj(g,im,dx,dy,dw,dh,work.adj); drawWatermark(g,dx,dy,dw,dh);
   g.strokeStyle=T.key; g.lineWidth=2; g.strokeRect(dx+1,dy+1,dw-2,dh-2);
   let y=dy+dh+gap; g.textAlign='center'; g.textBaseline='top';
   if(hasT){ g.fillStyle=T.ink; g.font=`500 ${Ts}px ${FAM}`; g.fillText(work.title,W/2,y,W-2*M); y+=Math.round(Ts*1.2)+(hasI?Math.round(Ts*0.4):0); }
@@ -677,6 +723,13 @@ vBtn.onclick=async ()=>{
   }catch(err){ console.error(err); alert('Video error: '+err.message); vBtn.textContent=lbl; }
   vBtn.disabled=false;
 };
+
+// ---------------- collapsible panels (declutter the form wall into an inspector) ----------------
+document.querySelectorAll('.app > div:first-child .panel').forEach((p,i)=>{
+  const tt=p.querySelector('.ptitle'); if(!tt)return;
+  tt.addEventListener('click',()=>p.classList.toggle('collapsed'));
+  if(i>=2) p.classList.add('collapsed');   // keep Works + Style open, fold the rest
+});
 
 // ---------------- init ----------------
 function init(){

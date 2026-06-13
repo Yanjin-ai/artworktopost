@@ -83,6 +83,10 @@
   .adjrow{margin-bottom:11px;} .adjrow:last-of-type{margin-bottom:14px;}
   .adjrow label{display:flex; justify-content:space-between; margin-bottom:3px;}
   .adjrow .av{color:var(--ink); font-variant-numeric:tabular-nums;}
+  .presets{display:flex; gap:7px; overflow-x:auto; padding-bottom:5px; margin-bottom:13px; scrollbar-width:thin;}
+  .presets button{flex:0 0 auto; font-family:inherit; font-size:12px; font-weight:500; padding:7px 12px; border-radius:9px; background:var(--paper); border:1px solid var(--line); color:var(--soft); cursor:pointer; white-space:nowrap; transition:.15s;}
+  .presets button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .presets button:hover{border-color:var(--ink);}
 
   .captionbox{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:11px 12px; font-size:13px; color:#6b6675; white-space:pre-wrap; max-height:150px; overflow:auto; line-height:1.55;}
   .btn{font-family:inherit; font-weight:500; font-size:14.5px; cursor:pointer; border:none; padding:12px; border-radius:11px; transition:.15s; width:100%;}
@@ -214,12 +218,18 @@
     <!-- 图像调整 -->
     <div class="panel">
       <div class="ptitle" data-i18n="secAdjust">Adjust</div>
+      <label data-i18n="lblPresets">One-tap looks</label>
+      <div class="presets" id="presets"></div>
       <div class="adjrow"><label><span data-i18n="adjExposure">Exposure</span><span class="av" id="vEx">0</span></label><input type="range" id="aEx" min="-100" max="100" value="0"></div>
       <div class="adjrow"><label><span data-i18n="adjBrightness">Brightness</span><span class="av" id="vBr">0</span></label><input type="range" id="aBr" min="-100" max="100" value="0"></div>
       <div class="adjrow"><label><span data-i18n="adjContrast">Contrast</span><span class="av" id="vCt">0</span></label><input type="range" id="aCt" min="-100" max="100" value="0"></div>
       <div class="adjrow"><label><span data-i18n="adjSaturation">Saturation</span><span class="av" id="vSa">0</span></label><input type="range" id="aSa" min="-100" max="100" value="0"></div>
       <div class="adjrow"><label><span data-i18n="adjTemp">Warmth</span><span class="av" id="vTp">0</span></label><input type="range" id="aTp" min="-100" max="100" value="0"></div>
-      <button class="btn line" id="adjReset" data-i18n="adjReset">Reset adjustments</button>
+      <div class="adjrow"><label><span data-i18n="adjStraighten">Straighten</span><span class="av" id="vRot">0°</span></label><input type="range" id="aRot" min="-15" max="15" step="0.5" value="0"></div>
+      <div class="btnrow" style="margin-top:4px;">
+        <button class="btn line" id="applyAll" style="flex:1;" data-i18n="applyAll">Apply to all</button>
+        <button class="btn line" id="adjReset" style="flex:1;" data-i18n="adjReset">Reset</button>
+      </div>
     </div>
 
     <!-- 文案 + 标签 -->
@@ -274,7 +284,7 @@ const LANG = {
     hint:'Local HTML file — double-click to use, no deployment. Drag the artwork on the canvas to reposition, scroll / slider to zoom. Images & settings saved locally. On phone, “Share” sends image + caption straight to Instagram.',
     generating:'Generating…', needImg:'Please upload at least one work first', videoDone:'✓ Video ready',
     shareHint:'Image saved & caption copied. Open Instagram and create a post — paste the caption.', shared:'✓ Shared',
-    secAdjust:'Adjust image (current work)', adjExposure:'Exposure', adjBrightness:'Brightness', adjContrast:'Contrast', adjSaturation:'Saturation', adjTemp:'Warmth', adjReset:'Reset adjustments',
+    secAdjust:'Adjust image (current work)', adjExposure:'Exposure', adjBrightness:'Brightness', adjContrast:'Contrast', adjSaturation:'Saturation', adjTemp:'Warmth', adjStraighten:'Straighten', adjReset:'Reset', lblPresets:'One-tap looks', applyAll:'Apply to all', appliedAll:'✓ Applied to all',
     phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
   zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
     secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期',
@@ -287,7 +297,7 @@ const LANG = {
     hint:'本地网页文件，双击即用，无需部署。可在画布上拖动作品调整位置，滚轮/滑杆缩放。图片与设置本地保存。手机上点“分享”可把图片+文案直接发到 Instagram。',
     generating:'生成中…', needImg:'请先上传至少一幅作品', videoDone:'✓ 视频已生成',
     shareHint:'图片已保存、文案已复制。打开 Instagram 发帖并粘贴文案即可。', shared:'✓ 已分享',
-    secAdjust:'图像调整（当前作品）', adjExposure:'曝光', adjBrightness:'亮度', adjContrast:'对比度', adjSaturation:'饱和度', adjTemp:'色温', adjReset:'重置调整',
+    secAdjust:'图像调整（当前作品）', adjExposure:'曝光', adjBrightness:'亮度', adjContrast:'对比度', adjSaturation:'饱和度', adjTemp:'色温', adjStraighten:'拉直', adjReset:'重置', lblPresets:'一键风格', applyAll:'套用到全部', appliedAll:'✓ 已套用全部',
     phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
   ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
     secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付',
@@ -300,7 +310,7 @@ const LANG = {
     hint:'ローカルHTMLファイル。ダブルクリックで使え、デプロイ不要。キャンバス上で作品をドラッグして位置調整、ホイール/スライダーで拡大。画像と設定はローカル保存。スマホでは「共有」で画像＋文を Instagram へ直接送れます。',
     generating:'生成中…', needImg:'先に作品を1枚以上アップロードしてください', videoDone:'✓ 動画を作成しました',
     shareHint:'画像を保存し、投稿文をコピーしました。Instagram で投稿し、文を貼り付けてください。', shared:'✓ 共有しました',
-    secAdjust:'画像調整（現在の作品）', adjExposure:'露出', adjBrightness:'明るさ', adjContrast:'コントラスト', adjSaturation:'彩度', adjTemp:'色温', adjReset:'調整をリセット',
+    secAdjust:'画像調整（現在の作品）', adjExposure:'露出', adjBrightness:'明るさ', adjContrast:'コントラスト', adjSaturation:'彩度', adjTemp:'色温', adjStraighten:'傾き補正', adjReset:'リセット', lblPresets:'ワンタップ', applyAll:'全作品に適用', appliedAll:'✓ 全部に適用',
     phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
   ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
     secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜',
@@ -313,7 +323,7 @@ const LANG = {
     hint:'로컬 HTML 파일 — 더블클릭으로 실행, 배포 불필요. 캔버스에서 작품을 드래그해 위치 조정, 스크롤/슬라이더로 확대. 이미지와 설정은 로컬 저장. 모바일에서 “공유”로 이미지+캡션을 인스타그램에 바로 보낼 수 있습니다.',
     generating:'생성 중…', needImg:'먼저 작품을 한 점 이상 업로드하세요', videoDone:'✓ 영상 완료',
     shareHint:'이미지 저장 및 캡션 복사 완료. 인스타그램에서 게시물을 만들고 캡션을 붙여넣으세요.', shared:'✓ 공유됨',
-    secAdjust:'이미지 보정 (현재 작품)', adjExposure:'노출', adjBrightness:'밝기', adjContrast:'대비', adjSaturation:'채도', adjTemp:'색온도', adjReset:'보정 초기화',
+    secAdjust:'이미지 보정 (현재 작품)', adjExposure:'노출', adjBrightness:'밝기', adjContrast:'대비', adjSaturation:'채도', adjTemp:'색온도', adjStraighten:'수평 보정', adjReset:'초기화', lblPresets:'원탭 필터', applyAll:'전체 적용', appliedAll:'✓ 전체 적용됨',
     phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
   es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
     secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha',
@@ -326,7 +336,7 @@ const LANG = {
     hint:'Archivo HTML local — doble clic para usar, sin despliegue. Arrastra la obra en el lienzo para recolocar, rueda/control para acercar. Imágenes y ajustes guardados localmente. En el móvil, “Compartir” envía imagen + texto directo a Instagram.',
     generating:'Generando…', needImg:'Sube al menos una obra primero', videoDone:'✓ Vídeo listo',
     shareHint:'Imagen guardada y texto copiado. Abre Instagram, crea una publicación y pega el texto.', shared:'✓ Compartido',
-    secAdjust:'Ajustar imagen (obra actual)', adjExposure:'Exposición', adjBrightness:'Brillo', adjContrast:'Contraste', adjSaturation:'Saturación', adjTemp:'Calidez', adjReset:'Restablecer ajustes',
+    secAdjust:'Ajustar imagen (obra actual)', adjExposure:'Exposición', adjBrightness:'Brillo', adjContrast:'Contraste', adjSaturation:'Saturación', adjTemp:'Calidez', adjStraighten:'Enderezar', adjReset:'Restablecer', lblPresets:'Estilos rápidos', applyAll:'Aplicar a todas', appliedAll:'✓ Aplicado a todas',
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
 };
 const DEFAULT_TAGS = '#art #artwork #illustration #drawing #sketchbook #originalart #artistsoninstagram #contemporaryart';
@@ -355,10 +365,10 @@ const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
   seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8,
-  works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
+  works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
-if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
-S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0}; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; });
+if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
+S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined) w.tx.rot=0; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; });
 uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
 function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
@@ -442,16 +452,39 @@ function renderWorks(){
   });
   const add=document.createElement('div'); add.className='wk add'; add.textContent='+'; add.onclick=addWork; worksEl.appendChild(add);
 }
-function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
+function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function removeWork(i){ const rid=S.works[i].id; delete _images[rid]; idbDel(rid); S.works.splice(i,1); if(!S.works.length){ addWork(); return; } if(S.current>=S.works.length)S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function selectWork(i){ S.current=i; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; fillAdj(); }
 
 // ---------------- image adjustment sliders ----------------
 const ADJ=[['aEx','ex','vEx'],['aBr','br','vBr'],['aCt','ct','vCt'],['aSa','sa','vSa'],['aTp','tp','vTp']];
-ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ if(!cur().adj)cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; cur().adj[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; save(); draw(); }); });
-function fillAdj(){ const a=cur().adj||{ex:0,br:0,ct:0,sa:0,tp:0}; ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).value=a[key]||0; document.getElementById(vid).textContent=a[key]||0; }); }
-document.getElementById('adjReset').onclick=()=>{ cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; fillAdj(); save(); draw(); };
+ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ if(!cur().adj)cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; cur().adj[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; markPreset(); save(); draw(); }); });
+const aRot=document.getElementById('aRot');
+aRot.addEventListener('input',e=>{ if(!cur().tx)cur().tx={s:1,x:0,y:0,rot:0}; cur().tx.rot=parseFloat(e.target.value); document.getElementById('vRot').textContent=e.target.value+'°'; save(); draw(); });
+// one-tap preset looks (a preset is just a named set of adjustments — can be applied to the whole series)
+const PRESETS=[
+  {n:'Original', a:{ex:0,br:0,ct:0,sa:0,tp:0}},
+  {n:'Warm',   a:{ex:6,br:0,ct:8,sa:6,tp:32}},
+  {n:'Cool',   a:{ex:4,br:2,ct:8,sa:2,tp:-30}},
+  {n:'Punch',  a:{ex:4,br:0,ct:30,sa:24,tp:4}},
+  {n:'Soft',   a:{ex:10,br:6,ct:-14,sa:-8,tp:8}},
+  {n:'Film',   a:{ex:4,br:0,ct:12,sa:-12,tp:18}},
+  {n:'Ink',    a:{ex:2,br:-4,ct:26,sa:-34,tp:0}},
+  {n:'Mono',   a:{ex:2,br:2,ct:14,sa:-100,tp:0}},
+  {n:'Bright', a:{ex:20,br:10,ct:6,sa:4,tp:2}},
+];
+const presetsEl=document.getElementById('presets');
+PRESETS.forEach((p,i)=>{ const b=document.createElement('button'); b.textContent=p.n; b.dataset.i=i;
+  b.onclick=()=>{ cur().adj={...p.a}; fillAdj(); save(); draw(); }; presetsEl.appendChild(b); });
+function presetMatch(){ const a=cur().adj||{}; return PRESETS.findIndex(p=>['ex','br','ct','sa','tp'].every(k=>(p.a[k]||0)===(a[k]||0))); }
+function markPreset(){ const idx=presetMatch(); [...presetsEl.children].forEach((b,i)=>b.classList.toggle('on', i===idx)); }
+function fillAdj(){ const a=cur().adj||{ex:0,br:0,ct:0,sa:0,tp:0}; ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).value=a[key]||0; document.getElementById(vid).textContent=a[key]||0; });
+  const rot=(cur().tx&&cur().tx.rot)||0; aRot.value=rot; document.getElementById('vRot').textContent=rot+'°'; markPreset(); }
+document.getElementById('adjReset').onclick=()=>{ cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; if(cur().tx)cur().tx.rot=0; fillAdj(); save(); draw(); };
+document.getElementById('applyAll').onclick=()=>{ const a={...(cur().adj||{})}, rot=(cur().tx&&cur().tx.rot)||0;
+  S.works.forEach(w=>{ w.adj={...a}; if(w.tx)w.tx.rot=rot; }); save(); draw();
+  const b=document.getElementById('applyAll'); b.textContent=t('appliedAll'); setTimeout(()=>b.textContent=t('applyAll'),1400); };
 
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
 ['sign','seriesTitle','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
@@ -521,12 +554,18 @@ function drawImgAdj(g,im,x,y,w,h,a){
   g.filter=filterStr(a); g.drawImage(im,x,y,w,h); g.filter='none';
   applyOverlays(g,x,y,w,h,a); g.restore();
 }
-// single mode: pan/zoom transform + adjustments
+// single mode: pan/zoom/straighten transform + adjustments
 function drawArtImage(g,im,x,y,w,h,tx,a){
-  clampTx(tx);
+  const rot=(tx.rot||0)*Math.PI/180;
+  const C=Math.abs(Math.cos(rot)), Sn=Math.abs(Math.sin(rot));
+  const cover = rot ? Math.max((w*C+h*Sn)/w, (w*Sn+h*C)/h) : 1;   // scale so the rotated image still fills the box
+  const eff = tx.s*cover, m=(eff-1)/2;
+  tx.x=Math.max(-m,Math.min(m,tx.x)); tx.y=Math.max(-m,Math.min(m,tx.y));
   g.save(); g.beginPath(); g.rect(x,y,w,h); g.clip();
-  const dw=w*tx.s, dh=h*tx.s, dx=x+(w-dw)/2+tx.x*w, dy=y+(h-dh)/2+tx.y*h;
-  g.filter=filterStr(a); g.drawImage(im,dx,dy,dw,dh); g.filter='none';
+  g.filter=filterStr(a);
+  g.translate(x+w/2+tx.x*w, y+h/2+tx.y*h); g.rotate(rot);
+  g.drawImage(im, -w*eff/2, -h*eff/2, w*eff, h*eff);
+  g.filter='none'; g.setTransform(1,0,0,1,0,0);
   applyOverlays(g,x,y,w,h,a); g.restore();
 }
 
@@ -665,7 +704,7 @@ cv.addEventListener('wheel',e=>{ if(S.mode==='grid'||!_images[cur().id])return; 
   const tx=txOf(cur()); tx.s=Math.min(4,Math.max(1, tx.s*(1-e.deltaY*0.0015))); if(tx.s<=1.001){tx.s=1;tx.x=0;tx.y=0;}
   document.getElementById('zoom').value=tx.s; draw(); save(); },{passive:false});
 document.getElementById('zoom').oninput=e=>{ const tx=txOf(cur()); tx.s=parseFloat(e.target.value); if(tx.s<=1.001){tx.x=0;tx.y=0;} draw(); save(); };
-document.getElementById('resetPos').onclick=()=>{ cur().tx={s:1,x:0,y:0}; document.getElementById('zoom').value=1; draw(); save(); };
+document.getElementById('resetPos').onclick=()=>{ cur().tx={s:1,x:0,y:0,rot:(cur().tx&&cur().tx.rot)||0}; document.getElementById('zoom').value=1; draw(); save(); };
 
 // ---------------- caption ----------------
 function buildCaption(){

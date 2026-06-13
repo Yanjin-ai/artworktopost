@@ -248,6 +248,16 @@
       <button data-mode="single" class="on" data-i18n="modeSingle">Single</button>
       <button data-mode="grid" data-i18n="modeGrid">Series grid</button>
     </div>
+    <div id="formatRow" style="display:flex; align-items:center; gap:10px; width:100%; max-width:430px;">
+      <span style="font-size:12px;color:var(--soft);white-space:nowrap;" data-i18n="lblFormat">Format</span>
+      <div class="seg" id="format" style="flex:1;">
+        <button data-r="auto" class="on">Auto</button>
+        <button data-r="0.8">4:5</button>
+        <button data-r="1">1:1</button>
+        <button data-r="0.75">3:4</button>
+        <button data-r="1.91">1.91:1</button>
+      </div>
+    </div>
     <div class="canvas-wrap"><canvas id="cv" width="1080" height="1350"></canvas></div>
     <div class="imgctrl" id="imgctrl">
       <span>🔍</span><input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
@@ -279,7 +289,7 @@ const LANG = {
     mTight:'Tight', mStd:'Std', mRoomy:'Roomy', aLeft:'Left', aCenter:'Center',
     secScreen:'Background & watermark', lblBg:'Background', lblWm:'Watermark text', lblWmPos:'Position', lblWmOp:'Opacity',
     secCaption:'Caption / hashtags', lblSeries:'Series title (for grid / video)', lblTags:'Hashtags #', lblCaptionPreview:'Caption preview', copyCap:'Copy caption', copied:'✓ Copied',
-    modeSingle:'Single', modeGrid:'Series grid', share:'📤 Share to Instagram', exportPng:'⬇ Export PNG', exportVideo:'🎬 Export slideshow (mp4)', resetPos:'Reset',
+    modeSingle:'Single', modeGrid:'Series grid', share:'📤 Share to Instagram', exportPng:'⬇ Export PNG', exportVideo:'🎬 Export slideshow (mp4)', resetPos:'Reset', lblFormat:'Format',
     s2:'2s', s3:'2.8s', s4:'4s', untitled:'Untitled', uploadHere:'Upload your artwork', play:'Preview', stop:'Stop',
     hint:'Local HTML file — double-click to use, no deployment. Drag the artwork on the canvas to reposition, scroll / slider to zoom. Images & settings saved locally. On phone, “Share” sends image + caption straight to Instagram.',
     generating:'Generating…', needImg:'Please upload at least one work first', videoDone:'✓ Video ready',
@@ -292,7 +302,7 @@ const LANG = {
     mTight:'紧凑', mStd:'标准', mRoomy:'宽松', aLeft:'左', aCenter:'中',
     secScreen:'背景 & 水印', lblBg:'背景色', lblWm:'水印文字', lblWmPos:'位置', lblWmOp:'透明度',
     secCaption:'发布文案 / 话题标签', lblSeries:'系列标题（用于合集 / 视频）', lblTags:'话题标签 #', lblCaptionPreview:'文案预览', copyCap:'复制文案', copied:'✓ 已复制',
-    modeSingle:'单幅', modeGrid:'系列合集', share:'📤 分享到 Instagram', exportPng:'⬇ 导出图片 PNG', exportVideo:'🎬 导出幻灯片视频 (mp4)', resetPos:'重置',
+    modeSingle:'单幅', modeGrid:'系列合集', share:'📤 分享到 Instagram', exportPng:'⬇ 导出图片 PNG', exportVideo:'🎬 导出幻灯片视频 (mp4)', resetPos:'重置', lblFormat:'画幅',
     s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'无题', uploadHere:'上传你的作品', play:'预览', stop:'停止',
     hint:'本地网页文件，双击即用，无需部署。可在画布上拖动作品调整位置，滚轮/滑杆缩放。图片与设置本地保存。手机上点“分享”可把图片+文案直接发到 Instagram。',
     generating:'生成中…', needImg:'请先上传至少一幅作品', videoDone:'✓ 视频已生成',
@@ -305,7 +315,7 @@ const LANG = {
     mTight:'狭い', mStd:'標準', mRoomy:'広い', aLeft:'左', aCenter:'中央',
     secScreen:'背景 & 透かし', lblBg:'背景色', lblWm:'透かし文字', lblWmPos:'位置', lblWmOp:'不透明度',
     secCaption:'投稿文 / ハッシュタグ', lblSeries:'シリーズ名（合集 / 動画用）', lblTags:'ハッシュタグ #', lblCaptionPreview:'投稿文プレビュー', copyCap:'投稿文をコピー', copied:'✓ コピー済み',
-    modeSingle:'1枚', modeGrid:'シリーズ合集', share:'📤 Instagram で共有', exportPng:'⬇ 画像を PNG 書き出し', exportVideo:'🎬 スライドショー書き出し (mp4)', resetPos:'リセット',
+    modeSingle:'1枚', modeGrid:'シリーズ合集', share:'📤 Instagram で共有', exportPng:'⬇ 画像を PNG 書き出し', exportVideo:'🎬 スライドショー書き出し (mp4)', resetPos:'リセット', lblFormat:'画面比率',
     s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'無題', uploadHere:'作品をアップロード', play:'プレビュー', stop:'停止',
     hint:'ローカルHTMLファイル。ダブルクリックで使え、デプロイ不要。キャンバス上で作品をドラッグして位置調整、ホイール/スライダーで拡大。画像と設定はローカル保存。スマホでは「共有」で画像＋文を Instagram へ直接送れます。',
     generating:'生成中…', needImg:'先に作品を1枚以上アップロードしてください', videoDone:'✓ 動画を作成しました',
@@ -318,7 +328,7 @@ const LANG = {
     mTight:'좁게', mStd:'표준', mRoomy:'넓게', aLeft:'왼쪽', aCenter:'가운데',
     secScreen:'배경 & 워터마크', lblBg:'배경색', lblWm:'워터마크 문구', lblWmPos:'위치', lblWmOp:'투명도',
     secCaption:'캡션 / 해시태그', lblSeries:'시리즈 제목 (그리드 / 영상용)', lblTags:'해시태그 #', lblCaptionPreview:'캡션 미리보기', copyCap:'캡션 복사', copied:'✓ 복사됨',
-    modeSingle:'단일', modeGrid:'시리즈 그리드', share:'📤 인스타그램에 공유', exportPng:'⬇ PNG 내보내기', exportVideo:'🎬 슬라이드쇼 내보내기 (mp4)', resetPos:'초기화',
+    modeSingle:'단일', modeGrid:'시리즈 그리드', share:'📤 인스타그램에 공유', exportPng:'⬇ PNG 내보내기', exportVideo:'🎬 슬라이드쇼 내보내기 (mp4)', resetPos:'초기화', lblFormat:'비율',
     s2:'2초', s3:'2.8초', s4:'4초', untitled:'무제', uploadHere:'작품을 업로드하세요', play:'미리보기', stop:'정지',
     hint:'로컬 HTML 파일 — 더블클릭으로 실행, 배포 불필요. 캔버스에서 작품을 드래그해 위치 조정, 스크롤/슬라이더로 확대. 이미지와 설정은 로컬 저장. 모바일에서 “공유”로 이미지+캡션을 인스타그램에 바로 보낼 수 있습니다.',
     generating:'생성 중…', needImg:'먼저 작품을 한 점 이상 업로드하세요', videoDone:'✓ 영상 완료',
@@ -331,7 +341,7 @@ const LANG = {
     mTight:'Justo', mStd:'Est.', mRoomy:'Amplio', aLeft:'Izq.', aCenter:'Centro',
     secScreen:'Fondo y marca de agua', lblBg:'Color de fondo', lblWm:'Texto de marca de agua', lblWmPos:'Posición', lblWmOp:'Opacidad',
     secCaption:'Descripción / hashtags', lblSeries:'Título de serie (para grid / vídeo)', lblTags:'Hashtags #', lblCaptionPreview:'Vista previa', copyCap:'Copiar texto', copied:'✓ Copiado',
-    modeSingle:'Única', modeGrid:'Grid de serie', share:'📤 Compartir en Instagram', exportPng:'⬇ Exportar PNG', exportVideo:'🎬 Exportar pase (mp4)', resetPos:'Reiniciar',
+    modeSingle:'Única', modeGrid:'Grid de serie', share:'📤 Compartir en Instagram', exportPng:'⬇ Exportar PNG', exportVideo:'🎬 Exportar pase (mp4)', resetPos:'Reiniciar', lblFormat:'Formato',
     s2:'2s', s3:'2.8s', s4:'4s', untitled:'Sin título', uploadHere:'Sube tu obra', play:'Vista previa', stop:'Parar',
     hint:'Archivo HTML local — doble clic para usar, sin despliegue. Arrastra la obra en el lienzo para recolocar, rueda/control para acercar. Imágenes y ajustes guardados localmente. En el móvil, “Compartir” envía imagen + texto directo a Instagram.',
     generating:'Generando…', needImg:'Sube al menos una obra primero', videoDone:'✓ Vídeo listo',
@@ -364,7 +374,7 @@ const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
 const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
-  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8,
+  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8, format:'auto',
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
 if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
@@ -414,7 +424,7 @@ buildSwatches(bgEl, BG_PALETTE, 'bg', true);
 
 // ---------------- segments ----------------
 function bindSeg(id,key,parse=v=>v,cb){ const box=document.getElementById(id);
-  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p;
+  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r;
     b.onclick=()=>{ box.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S[key]=parse(v); save(); (cb||draw)(); }; }); }
 bindSeg('margin','margin',parseFloat);
 bindSeg('textAlign','align');
@@ -422,6 +432,7 @@ bindSeg('signFont','signFont');
 bindSeg('titleFont','titleFont');
 bindSeg('wmPos','wmPos');
 bindSeg('videoSecs','videoSecs',parseFloat,()=>{});
+bindSeg('format','format', v=> v==='auto'?'auto':parseFloat(v));
 bindSeg('modetabs','mode',v=>v,()=>{ updateImgCtrl(); draw(); });
 
 // watermark opacity
@@ -573,22 +584,29 @@ function drawArtImage(g,im,x,y,w,h,tx,a){
 let _lay=null, _objs=null, _wmBox=null;
 function drawSingle(g, work){
   const W=1080, A=accentOn(), T=inkSet(), alignC=S.align==='center', FAM=S.titleFont;
-  const M=Math.round(W*S.margin), artX=M, artW=W-2*M, artY=M;
-  const im=_images[work.id]; const imgAR=im?im.width/im.height:0.8; const artH=Math.round(artW/imgAR);
+  const M=Math.round(W*S.margin), artX=M, artW=W-2*M;
+  const im=_images[work.id]; const imgAR=im?im.width/im.height:0.8;
   const Ts=Math.round(W*0.0335), Is=Math.round(W*0.023), Sg=Math.round(W*0.058), lineH=Math.round(Is*1.6);
   g.font=ideaFont(Is);
   const ideaLines = work.idea ? wrap(work.idea,artW) : [];
   const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(S.sign||work.date);
-  let capH=0; const gTop=Math.round(M*0.85);
+  let capH=0; const gTop=Math.round(M*0.85), bottom=Math.round(M*0.95);
   if(hasT)capH+=Math.round(Ts*1.18); if(hasT&&hasI)capH+=Math.round(Ts*0.35);
   if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.8); if(hasS)capH+=Math.round(Sg*0.95);
-  const capTop=artY+artH+gTop, H=capTop+capH+Math.round(M*0.95);
+  // canvas height + art box: Auto = native ratio; fixed = chosen IG ratio (image contained & padded — never cropped)
+  let H, artBoxY=M, artBoxH, capTop;
+  if(S.format==='auto'){ artBoxH=Math.round(artW/imgAR); capTop=artBoxY+artBoxH+gTop; H=capTop+capH+bottom; }
+  else { H=Math.round(W/S.format); capTop=H-bottom-capH; artBoxH=Math.max(40, capTop-gTop-artBoxY); }
   cv.width=W; cv.height=H;
-  _lay={artX,artY,artW,artH};
+  // image display rect: contained inside the art box (no crop) — also the interactive/pan box
+  let ir;
+  if(im){ const c=contain(im.width,im.height,artW,artBoxH); ir={artX:Math.round(artX+(artW-c.w)/2), artY:Math.round(artBoxY+(artBoxH-c.h)/2), artW:Math.round(c.w), artH:Math.round(c.h)}; }
+  else ir={artX, artY:artBoxY, artW, artH:artBoxH};
+  _lay=ir;
   g.fillStyle=S.bg; g.fillRect(0,0,W,H);
-  if(im){ drawArtImage(g,im,artX,artY,artW,artH,txOf(work),work.adj); drawWatermark(g,artX,artY,artW,artH); }
-  else{ g.fillStyle=T.ph; g.fillRect(artX,artY,artW,artH); g.fillStyle=T.soft; g.font="500 25px 'Fredoka',sans-serif"; g.textAlign='center'; g.fillText(t('uploadHere'),artX+artW/2,artY+artH/2); g.textAlign='left'; }
-  g.strokeStyle=T.key; g.lineWidth=1.5; g.strokeRect(artX+.75,artY+.75,artW-1.5,artH-1.5);
+  if(im){ drawArtImage(g,im,ir.artX,ir.artY,ir.artW,ir.artH,txOf(work),work.adj); drawWatermark(g,ir.artX,ir.artY,ir.artW,ir.artH); }
+  else{ g.fillStyle=T.ph; g.fillRect(ir.artX,ir.artY,ir.artW,ir.artH); g.fillStyle=T.soft; g.font="500 25px 'Fredoka',sans-serif"; g.textAlign='center'; g.fillText(t('uploadHere'),ir.artX+ir.artW/2,ir.artY+ir.artH/2); g.textAlign='left'; }
+  g.strokeStyle=T.key; g.lineWidth=1.5; g.strokeRect(ir.artX+.75,ir.artY+.75,ir.artW-1.5,ir.artH-1.5);
   const cxL=alignC?W/2:artX; g.textAlign=alignC?'center':'left'; g.textBaseline='top'; let y=capTop; const txt=[];
   if(hasT){ const ty0=y; g.fillStyle=T.ink; g.font=`500 ${Ts}px ${FAM}`; g.fillText(work.title,cxL,y,artW); txt.push({type:'title',x:artX,y:ty0,w:artW,h:Math.round(Ts*1.18)}); y+=Math.round(Ts*1.18)+(hasI?Math.round(Ts*0.35):0); }
   if(hasI){ const iy0=y; g.fillStyle=T.idea; g.font=ideaFont(Is); ideaLines.forEach(l=>{g.fillText(l,cxL,y,artW); y+=lineH;}); txt.push({type:'idea',x:artX,y:iy0,w:artW,h:ideaLines.length*lineH}); }
@@ -606,7 +624,7 @@ function drawSingle(g, work){
   _objs=[];
   if(_wmBox && S.wmText && S.wmPos!=='tile') _objs.push(Object.assign({type:'wm'},_wmBox));
   _objs.push(...txt);
-  _objs.push({type:'art',x:artX,y:artY,w:artW,h:artH});
+  _objs.push({type:'art',x:ir.artX,y:ir.artY,w:ir.artW,h:ir.artH});
 }
 
 // ---------------- series grid render ----------------
@@ -664,8 +682,10 @@ function draw(){ if(S.mode==='grid') drawGrid(ctx); else drawSingle(ctx, cur());
 
 // ---------------- drag / zoom on canvas ----------------
 function updateImgCtrl(){
-  const show = S.mode!=='grid' && _images[cur().id];
+  const single = S.mode!=='grid';
+  const show = single && _images[cur().id];
   document.getElementById('imgctrl').style.display = show?'flex':'none';
+  document.getElementById('formatRow').style.display = single?'flex':'none';
   cv.classList.toggle('pan', !!show);
   if(show) document.getElementById('zoom').value = txOf(cur()).s;
 }
@@ -819,6 +839,7 @@ function init(){
   document.querySelectorAll('#titleFont button').forEach(b=>b.classList.toggle('on',b.dataset.f===S.titleFont));
   document.querySelectorAll('#wmPos button').forEach(b=>b.classList.toggle('on',b.dataset.p===S.wmPos));
   document.querySelectorAll('#videoSecs button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.s)===S.videoSecs));
+  document.querySelectorAll('#format button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='auto'?'auto':parseFloat(b.dataset.r))===S.format));
   document.querySelectorAll('#modetabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
   syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); applyLang(); draw();
   restoreImages();

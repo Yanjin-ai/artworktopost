@@ -235,6 +235,14 @@
       <div class="adjrow"><label><span data-i18n="adjSaturation">Saturation</span><span class="av" id="vSa">0</span></label><input type="range" id="aSa" min="-100" max="100" value="0"></div>
       <div class="adjrow"><label><span data-i18n="adjTemp">Warmth</span><span class="av" id="vTp">0</span></label><input type="range" id="aTp" min="-100" max="100" value="0"></div>
       <div class="adjrow"><label><span data-i18n="adjStraighten">Straighten</span><span class="av" id="vRot">0°</span></label><input type="range" id="aRot" min="-15" max="15" step="0.5" value="0"></div>
+      <div class="adjrow" style="border-top:1px solid var(--line); padding-top:11px;">
+        <label><span data-i18n="lblCut">Remove background</span><span class="av" id="cutState"></span></label>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn line" id="cutToggle" style="flex:0 0 auto; padding:8px 13px; font-size:13px;" data-i18n="cutBtn">Cut out</button>
+          <input type="range" id="cutTol" min="10" max="120" value="36" style="flex:1;">
+        </div>
+        <p class="hint" style="text-align:left; margin-top:6px;" data-i18n="cutNote">Best for artwork shot on a plain background. Drag the slider to fine-tune.</p>
+      </div>
       <div class="btnrow" style="margin-top:4px;">
         <button class="btn line" id="applyAll" style="flex:1;" data-i18n="applyAll">Apply to all</button>
         <button class="btn line" id="adjReset" style="flex:1;" data-i18n="adjReset">Reset</button>
@@ -266,6 +274,16 @@
         <button data-r="1">1:1</button>
         <button data-r="0.75">3:4</button>
         <button data-r="1.91">1.91:1</button>
+      </div>
+    </div>
+    <div id="gridRow" style="display:none; align-items:center; gap:10px; width:100%; max-width:430px;">
+      <span style="font-size:12px;color:var(--soft);white-space:nowrap;" data-i18n="lblLayout">Layout</span>
+      <div class="seg" id="gridLayout" style="flex:1;">
+        <button data-gl="auto" class="on">Auto</button>
+        <button data-gl="1">1</button>
+        <button data-gl="2">2</button>
+        <button data-gl="3">3</button>
+        <button data-gl="row">▭▭▭</button>
       </div>
     </div>
     <div class="canvas-wrap"><canvas id="cv" width="1080" height="1350"></canvas></div>
@@ -312,12 +330,13 @@ const LANG = {
     secScreen:'Background & watermark', lblBg:'Background', lblWm:'Watermark text', lblWmPos:'Position', lblWmOp:'Opacity',
     secCaption:'Caption / hashtags', lblSeries:'Series title (for grid / video)', lblTags:'Hashtags #', lblCaptionPreview:'Caption preview', copyCap:'Copy caption', copied:'✓ Copied',
     modeSingle:'Single', modeGrid:'Series grid', modeSlice:'Mural slice', share:'📤 Share to Instagram', exportPng:'⬇ Export PNG', exportVideo:'🎬 Export slideshow (mp4)', resetPos:'Reset', lblFormat:'Format',
-    lblGrid:'Grid', sliceTiles:'✂️ Export tiles (zip)', sliceNote:'Tiles are numbered in upload order — post-01 first.', sliceDone:'✓ Tiles ready',
+    lblGrid:'Grid', sliceTiles:'✂️ Export tiles (zip)', sliceNote:'Tiles are numbered in upload order — post-01 first.', sliceDone:'✓ Tiles ready', lblLayout:'Layout',
     s2:'2s', s3:'2.8s', s4:'4s', untitled:'Untitled', uploadHere:'Upload your artwork', play:'Preview', stop:'Stop',
     hint:'Local HTML file — double-click to use, no deployment. Drag the artwork on the canvas to reposition, scroll / slider to zoom. Images & settings saved locally. On phone, “Share” sends image + caption straight to Instagram.',
     generating:'Generating…', needImg:'Please upload at least one work first', videoDone:'✓ Video ready',
     shareHint:'Image saved & caption copied. Open Instagram and create a post — paste the caption.', shared:'✓ Shared',
     secAdjust:'Adjust image (current work)', adjExposure:'Exposure', adjBrightness:'Brightness', adjContrast:'Contrast', adjSaturation:'Saturation', adjTemp:'Warmth', adjStraighten:'Straighten', adjReset:'Reset', lblPresets:'One-tap looks', applyAll:'Apply to all', appliedAll:'✓ Applied to all',
+    lblCut:'Remove background', cutBtn:'Cut out', cutUndo:'Restore', cutNote:'Best for artwork shot on a plain background. Drag the slider to fine-tune.',
     phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
   zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
     secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期',
@@ -326,12 +345,13 @@ const LANG = {
     secScreen:'背景 & 水印', lblBg:'背景色', lblWm:'水印文字', lblWmPos:'位置', lblWmOp:'透明度',
     secCaption:'发布文案 / 话题标签', lblSeries:'系列标题（用于合集 / 视频）', lblTags:'话题标签 #', lblCaptionPreview:'文案预览', copyCap:'复制文案', copied:'✓ 已复制',
     modeSingle:'单幅', modeGrid:'系列合集', modeSlice:'九宫格切图', share:'📤 分享到 Instagram', exportPng:'⬇ 导出图片 PNG', exportVideo:'🎬 导出幻灯片视频 (mp4)', resetPos:'重置', lblFormat:'画幅',
-    lblGrid:'网格', sliceTiles:'✂️ 导出切片 (zip)', sliceNote:'切片已按发布顺序编号 —— 先发 post-01。', sliceDone:'✓ 切片已生成',
+    lblGrid:'网格', sliceTiles:'✂️ 导出切片 (zip)', sliceNote:'切片已按发布顺序编号 —— 先发 post-01。', sliceDone:'✓ 切片已生成', lblLayout:'版式',
     s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'无题', uploadHere:'上传你的作品', play:'预览', stop:'停止',
     hint:'本地网页文件，双击即用，无需部署。可在画布上拖动作品调整位置，滚轮/滑杆缩放。图片与设置本地保存。手机上点“分享”可把图片+文案直接发到 Instagram。',
     generating:'生成中…', needImg:'请先上传至少一幅作品', videoDone:'✓ 视频已生成',
     shareHint:'图片已保存、文案已复制。打开 Instagram 发帖并粘贴文案即可。', shared:'✓ 已分享',
     secAdjust:'图像调整（当前作品）', adjExposure:'曝光', adjBrightness:'亮度', adjContrast:'对比度', adjSaturation:'饱和度', adjTemp:'色温', adjStraighten:'拉直', adjReset:'重置', lblPresets:'一键风格', applyAll:'套用到全部', appliedAll:'✓ 已套用全部',
+    lblCut:'抠背景', cutBtn:'抠图', cutUndo:'还原', cutNote:'适合纯色背景拍摄的作品；拖动滑杆微调容差。',
     phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
   ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
     secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付',
@@ -340,12 +360,13 @@ const LANG = {
     secScreen:'背景 & 透かし', lblBg:'背景色', lblWm:'透かし文字', lblWmPos:'位置', lblWmOp:'不透明度',
     secCaption:'投稿文 / ハッシュタグ', lblSeries:'シリーズ名（合集 / 動画用）', lblTags:'ハッシュタグ #', lblCaptionPreview:'投稿文プレビュー', copyCap:'投稿文をコピー', copied:'✓ コピー済み',
     modeSingle:'1枚', modeGrid:'シリーズ合集', modeSlice:'グリッド分割', share:'📤 Instagram で共有', exportPng:'⬇ 画像を PNG 書き出し', exportVideo:'🎬 スライドショー書き出し (mp4)', resetPos:'リセット', lblFormat:'画面比率',
-    lblGrid:'グリッド', sliceTiles:'✂️ 分割を書き出し (zip)', sliceNote:'タイルは投稿順に番号付け — post-01 から投稿。', sliceDone:'✓ 分割完了',
+    lblGrid:'グリッド', sliceTiles:'✂️ 分割を書き出し (zip)', sliceNote:'タイルは投稿順に番号付け — post-01 から投稿。', sliceDone:'✓ 分割完了', lblLayout:'レイアウト',
     s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'無題', uploadHere:'作品をアップロード', play:'プレビュー', stop:'停止',
     hint:'ローカルHTMLファイル。ダブルクリックで使え、デプロイ不要。キャンバス上で作品をドラッグして位置調整、ホイール/スライダーで拡大。画像と設定はローカル保存。スマホでは「共有」で画像＋文を Instagram へ直接送れます。',
     generating:'生成中…', needImg:'先に作品を1枚以上アップロードしてください', videoDone:'✓ 動画を作成しました',
     shareHint:'画像を保存し、投稿文をコピーしました。Instagram で投稿し、文を貼り付けてください。', shared:'✓ 共有しました',
     secAdjust:'画像調整（現在の作品）', adjExposure:'露出', adjBrightness:'明るさ', adjContrast:'コントラスト', adjSaturation:'彩度', adjTemp:'色温', adjStraighten:'傾き補正', adjReset:'リセット', lblPresets:'ワンタップ', applyAll:'全作品に適用', appliedAll:'✓ 全部に適用',
+    lblCut:'背景を消す', cutBtn:'切り抜き', cutUndo:'元に戻す', cutNote:'無地背景で撮った作品向け。スライダーで微調整。',
     phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
   ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
     secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜',
@@ -354,12 +375,13 @@ const LANG = {
     secScreen:'배경 & 워터마크', lblBg:'배경색', lblWm:'워터마크 문구', lblWmPos:'위치', lblWmOp:'투명도',
     secCaption:'캡션 / 해시태그', lblSeries:'시리즈 제목 (그리드 / 영상용)', lblTags:'해시태그 #', lblCaptionPreview:'캡션 미리보기', copyCap:'캡션 복사', copied:'✓ 복사됨',
     modeSingle:'단일', modeGrid:'시리즈 그리드', modeSlice:'그리드 분할', share:'📤 인스타그램에 공유', exportPng:'⬇ PNG 내보내기', exportVideo:'🎬 슬라이드쇼 내보내기 (mp4)', resetPos:'초기화', lblFormat:'비율',
-    lblGrid:'그리드', sliceTiles:'✂️ 분할 내보내기 (zip)', sliceNote:'타일은 업로드 순서로 번호 — post-01 부터 게시.', sliceDone:'✓ 분할 완료',
+    lblGrid:'그리드', sliceTiles:'✂️ 분할 내보내기 (zip)', sliceNote:'타일은 업로드 순서로 번호 — post-01 부터 게시.', sliceDone:'✓ 분할 완료', lblLayout:'레이아웃',
     s2:'2초', s3:'2.8초', s4:'4초', untitled:'무제', uploadHere:'작품을 업로드하세요', play:'미리보기', stop:'정지',
     hint:'로컬 HTML 파일 — 더블클릭으로 실행, 배포 불필요. 캔버스에서 작품을 드래그해 위치 조정, 스크롤/슬라이더로 확대. 이미지와 설정은 로컬 저장. 모바일에서 “공유”로 이미지+캡션을 인스타그램에 바로 보낼 수 있습니다.',
     generating:'생성 중…', needImg:'먼저 작품을 한 점 이상 업로드하세요', videoDone:'✓ 영상 완료',
     shareHint:'이미지 저장 및 캡션 복사 완료. 인스타그램에서 게시물을 만들고 캡션을 붙여넣으세요.', shared:'✓ 공유됨',
     secAdjust:'이미지 보정 (현재 작품)', adjExposure:'노출', adjBrightness:'밝기', adjContrast:'대비', adjSaturation:'채도', adjTemp:'색온도', adjStraighten:'수평 보정', adjReset:'초기화', lblPresets:'원탭 필터', applyAll:'전체 적용', appliedAll:'✓ 전체 적용됨',
+    lblCut:'배경 제거', cutBtn:'배경 제거', cutUndo:'되돌리기', cutNote:'단색 배경에서 촬영한 작품에 적합. 슬라이더로 미세 조정.',
     phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
   es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
     secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha',
@@ -368,12 +390,13 @@ const LANG = {
     secScreen:'Fondo y marca de agua', lblBg:'Color de fondo', lblWm:'Texto de marca de agua', lblWmPos:'Posición', lblWmOp:'Opacidad',
     secCaption:'Descripción / hashtags', lblSeries:'Título de serie (para grid / vídeo)', lblTags:'Hashtags #', lblCaptionPreview:'Vista previa', copyCap:'Copiar texto', copied:'✓ Copiado',
     modeSingle:'Única', modeGrid:'Grid de serie', modeSlice:'Mural', share:'📤 Compartir en Instagram', exportPng:'⬇ Exportar PNG', exportVideo:'🎬 Exportar pase (mp4)', resetPos:'Reiniciar', lblFormat:'Formato',
-    lblGrid:'Cuadrícula', sliceTiles:'✂️ Exportar piezas (zip)', sliceNote:'Las piezas van numeradas por orden — publica post-01 primero.', sliceDone:'✓ Piezas listas',
+    lblGrid:'Cuadrícula', sliceTiles:'✂️ Exportar piezas (zip)', sliceNote:'Las piezas van numeradas por orden — publica post-01 primero.', sliceDone:'✓ Piezas listas', lblLayout:'Disposición',
     s2:'2s', s3:'2.8s', s4:'4s', untitled:'Sin título', uploadHere:'Sube tu obra', play:'Vista previa', stop:'Parar',
     hint:'Archivo HTML local — doble clic para usar, sin despliegue. Arrastra la obra en el lienzo para recolocar, rueda/control para acercar. Imágenes y ajustes guardados localmente. En el móvil, “Compartir” envía imagen + texto directo a Instagram.',
     generating:'Generando…', needImg:'Sube al menos una obra primero', videoDone:'✓ Vídeo listo',
     shareHint:'Imagen guardada y texto copiado. Abre Instagram, crea una publicación y pega el texto.', shared:'✓ Compartido',
     secAdjust:'Ajustar imagen (obra actual)', adjExposure:'Exposición', adjBrightness:'Brillo', adjContrast:'Contraste', adjSaturation:'Saturación', adjTemp:'Calidez', adjStraighten:'Enderezar', adjReset:'Restablecer', lblPresets:'Estilos rápidos', applyAll:'Aplicar a todas', appliedAll:'✓ Aplicado a todas',
+    lblCut:'Quitar fondo', cutBtn:'Recortar', cutUndo:'Restaurar', cutNote:'Ideal para obras sobre fondo liso. Ajusta con el deslizador.',
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
 };
 const DEFAULT_TAGS = '#art #artwork #illustration #drawing #sketchbook #originalart #artistsoninstagram #contemporaryart';
@@ -401,11 +424,11 @@ const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
 const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
-  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8, format:'auto', slice:'3x3',
+  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8, format:'auto', slice:'3x3', gridLayout:'auto',
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
 if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
-S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined) w.tx.rot=0; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; });
+S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined) w.tx.rot=0; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; if(w.cut===undefined) w.cut=false; if(w.cutTol===undefined) w.cutTol=36; });
 uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
 function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
@@ -451,7 +474,7 @@ buildSwatches(bgEl, BG_PALETTE, 'bg', true);
 
 // ---------------- segments ----------------
 function bindSeg(id,key,parse=v=>v,cb){ const box=document.getElementById(id);
-  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r??b.dataset.g;
+  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r??b.dataset.g??b.dataset.gl;
     b.onclick=()=>{ box.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S[key]=parse(v); save(); (cb||draw)(); }; }); }
 bindSeg('margin','margin',parseFloat);
 bindSeg('textAlign','align');
@@ -461,6 +484,7 @@ bindSeg('wmPos','wmPos');
 bindSeg('videoSecs','videoSecs',parseFloat,()=>{});
 bindSeg('format','format', v=> v==='auto'?'auto':parseFloat(v));
 bindSeg('sliceGrid','slice');
+bindSeg('gridLayout','gridLayout');
 bindSeg('modetabs','mode',v=>v,()=>{ updateImgCtrl(); draw(); });
 
 // watermark opacity
@@ -491,10 +515,10 @@ function renderWorks(){
   });
   const add=document.createElement('div'); add.className='wk add'; add.textContent='+'; add.onclick=addWork; worksEl.appendChild(add);
 }
-function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
+function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0},cut:false,cutTol:36}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function removeWork(i){ const rid=S.works[i].id; delete _images[rid]; idbDel(rid); S.works.splice(i,1); if(!S.works.length){ addWork(); return; } if(S.current>=S.works.length)S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function selectWork(i){ S.current=i; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
-function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; fillAdj(); }
+function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; fillAdj(); updateCutUI(); }
 
 // ---------------- image adjustment sliders ----------------
 const ADJ=[['aEx','ex','vEx'],['aBr','br','vBr'],['aCt','ct','vCt'],['aSa','sa','vSa'],['aTp','tp','vTp']];
@@ -525,6 +549,13 @@ document.getElementById('applyAll').onclick=()=>{ const a={...(cur().adj||{})}, 
   S.works.forEach(w=>{ w.adj={...a}; if(w.tx)w.tx.rot=rot; }); save(); draw();
   const b=document.getElementById('applyAll'); b.textContent=t('appliedAll'); setTimeout(()=>b.textContent=t('applyAll'),1400); };
 
+// background removal controls
+const cutToggle=document.getElementById('cutToggle'), cutTolEl=document.getElementById('cutTol');
+let _cutTimer=null;
+cutToggle.onclick=async ()=>{ cur().cut=!cur().cut; save(); cutToggle.disabled=true; cutToggle.textContent='…'; await applyCut(cur()); cutToggle.disabled=false; updateCutUI(); draw(); };
+cutTolEl.addEventListener('input',()=>{ cur().cutTol=parseInt(cutTolEl.value); save(); if(cur().cut){ clearTimeout(_cutTimer); _cutTimer=setTimeout(async()=>{ await applyCut(cur()); draw(); },180); } });
+function updateCutUI(){ const on=!!cur().cut; cutToggle.textContent = on? t('cutUndo') : t('cutBtn'); cutToggle.style.background=on?'var(--ink)':''; cutToggle.style.color=on?'#fff':''; cutTolEl.value=cur().cutTol||36; }
+
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
 ['sign','seriesTitle','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
 
@@ -536,7 +567,7 @@ file.onchange=e=>loadFile(e.target.files[0]);
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
 drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
 function loadFile(f){ if(!f||!f.type.startsWith('image/'))return; const r=new FileReader();
-  r.onload=()=>{ const data=r.result; const id=cur().id; cur().tx={s:1,x:0,y:0}; const im=new Image(); im.onload=()=>{ _images[id]=im; idbPut(id,data); renderWorks(); updateImgCtrl(); draw(); buildCaption(); }; im.src=data; }; r.readAsDataURL(f); }
+  r.onload=()=>{ const data=r.result; const id=cur().id; cur().tx={s:1,x:0,y:0,rot:0}; cur().cut=false; delete _cut[id]; const im=new Image(); im.onload=()=>{ _images[id]=im; idbPut(id,data); renderWorks(); updateImgCtrl(); updateCutUI(); draw(); buildCaption(); }; im.src=data; }; r.readAsDataURL(f); }
 
 // ---------------- helpers ----------------
 function fmtDate(d){ if(!d)return''; const[y,m,dd]=d.split('-');
@@ -551,6 +582,30 @@ function wrap(text,maxW){ const out=[]; for(const para of text.split(/\n/)){ if(
   if(line.trim())out.push(line.trimEnd()); } return out; }
 function contain(iw,ih,bw,bh){ const s=Math.min(bw/iw,bh/ih); return {w:iw*s,h:ih*s}; }
 function worksWithImg(){ return S.works.filter(w=>_images[w.id]); }
+
+// ---------------- background removal (lightweight: flood-fill the edge-connected background) ----------------
+const _cut={}; // id -> cut-out Image (transparent background), cached in memory
+function imgOf(w){ return (w.cut && _cut[w.id]) ? _cut[w.id] : _images[w.id]; }
+function computeCut(im, tol){
+  const maxd=1600, sc=Math.min(1, maxd/Math.max(im.width,im.height));
+  const W=Math.max(1,Math.round(im.width*sc)), H=Math.max(1,Math.round(im.height*sc));
+  const c=document.createElement('canvas'); c.width=W; c.height=H;
+  const g=c.getContext('2d',{willReadFrequently:true}); g.drawImage(im,0,0,W,H);
+  const id=g.getImageData(0,0,W,H), d=id.data;
+  let sr=0,sg=0,sb=0,n=0; const acc=p=>{const i=p*4;sr+=d[i];sg+=d[i+1];sb+=d[i+2];n++;};
+  for(let x=0;x<W;x++){acc(x);acc((H-1)*W+x);} for(let y=0;y<H;y++){acc(y*W);acc(y*W+W-1);}
+  sr/=n; sg/=n; sb/=n;
+  const t2=tol*tol, vis=new Uint8Array(W*H), stack=new Int32Array(W*H); let sp=0;
+  const consider=p=>{ if(vis[p])return; vis[p]=1; const i=p*4, dr=d[i]-sr, dg=d[i+1]-sg, db=d[i+2]-sb; if(dr*dr+dg*dg+db*db<=t2){ d[i+3]=0; stack[sp++]=p; } };
+  for(let x=0;x<W;x++){ consider(x); consider((H-1)*W+x); } for(let y=0;y<H;y++){ consider(y*W); consider(y*W+W-1); }
+  while(sp){ const p=stack[--sp], x=p%W, y=(p/W)|0; if(x+1<W)consider(p+1); if(x>0)consider(p-1); if(y+1<H)consider(p+W); if(y>0)consider(p-W); }
+  g.putImageData(id,0,0); return c.toDataURL('image/png');
+}
+async function applyCut(w){
+  const im=_images[w.id]; if(!im){ return; }
+  if(!w.cut){ delete _cut[w.id]; return; }
+  try{ _cut[w.id]=await loadImg(computeCut(im, w.cutTol||36)); }catch(e){ console.warn('cut',e); }
+}
 function clampTx(tx){ const m=(tx.s-1)/2; tx.x=Math.max(-m,Math.min(m,tx.x)); tx.y=Math.max(-m,Math.min(m,tx.y)); }
 function ideaFont(size){ const fam=S.titleFont; const it=fam.includes('Poppins')?'italic ':'italic '; return `${it}400 ${size}px ${fam}`; }
 
@@ -613,7 +668,7 @@ let _lay=null, _objs=null, _wmBox=null;
 function drawSingle(g, work){
   const W=1080, A=accentOn(), T=inkSet(), alignC=S.align==='center', FAM=S.titleFont;
   const M=Math.round(W*S.margin), artX=M, artW=W-2*M;
-  const im=_images[work.id]; const imgAR=im?im.width/im.height:0.8;
+  const im=imgOf(work); const imgAR=im?im.width/im.height:0.8;
   const Ts=Math.round(W*0.0335), Is=Math.round(W*0.023), Sg=Math.round(W*0.058), lineH=Math.round(Is*1.6);
   g.font=ideaFont(Is);
   const ideaLines = work.idea ? wrap(work.idea,artW) : [];
@@ -660,7 +715,9 @@ function drawGrid(g){
   const W=1080, A=accentOn(), T=inkSet(), FAM=S.titleFont, WI=worksWithImg();
   const pad=Math.round(W*0.052), gap=Math.round(W*0.03);
   const n=Math.max(WI.length,1);
-  const cols = n<=1?1 : n<=4?2 : 3, rows=Math.ceil(n/cols);
+  const gl=S.gridLayout||'auto';
+  let cols = gl==='auto' ? (n<=1?1 : n<=4?2 : 3) : gl==='row' ? n : Math.min(n, parseInt(gl));
+  const rows=Math.ceil(n/cols);
   const cellW=Math.round((W-2*pad-(cols-1)*gap)/cols), artBox=cellW;
   const tH=Math.round(W*0.034), cellH=artBox+tH;
   const headH = S.seriesTitle?Math.round(W*0.075):0, footH = S.sign?Math.round(W*0.085):0;
@@ -670,7 +727,7 @@ function drawGrid(g){
   if(S.seriesTitle){ g.fillStyle=T.ink; g.font=`500 ${Math.round(W*0.04)}px ${FAM}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(S.seriesTitle,W/2,pad+headH*0.42); }
   WI.forEach((w,i)=>{ const r=Math.floor(i/cols), c=i%cols;
     const x=pad+c*(cellW+gap), y=top+r*(cellH+gap);
-    const im=_images[w.id]; const {w:dw,h:dh}=contain(im.width,im.height,cellW,artBox);
+    const im=imgOf(w); const {w:dw,h:dh}=contain(im.width,im.height,cellW,artBox);
     const dx=x+(cellW-dw)/2, dy=y+(artBox-dh)/2;
     drawImgAdj(g,im,dx,dy,dw,dh,w.adj); drawWatermark(g,dx,dy,dw,dh);
     g.strokeStyle=T.key; g.lineWidth=1.5; g.strokeRect(dx+.75,dy+.75,dw-1.5,dh-1.5);
@@ -684,7 +741,7 @@ function drawGrid(g){
 // ---------------- video frame render ----------------
 function drawVideoFrame(g,W,H,work){
   const A=accentOn(), T=inkSet(), FAM=S.titleFont, M=Math.round(W*0.085);
-  const im=_images[work.id]; if(!im)return;
+  const im=imgOf(work); if(!im)return;
   const Ts=Math.round(W*0.04), Is=Math.round(W*0.026), Sg=Math.round(W*0.07), lineH=Math.round(Is*1.55);
   g.font=ideaFont(Is);
   const ideaLines = work.idea?wrap(work.idea,W-2*M):[];
@@ -712,7 +769,7 @@ function draw(){ if(S.mode==='grid') drawGrid(ctx); else if(S.mode==='slice') dr
 function sliceDims(){ const p=(S.slice||'3x3').split('x').map(Number); return [p[0]||3, p[1]||3]; }
 function renderSliceBase(g,W,H,work){
   g.fillStyle=S.bg; g.fillRect(0,0,W,H);
-  const im=_images[work.id]; if(!im) return;
+  const im=imgOf(work); if(!im) return;
   const s=Math.max(W/im.width,H/im.height), dw=im.width*s, dh=im.height*s, dx=(W-dw)/2, dy=(H-dh)/2;
   g.save(); g.beginPath(); g.rect(0,0,W,H); g.clip();
   g.filter=filterStr(work.adj); g.drawImage(im,dx,dy,dw,dh); g.filter='none';
@@ -775,6 +832,7 @@ function updateImgCtrl(){
   const show = single && _images[cur().id];
   document.getElementById('imgctrl').style.display = show?'flex':'none';
   document.getElementById('formatRow').style.display = single?'flex':'none';
+  document.getElementById('gridRow').style.display = S.mode==='grid'?'flex':'none';
   document.getElementById('exportArea').style.display = slice?'none':'';
   document.getElementById('sliceArea').style.display = slice?'':'none';
   cv.classList.toggle('pan', !!show);
@@ -932,6 +990,7 @@ function init(){
   document.querySelectorAll('#videoSecs button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.s)===S.videoSecs));
   document.querySelectorAll('#format button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='auto'?'auto':parseFloat(b.dataset.r))===S.format));
   document.querySelectorAll('#sliceGrid button').forEach(b=>b.classList.toggle('on',b.dataset.g===S.slice));
+  document.querySelectorAll('#gridLayout button').forEach(b=>b.classList.toggle('on',b.dataset.gl===S.gridLayout));
   document.querySelectorAll('#modetabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
   syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); applyLang(); draw();
   restoreImages();
@@ -939,6 +998,7 @@ function init(){
 async function restoreImages(){
   const stored=await idbGetAll(); let any=false;
   for(const w of S.works){ if(stored[w.id]){ const im=await loadImg(stored[w.id]); if(im){ _images[w.id]=im; any=true; } } }
+  for(const w of S.works){ if(w.cut && _images[w.id]) await applyCut(w); }
   if(any){ renderWorks(); updateImgCtrl(); draw(); buildCaption(); }
 }
 // register service worker (only works over http/https, e.g. the deployed site — harmless when opened as a local file)

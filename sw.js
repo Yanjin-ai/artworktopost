@@ -1,5 +1,5 @@
-// Service worker: offline app shell + runtime cache (so the tool works without a connection)
-const CACHE = 'artworkpost-v1';
+// Service worker: offline-capable, but always prefer fresh content when online.
+const CACHE = 'artworkpost-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -11,11 +11,18 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  e.respondWith(
-    caches.match(req).then(hit => hit || fetch(req).then(resp => {
-      const copy = resp.clone();
-      caches.open(CACHE).then(c => c.put(req, copy)).catch(()=>{});
+  const isDoc = req.mode === 'navigate' || req.destination === 'document';
+  if (isDoc) {
+    // network-first: get updates immediately, fall back to cache offline
+    e.respondWith(fetch(req).then(resp => {
+      const copy = resp.clone(); caches.open(CACHE).then(c => c.put(req, copy)).catch(()=>{});
       return resp;
-    }).catch(() => caches.match('./index.html')))
-  );
+    }).catch(() => caches.match(req).then(r => r || caches.match('./index.html'))));
+    return;
+  }
+  // other assets: cache-first (fonts, icons)
+  e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(resp => {
+    const copy = resp.clone(); caches.open(CACHE).then(c => c.put(req, copy)).catch(()=>{});
+    return resp;
+  }).catch(() => caches.match('./index.html'))));
 });

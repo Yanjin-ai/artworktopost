@@ -256,6 +256,7 @@
     <div class="modetabs" id="modetabs">
       <button data-mode="single" class="on" data-i18n="modeSingle">Single</button>
       <button data-mode="grid" data-i18n="modeGrid">Series grid</button>
+      <button data-mode="slice" data-i18n="modeSlice">Mural slice</button>
     </div>
     <div id="formatRow" style="display:flex; align-items:center; gap:10px; width:100%; max-width:430px;">
       <span style="font-size:12px;color:var(--soft);white-space:nowrap;" data-i18n="lblFormat">Format</span>
@@ -272,7 +273,7 @@
       <span>🔍</span><input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
       <button id="resetPos" data-i18n="resetPos">Reset</button>
     </div>
-    <div style="width:100%; max-width:430px;">
+    <div id="exportArea" style="width:100%; max-width:430px;">
       <button class="btn ig" id="shareIg" data-i18n="share">📤 Share to Instagram</button>
       <button class="btn primary" id="exportPng" style="margin-top:10px;" data-i18n="exportPng">⬇ Export PNG</button>
       <div class="btnrow">
@@ -284,6 +285,18 @@
         </div>
       </div>
       <button class="btn line" id="exportVideo" style="margin-top:10px;" data-i18n="exportVideo">🎬 Export slideshow (mp4)</button>
+    </div>
+    <div id="sliceArea" style="display:none; width:100%; max-width:430px;">
+      <label data-i18n="lblGrid" style="margin-bottom:7px;">Grid</label>
+      <div class="seg" id="sliceGrid">
+        <button data-g="3x3" class="on">3×3</button>
+        <button data-g="3x1">3×1</button>
+        <button data-g="1x3">1×3</button>
+        <button data-g="3x2">3×2</button>
+        <button data-g="2x2">2×2</button>
+      </div>
+      <button class="btn primary" id="exportTiles" style="margin-top:12px;" data-i18n="sliceTiles">✂️ Export tiles (zip)</button>
+      <p class="hint" style="margin-top:8px;" data-i18n="sliceNote">Tiles are numbered in upload order — post-01 first.</p>
     </div>
     <p class="hint" id="hint"></p>
   </div>
@@ -298,7 +311,8 @@ const LANG = {
     mTight:'Tight', mStd:'Std', mRoomy:'Roomy', aLeft:'Left', aCenter:'Center',
     secScreen:'Background & watermark', lblBg:'Background', lblWm:'Watermark text', lblWmPos:'Position', lblWmOp:'Opacity',
     secCaption:'Caption / hashtags', lblSeries:'Series title (for grid / video)', lblTags:'Hashtags #', lblCaptionPreview:'Caption preview', copyCap:'Copy caption', copied:'✓ Copied',
-    modeSingle:'Single', modeGrid:'Series grid', share:'📤 Share to Instagram', exportPng:'⬇ Export PNG', exportVideo:'🎬 Export slideshow (mp4)', resetPos:'Reset', lblFormat:'Format',
+    modeSingle:'Single', modeGrid:'Series grid', modeSlice:'Mural slice', share:'📤 Share to Instagram', exportPng:'⬇ Export PNG', exportVideo:'🎬 Export slideshow (mp4)', resetPos:'Reset', lblFormat:'Format',
+    lblGrid:'Grid', sliceTiles:'✂️ Export tiles (zip)', sliceNote:'Tiles are numbered in upload order — post-01 first.', sliceDone:'✓ Tiles ready',
     s2:'2s', s3:'2.8s', s4:'4s', untitled:'Untitled', uploadHere:'Upload your artwork', play:'Preview', stop:'Stop',
     hint:'Local HTML file — double-click to use, no deployment. Drag the artwork on the canvas to reposition, scroll / slider to zoom. Images & settings saved locally. On phone, “Share” sends image + caption straight to Instagram.',
     generating:'Generating…', needImg:'Please upload at least one work first', videoDone:'✓ Video ready',
@@ -311,7 +325,8 @@ const LANG = {
     mTight:'紧凑', mStd:'标准', mRoomy:'宽松', aLeft:'左', aCenter:'中',
     secScreen:'背景 & 水印', lblBg:'背景色', lblWm:'水印文字', lblWmPos:'位置', lblWmOp:'透明度',
     secCaption:'发布文案 / 话题标签', lblSeries:'系列标题（用于合集 / 视频）', lblTags:'话题标签 #', lblCaptionPreview:'文案预览', copyCap:'复制文案', copied:'✓ 已复制',
-    modeSingle:'单幅', modeGrid:'系列合集', share:'📤 分享到 Instagram', exportPng:'⬇ 导出图片 PNG', exportVideo:'🎬 导出幻灯片视频 (mp4)', resetPos:'重置', lblFormat:'画幅',
+    modeSingle:'单幅', modeGrid:'系列合集', modeSlice:'九宫格切图', share:'📤 分享到 Instagram', exportPng:'⬇ 导出图片 PNG', exportVideo:'🎬 导出幻灯片视频 (mp4)', resetPos:'重置', lblFormat:'画幅',
+    lblGrid:'网格', sliceTiles:'✂️ 导出切片 (zip)', sliceNote:'切片已按发布顺序编号 —— 先发 post-01。', sliceDone:'✓ 切片已生成',
     s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'无题', uploadHere:'上传你的作品', play:'预览', stop:'停止',
     hint:'本地网页文件，双击即用，无需部署。可在画布上拖动作品调整位置，滚轮/滑杆缩放。图片与设置本地保存。手机上点“分享”可把图片+文案直接发到 Instagram。',
     generating:'生成中…', needImg:'请先上传至少一幅作品', videoDone:'✓ 视频已生成',
@@ -324,7 +339,8 @@ const LANG = {
     mTight:'狭い', mStd:'標準', mRoomy:'広い', aLeft:'左', aCenter:'中央',
     secScreen:'背景 & 透かし', lblBg:'背景色', lblWm:'透かし文字', lblWmPos:'位置', lblWmOp:'不透明度',
     secCaption:'投稿文 / ハッシュタグ', lblSeries:'シリーズ名（合集 / 動画用）', lblTags:'ハッシュタグ #', lblCaptionPreview:'投稿文プレビュー', copyCap:'投稿文をコピー', copied:'✓ コピー済み',
-    modeSingle:'1枚', modeGrid:'シリーズ合集', share:'📤 Instagram で共有', exportPng:'⬇ 画像を PNG 書き出し', exportVideo:'🎬 スライドショー書き出し (mp4)', resetPos:'リセット', lblFormat:'画面比率',
+    modeSingle:'1枚', modeGrid:'シリーズ合集', modeSlice:'グリッド分割', share:'📤 Instagram で共有', exportPng:'⬇ 画像を PNG 書き出し', exportVideo:'🎬 スライドショー書き出し (mp4)', resetPos:'リセット', lblFormat:'画面比率',
+    lblGrid:'グリッド', sliceTiles:'✂️ 分割を書き出し (zip)', sliceNote:'タイルは投稿順に番号付け — post-01 から投稿。', sliceDone:'✓ 分割完了',
     s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'無題', uploadHere:'作品をアップロード', play:'プレビュー', stop:'停止',
     hint:'ローカルHTMLファイル。ダブルクリックで使え、デプロイ不要。キャンバス上で作品をドラッグして位置調整、ホイール/スライダーで拡大。画像と設定はローカル保存。スマホでは「共有」で画像＋文を Instagram へ直接送れます。',
     generating:'生成中…', needImg:'先に作品を1枚以上アップロードしてください', videoDone:'✓ 動画を作成しました',
@@ -337,7 +353,8 @@ const LANG = {
     mTight:'좁게', mStd:'표준', mRoomy:'넓게', aLeft:'왼쪽', aCenter:'가운데',
     secScreen:'배경 & 워터마크', lblBg:'배경색', lblWm:'워터마크 문구', lblWmPos:'위치', lblWmOp:'투명도',
     secCaption:'캡션 / 해시태그', lblSeries:'시리즈 제목 (그리드 / 영상용)', lblTags:'해시태그 #', lblCaptionPreview:'캡션 미리보기', copyCap:'캡션 복사', copied:'✓ 복사됨',
-    modeSingle:'단일', modeGrid:'시리즈 그리드', share:'📤 인스타그램에 공유', exportPng:'⬇ PNG 내보내기', exportVideo:'🎬 슬라이드쇼 내보내기 (mp4)', resetPos:'초기화', lblFormat:'비율',
+    modeSingle:'단일', modeGrid:'시리즈 그리드', modeSlice:'그리드 분할', share:'📤 인스타그램에 공유', exportPng:'⬇ PNG 내보내기', exportVideo:'🎬 슬라이드쇼 내보내기 (mp4)', resetPos:'초기화', lblFormat:'비율',
+    lblGrid:'그리드', sliceTiles:'✂️ 분할 내보내기 (zip)', sliceNote:'타일은 업로드 순서로 번호 — post-01 부터 게시.', sliceDone:'✓ 분할 완료',
     s2:'2초', s3:'2.8초', s4:'4초', untitled:'무제', uploadHere:'작품을 업로드하세요', play:'미리보기', stop:'정지',
     hint:'로컬 HTML 파일 — 더블클릭으로 실행, 배포 불필요. 캔버스에서 작품을 드래그해 위치 조정, 스크롤/슬라이더로 확대. 이미지와 설정은 로컬 저장. 모바일에서 “공유”로 이미지+캡션을 인스타그램에 바로 보낼 수 있습니다.',
     generating:'생성 중…', needImg:'먼저 작품을 한 점 이상 업로드하세요', videoDone:'✓ 영상 완료',
@@ -350,7 +367,8 @@ const LANG = {
     mTight:'Justo', mStd:'Est.', mRoomy:'Amplio', aLeft:'Izq.', aCenter:'Centro',
     secScreen:'Fondo y marca de agua', lblBg:'Color de fondo', lblWm:'Texto de marca de agua', lblWmPos:'Posición', lblWmOp:'Opacidad',
     secCaption:'Descripción / hashtags', lblSeries:'Título de serie (para grid / vídeo)', lblTags:'Hashtags #', lblCaptionPreview:'Vista previa', copyCap:'Copiar texto', copied:'✓ Copiado',
-    modeSingle:'Única', modeGrid:'Grid de serie', share:'📤 Compartir en Instagram', exportPng:'⬇ Exportar PNG', exportVideo:'🎬 Exportar pase (mp4)', resetPos:'Reiniciar', lblFormat:'Formato',
+    modeSingle:'Única', modeGrid:'Grid de serie', modeSlice:'Mural', share:'📤 Compartir en Instagram', exportPng:'⬇ Exportar PNG', exportVideo:'🎬 Exportar pase (mp4)', resetPos:'Reiniciar', lblFormat:'Formato',
+    lblGrid:'Cuadrícula', sliceTiles:'✂️ Exportar piezas (zip)', sliceNote:'Las piezas van numeradas por orden — publica post-01 primero.', sliceDone:'✓ Piezas listas',
     s2:'2s', s3:'2.8s', s4:'4s', untitled:'Sin título', uploadHere:'Sube tu obra', play:'Vista previa', stop:'Parar',
     hint:'Archivo HTML local — doble clic para usar, sin despliegue. Arrastra la obra en el lienzo para recolocar, rueda/control para acercar. Imágenes y ajustes guardados localmente. En el móvil, “Compartir” envía imagen + texto directo a Instagram.',
     generating:'Generando…', needImg:'Sube al menos una obra primero', videoDone:'✓ Vídeo listo',
@@ -383,7 +401,7 @@ const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
 const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
-  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8, format:'auto',
+  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8, format:'auto', slice:'3x3',
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
 if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
@@ -433,7 +451,7 @@ buildSwatches(bgEl, BG_PALETTE, 'bg', true);
 
 // ---------------- segments ----------------
 function bindSeg(id,key,parse=v=>v,cb){ const box=document.getElementById(id);
-  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r;
+  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r??b.dataset.g;
     b.onclick=()=>{ box.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S[key]=parse(v); save(); (cb||draw)(); }; }); }
 bindSeg('margin','margin',parseFloat);
 bindSeg('textAlign','align');
@@ -442,6 +460,7 @@ bindSeg('titleFont','titleFont');
 bindSeg('wmPos','wmPos');
 bindSeg('videoSecs','videoSecs',parseFloat,()=>{});
 bindSeg('format','format', v=> v==='auto'?'auto':parseFloat(v));
+bindSeg('sliceGrid','slice');
 bindSeg('modetabs','mode',v=>v,()=>{ updateImgCtrl(); draw(); });
 
 // watermark opacity
@@ -687,14 +706,77 @@ function drawVideoFrame(g,W,H,work){
   g.textBaseline='alphabetic'; g.textAlign='left';
 }
 
-function draw(){ if(S.mode==='grid') drawGrid(ctx); else drawSingle(ctx, cur()); }
+function draw(){ if(S.mode==='grid') drawGrid(ctx); else if(S.mode==='slice') drawSlice(ctx); else drawSingle(ctx, cur()); }
+
+// ---------------- mural slice (split one artwork into tiles for the IG profile grid) ----------------
+function sliceDims(){ const p=(S.slice||'3x3').split('x').map(Number); return [p[0]||3, p[1]||3]; }
+function renderSliceBase(g,W,H,work){
+  g.fillStyle=S.bg; g.fillRect(0,0,W,H);
+  const im=_images[work.id]; if(!im) return;
+  const s=Math.max(W/im.width,H/im.height), dw=im.width*s, dh=im.height*s, dx=(W-dw)/2, dy=(H-dh)/2;
+  g.save(); g.beginPath(); g.rect(0,0,W,H); g.clip();
+  g.filter=filterStr(work.adj); g.drawImage(im,dx,dy,dw,dh); g.filter='none';
+  applyOverlays(g,0,0,W,H,work.adj); g.restore();
+}
+function drawSlice(g){
+  const [cols,rows]=sliceDims(), cell=Math.round(1080/cols), W=cols*cell, H=rows*cell;
+  cv.width=W; cv.height=H; _objs=null;
+  if(!_images[cur().id]){ g.fillStyle=S.bg; g.fillRect(0,0,W,H); g.fillStyle=inkSet().soft; g.font="500 26px 'Fredoka',sans-serif"; g.textAlign='center'; g.textBaseline='middle'; g.fillText(t('uploadHere'),W/2,H/2); g.textAlign='left'; g.textBaseline='alphabetic'; return; }
+  renderSliceBase(g,W,H,cur());
+  g.save(); g.lineWidth=Math.max(2,cell*0.012);
+  g.strokeStyle='rgba(255,255,255,.92)';
+  for(let c=1;c<cols;c++){ g.beginPath(); g.moveTo(c*cell,0); g.lineTo(c*cell,H); g.stroke(); }
+  for(let r=1;r<rows;r++){ g.beginPath(); g.moveTo(0,r*cell); g.lineTo(W,r*cell); g.stroke(); }
+  g.restore();
+}
+// minimal store-method ZIP builder (PNGs are already compressed, so no deflate needed)
+function crc32b(buf){ let c=~0; for(let i=0;i<buf.length;i++){ c^=buf[i]; for(let k=0;k<8;k++) c=(c>>>1)^(0xEDB88320&-(c&1)); } return (~c)>>>0; }
+function zipStore(files){
+  const enc=new TextEncoder(), chunks=[], central=[]; let offset=0;
+  for(const f of files){ const name=enc.encode(f.name), data=f.data, crc=crc32b(data);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint32(14,crc,true); lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,name.length,true);
+    chunks.push(new Uint8Array(lh.buffer),name,data);
+    const cd=new DataView(new ArrayBuffer(46));
+    cd.setUint32(0,0x02014b50,true); cd.setUint16(4,20,true); cd.setUint16(6,20,true); cd.setUint32(16,crc,true); cd.setUint32(20,data.length,true); cd.setUint32(24,data.length,true); cd.setUint16(28,name.length,true); cd.setUint32(42,offset,true);
+    central.push({head:new Uint8Array(cd.buffer),name}); offset+=30+name.length+data.length;
+  }
+  const cdStart=offset; let cdSize=0; const cdChunks=[];
+  for(const c of central){ cdChunks.push(c.head,c.name); cdSize+=c.head.length+c.name.length; }
+  const eocd=new DataView(new ArrayBuffer(22));
+  eocd.setUint32(0,0x06054b50,true); eocd.setUint16(8,files.length,true); eocd.setUint16(10,files.length,true); eocd.setUint32(12,cdSize,true); eocd.setUint32(16,cdStart,true);
+  const all=[...chunks,...cdChunks,new Uint8Array(eocd.buffer)]; let total=0; all.forEach(u=>total+=u.length);
+  const out=new Uint8Array(total); let p=0; all.forEach(u=>{ out.set(u,p); p+=u.length; }); return out;
+}
+const tilesBtn=document.getElementById('exportTiles');
+tilesBtn.onclick=async ()=>{
+  if(!_images[cur().id]){ alert(t('needImg')); return; }
+  const lbl=tilesBtn.textContent; tilesBtn.disabled=true; tilesBtn.textContent=t('generating');
+  try{
+    const [cols,rows]=sliceDims(), cell=Math.round(1080/cols), W=cols*cell, H=rows*cell;
+    const full=document.createElement('canvas'); full.width=W; full.height=H; renderSliceBase(full.getContext('2d'),W,H,cur());
+    const files=[]; let idx=1;
+    for(let r=rows-1;r>=0;r--) for(let c=cols-1;c>=0;c--){          // reverse reading order = IG upload order
+      const tc=document.createElement('canvas'); tc.width=cell; tc.height=cell; tc.getContext('2d').drawImage(full,c*cell,r*cell,cell,cell,0,0,cell,cell);
+      const blob=await new Promise(res=>tc.toBlob(res,'image/png'));
+      files.push({name:`post-${String(idx).padStart(2,'0')}_r${r+1}c${c+1}.png`, data:new Uint8Array(await blob.arrayBuffer())}); idx++;
+    }
+    files.push({name:'README.txt', data:new TextEncoder().encode('Upload to Instagram in filename order (post-01 first, then post-02 …). Your profile grid will assemble into the full image.')});
+    const zip=zipStore(files); const a=document.createElement('a');
+    a.download=`${(cur().title||'mural').replace(/\s+/g,'_')}_${cols}x${rows}.zip`; a.href=URL.createObjectURL(new Blob([zip],{type:'application/zip'})); a.click();
+    tilesBtn.textContent=t('sliceDone'); setTimeout(()=>tilesBtn.textContent=lbl,1800);
+  }catch(e){ console.error(e); alert('Slice error: '+e.message); tilesBtn.textContent=lbl; }
+  tilesBtn.disabled=false;
+};
 
 // ---------------- drag / zoom on canvas ----------------
 function updateImgCtrl(){
-  const single = S.mode!=='grid';
+  const single = S.mode==='single', slice = S.mode==='slice';
   const show = single && _images[cur().id];
   document.getElementById('imgctrl').style.display = show?'flex':'none';
   document.getElementById('formatRow').style.display = single?'flex':'none';
+  document.getElementById('exportArea').style.display = slice?'none':'';
+  document.getElementById('sliceArea').style.display = slice?'':'none';
   cv.classList.toggle('pan', !!show);
   if(show) document.getElementById('zoom').value = txOf(cur()).s;
 }
@@ -849,6 +931,7 @@ function init(){
   document.querySelectorAll('#wmPos button').forEach(b=>b.classList.toggle('on',b.dataset.p===S.wmPos));
   document.querySelectorAll('#videoSecs button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.s)===S.videoSecs));
   document.querySelectorAll('#format button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='auto'?'auto':parseFloat(b.dataset.r))===S.format));
+  document.querySelectorAll('#sliceGrid button').forEach(b=>b.classList.toggle('on',b.dataset.g===S.slice));
   document.querySelectorAll('#modetabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
   syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); applyLang(); draw();
   restoreImages();

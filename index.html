@@ -243,6 +243,8 @@
         </div>
         <p class="hint" style="text-align:left; margin-top:6px;" data-i18n="cutNote">Best for artwork shot on a plain background. Drag the slider to fine-tune.</p>
       </div>
+      <div class="adjrow" style="border-top:1px solid var(--line); padding-top:11px;"><label><span data-i18n="lblPerspV">Perspective ↕</span><span class="av" id="vKv">0</span></label><input type="range" id="aKv" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="lblPerspH">Perspective ↔</span><span class="av" id="vKh">0</span></label><input type="range" id="aKh" min="-100" max="100" value="0"></div>
       <div class="btnrow" style="margin-top:4px;">
         <button class="btn line" id="applyAll" style="flex:1;" data-i18n="applyAll">Apply to all</button>
         <button class="btn line" id="adjReset" style="flex:1;" data-i18n="adjReset">Reset</button>
@@ -336,7 +338,7 @@ const LANG = {
     generating:'Generating…', needImg:'Please upload at least one work first', videoDone:'✓ Video ready',
     shareHint:'Image saved & caption copied. Open Instagram and create a post — paste the caption.', shared:'✓ Shared',
     secAdjust:'Adjust image (current work)', adjExposure:'Exposure', adjBrightness:'Brightness', adjContrast:'Contrast', adjSaturation:'Saturation', adjTemp:'Warmth', adjStraighten:'Straighten', adjReset:'Reset', lblPresets:'One-tap looks', applyAll:'Apply to all', appliedAll:'✓ Applied to all',
-    lblCut:'Remove background', cutBtn:'Cut out', cutUndo:'Restore', cutNote:'Best for artwork shot on a plain background. Drag the slider to fine-tune.',
+    lblCut:'Remove background', cutBtn:'Cut out', cutUndo:'Restore', cutNote:'Best for artwork shot on a plain background. Drag the slider to fine-tune.', lblPerspV:'Perspective ↕', lblPerspH:'Perspective ↔',
     phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
   zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
     secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期',
@@ -351,7 +353,7 @@ const LANG = {
     generating:'生成中…', needImg:'请先上传至少一幅作品', videoDone:'✓ 视频已生成',
     shareHint:'图片已保存、文案已复制。打开 Instagram 发帖并粘贴文案即可。', shared:'✓ 已分享',
     secAdjust:'图像调整（当前作品）', adjExposure:'曝光', adjBrightness:'亮度', adjContrast:'对比度', adjSaturation:'饱和度', adjTemp:'色温', adjStraighten:'拉直', adjReset:'重置', lblPresets:'一键风格', applyAll:'套用到全部', appliedAll:'✓ 已套用全部',
-    lblCut:'抠背景', cutBtn:'抠图', cutUndo:'还原', cutNote:'适合纯色背景拍摄的作品；拖动滑杆微调容差。',
+    lblCut:'抠背景', cutBtn:'抠图', cutUndo:'还原', cutNote:'适合纯色背景拍摄的作品；拖动滑杆微调容差。', lblPerspV:'透视 ↕', lblPerspH:'透视 ↔',
     phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
   ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
     secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付',
@@ -366,7 +368,7 @@ const LANG = {
     generating:'生成中…', needImg:'先に作品を1枚以上アップロードしてください', videoDone:'✓ 動画を作成しました',
     shareHint:'画像を保存し、投稿文をコピーしました。Instagram で投稿し、文を貼り付けてください。', shared:'✓ 共有しました',
     secAdjust:'画像調整（現在の作品）', adjExposure:'露出', adjBrightness:'明るさ', adjContrast:'コントラスト', adjSaturation:'彩度', adjTemp:'色温', adjStraighten:'傾き補正', adjReset:'リセット', lblPresets:'ワンタップ', applyAll:'全作品に適用', appliedAll:'✓ 全部に適用',
-    lblCut:'背景を消す', cutBtn:'切り抜き', cutUndo:'元に戻す', cutNote:'無地背景で撮った作品向け。スライダーで微調整。',
+    lblCut:'背景を消す', cutBtn:'切り抜き', cutUndo:'元に戻す', cutNote:'無地背景で撮った作品向け。スライダーで微調整。', lblPerspV:'遠近 ↕', lblPerspH:'遠近 ↔',
     phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
   ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
     secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜',
@@ -381,7 +383,7 @@ const LANG = {
     generating:'생성 중…', needImg:'먼저 작품을 한 점 이상 업로드하세요', videoDone:'✓ 영상 완료',
     shareHint:'이미지 저장 및 캡션 복사 완료. 인스타그램에서 게시물을 만들고 캡션을 붙여넣으세요.', shared:'✓ 공유됨',
     secAdjust:'이미지 보정 (현재 작품)', adjExposure:'노출', adjBrightness:'밝기', adjContrast:'대비', adjSaturation:'채도', adjTemp:'색온도', adjStraighten:'수평 보정', adjReset:'초기화', lblPresets:'원탭 필터', applyAll:'전체 적용', appliedAll:'✓ 전체 적용됨',
-    lblCut:'배경 제거', cutBtn:'배경 제거', cutUndo:'되돌리기', cutNote:'단색 배경에서 촬영한 작품에 적합. 슬라이더로 미세 조정.',
+    lblCut:'배경 제거', cutBtn:'배경 제거', cutUndo:'되돌리기', cutNote:'단색 배경에서 촬영한 작품에 적합. 슬라이더로 미세 조정.', lblPerspV:'원근 ↕', lblPerspH:'원근 ↔',
     phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
   es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
     secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha',
@@ -396,7 +398,7 @@ const LANG = {
     generating:'Generando…', needImg:'Sube al menos una obra primero', videoDone:'✓ Vídeo listo',
     shareHint:'Imagen guardada y texto copiado. Abre Instagram, crea una publicación y pega el texto.', shared:'✓ Compartido',
     secAdjust:'Ajustar imagen (obra actual)', adjExposure:'Exposición', adjBrightness:'Brillo', adjContrast:'Contraste', adjSaturation:'Saturación', adjTemp:'Calidez', adjStraighten:'Enderezar', adjReset:'Restablecer', lblPresets:'Estilos rápidos', applyAll:'Aplicar a todas', appliedAll:'✓ Aplicado a todas',
-    lblCut:'Quitar fondo', cutBtn:'Recortar', cutUndo:'Restaurar', cutNote:'Ideal para obras sobre fondo liso. Ajusta con el deslizador.',
+    lblCut:'Quitar fondo', cutBtn:'Recortar', cutUndo:'Restaurar', cutNote:'Ideal para obras sobre fondo liso. Ajusta con el deslizador.', lblPerspV:'Perspectiva ↕', lblPerspH:'Perspectiva ↔',
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
 };
 const DEFAULT_TAGS = '#art #artwork #illustration #drawing #sketchbook #originalart #artistsoninstagram #contemporaryart';
@@ -428,7 +430,7 @@ const S = saved || {
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
 if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
-S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined) w.tx.rot=0; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; if(w.cut===undefined) w.cut=false; if(w.cutTol===undefined) w.cutTol=36; });
+S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined) w.tx.rot=0; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; if(w.cut===undefined) w.cut=false; if(w.cutTol===undefined) w.cutTol=36; if(!w.persp) w.persp={kh:0,kv:0}; });
 uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
 function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
@@ -515,7 +517,7 @@ function renderWorks(){
   });
   const add=document.createElement('div'); add.className='wk add'; add.textContent='+'; add.onclick=addWork; worksEl.appendChild(add);
 }
-function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0},cut:false,cutTol:36}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
+function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0},cut:false,cutTol:36,persp:{kh:0,kv:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function removeWork(i){ const rid=S.works[i].id; delete _images[rid]; idbDel(rid); S.works.splice(i,1); if(!S.works.length){ addWork(); return; } if(S.current>=S.works.length)S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function selectWork(i){ S.current=i; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; fillAdj(); updateCutUI(); }
@@ -552,9 +554,14 @@ document.getElementById('applyAll').onclick=()=>{ const a={...(cur().adj||{})}, 
 // background removal controls
 const cutToggle=document.getElementById('cutToggle'), cutTolEl=document.getElementById('cutTol');
 let _cutTimer=null;
-cutToggle.onclick=async ()=>{ cur().cut=!cur().cut; save(); cutToggle.disabled=true; cutToggle.textContent='…'; await applyCut(cur()); cutToggle.disabled=false; updateCutUI(); draw(); };
-cutTolEl.addEventListener('input',()=>{ cur().cutTol=parseInt(cutTolEl.value); save(); if(cur().cut){ clearTimeout(_cutTimer); _cutTimer=setTimeout(async()=>{ await applyCut(cur()); draw(); },180); } });
-function updateCutUI(){ const on=!!cur().cut; cutToggle.textContent = on? t('cutUndo') : t('cutBtn'); cutToggle.style.background=on?'var(--ink)':''; cutToggle.style.color=on?'#fff':''; cutTolEl.value=cur().cutTol||36; }
+cutToggle.onclick=async ()=>{ cur().cut=!cur().cut; save(); cutToggle.disabled=true; cutToggle.textContent='…'; await processImage(cur()); cutToggle.disabled=false; updateCutUI(); draw(); };
+cutTolEl.addEventListener('input',()=>{ cur().cutTol=parseInt(cutTolEl.value); save(); if(cur().cut){ clearTimeout(_cutTimer); _cutTimer=setTimeout(async()=>{ await processImage(cur()); draw(); },180); } });
+function updateCutUI(){ const on=!!cur().cut; cutToggle.textContent = on? t('cutUndo') : t('cutBtn'); cutToggle.style.background=on?'var(--ink)':''; cutToggle.style.color=on?'#fff':''; cutTolEl.value=cur().cutTol||36;
+  const ps=cur().persp||{kh:0,kv:0}; document.getElementById('aKh').value=ps.kh||0; document.getElementById('aKv').value=ps.kv||0; document.getElementById('vKh').textContent=ps.kh||0; document.getElementById('vKv').textContent=ps.kv||0; }
+// perspective sliders
+let _pTimer=null;
+function perspOf(){ if(!cur().persp)cur().persp={kh:0,kv:0}; return cur().persp; }
+[['aKh','kh','vKh'],['aKv','kv','vKv']].forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ perspOf()[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; save(); clearTimeout(_pTimer); _pTimer=setTimeout(async()=>{ await processImage(cur()); draw(); },200); }); });
 
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
 ['sign','seriesTitle','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
@@ -567,7 +574,7 @@ file.onchange=e=>loadFile(e.target.files[0]);
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
 drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
 function loadFile(f){ if(!f||!f.type.startsWith('image/'))return; const r=new FileReader();
-  r.onload=()=>{ const data=r.result; const id=cur().id; cur().tx={s:1,x:0,y:0,rot:0}; cur().cut=false; delete _cut[id]; const im=new Image(); im.onload=()=>{ _images[id]=im; idbPut(id,data); renderWorks(); updateImgCtrl(); updateCutUI(); draw(); buildCaption(); }; im.src=data; }; r.readAsDataURL(f); }
+  r.onload=()=>{ const data=r.result; const id=cur().id; cur().tx={s:1,x:0,y:0,rot:0}; cur().cut=false; cur().persp={kh:0,kv:0}; delete _proc[id]; const im=new Image(); im.onload=()=>{ _images[id]=im; idbPut(id,data); renderWorks(); updateImgCtrl(); updateCutUI(); draw(); buildCaption(); }; im.src=data; }; r.readAsDataURL(f); }
 
 // ---------------- helpers ----------------
 function fmtDate(d){ if(!d)return''; const[y,m,dd]=d.split('-');
@@ -583,14 +590,16 @@ function wrap(text,maxW){ const out=[]; for(const para of text.split(/\n/)){ if(
 function contain(iw,ih,bw,bh){ const s=Math.min(bw/iw,bh/ih); return {w:iw*s,h:ih*s}; }
 function worksWithImg(){ return S.works.filter(w=>_images[w.id]); }
 
-// ---------------- background removal (lightweight: flood-fill the edge-connected background) ----------------
-const _cut={}; // id -> cut-out Image (transparent background), cached in memory
-function imgOf(w){ return (w.cut && _cut[w.id]) ? _cut[w.id] : _images[w.id]; }
-function computeCut(im, tol){
-  const maxd=1600, sc=Math.min(1, maxd/Math.max(im.width,im.height));
+// ---------------- image processing pipeline: background removal + perspective ----------------
+const _proc={}; // id -> processed Image, cached in memory
+function hasPersp(w){ return w.persp && (w.persp.kh||w.persp.kv); }
+function needsProc(w){ return !!(w.cut || hasPersp(w)); }
+function imgOf(w){ return (needsProc(w) && _proc[w.id]) ? _proc[w.id] : _images[w.id]; }
+function baseCanvas(im){ const maxd=1600, sc=Math.min(1,maxd/Math.max(im.width,im.height));
   const W=Math.max(1,Math.round(im.width*sc)), H=Math.max(1,Math.round(im.height*sc));
-  const c=document.createElement('canvas'); c.width=W; c.height=H;
-  const g=c.getContext('2d',{willReadFrequently:true}); g.drawImage(im,0,0,W,H);
+  const c=document.createElement('canvas'); c.width=W; c.height=H; c.getContext('2d').drawImage(im,0,0,W,H); return c; }
+function cutToCanvas(im, tol){
+  const c=baseCanvas(im), W=c.width, H=c.height, g=c.getContext('2d',{willReadFrequently:true});
   const id=g.getImageData(0,0,W,H), d=id.data;
   let sr=0,sg=0,sb=0,n=0; const acc=p=>{const i=p*4;sr+=d[i];sg+=d[i+1];sb+=d[i+2];n++;};
   for(let x=0;x<W;x++){acc(x);acc((H-1)*W+x);} for(let y=0;y<H;y++){acc(y*W);acc(y*W+W-1);}
@@ -599,12 +608,45 @@ function computeCut(im, tol){
   const consider=p=>{ if(vis[p])return; vis[p]=1; const i=p*4, dr=d[i]-sr, dg=d[i+1]-sg, db=d[i+2]-sb; if(dr*dr+dg*dg+db*db<=t2){ d[i+3]=0; stack[sp++]=p; } };
   for(let x=0;x<W;x++){ consider(x); consider((H-1)*W+x); } for(let y=0;y<H;y++){ consider(y*W); consider(y*W+W-1); }
   while(sp){ const p=stack[--sp], x=p%W, y=(p/W)|0; if(x+1<W)consider(p+1); if(x>0)consider(p-1); if(y+1<H)consider(p+W); if(y>0)consider(p-W); }
-  g.putImageData(id,0,0); return c.toDataURL('image/png');
+  g.putImageData(id,0,0); return c;
 }
-async function applyCut(w){
-  const im=_images[w.id]; if(!im){ return; }
-  if(!w.cut){ delete _cut[w.id]; return; }
-  try{ _cut[w.id]=await loadImg(computeCut(im, w.cutTol||36)); }catch(e){ console.warn('cut',e); }
+// affine-map a source triangle onto a destination triangle (textured)
+function texTri(g,img,s,d){
+  g.save(); g.beginPath(); g.moveTo(d[0][0],d[0][1]); g.lineTo(d[1][0],d[1][1]); g.lineTo(d[2][0],d[2][1]); g.closePath(); g.clip();
+  const x0=s[0][0],y0=s[0][1],x1=s[1][0],y1=s[1][1],x2=s[2][0],y2=s[2][1];
+  const u0=d[0][0],v0=d[0][1],u1=d[1][0],v1=d[1][1],u2=d[2][0],v2=d[2][1];
+  const den=x0*(y2-y1)-x1*y2+x2*y1+(x1-x2)*y0; if(!den){g.restore();return;}
+  const a=-(y0*(u2-u1)-y1*u2+y2*u1+(y1-y2)*u0)/den;
+  const b=(y1*v2+y0*(v1-v2)-y2*v1+(y2-y1)*v0)/den;
+  const c2=(x0*(u2-u1)-x1*u2+x2*u1+(x1-x2)*u0)/den;
+  const dd=-(x1*v2+x0*(v1-v2)-x2*v1+(x2-x1)*v0)/den;
+  const e=(x0*(y2*u1-y1*u2)+y0*(x1*u2-x2*u1)+(x2*y1-x1*y2)*u0)/den;
+  const f=(x0*(y2*v1-y1*v2)+y0*(x1*v2-x2*v1)+(x2*y1-x1*y2)*v0)/den;
+  g.setTransform(a,b,c2,dd,e,f); g.drawImage(img,0,0); g.restore(); g.setTransform(1,0,0,1,0,0);
+}
+// keystone perspective via a triangle mesh (kh,kv in -1..1)
+function warpKeystone(src, kh, kv){
+  const W=src.width, H=src.height, out=document.createElement('canvas'); out.width=W; out.height=H; const g=out.getContext('2d');
+  const tIn=Math.max(0,kv)*W*0.22, bIn=Math.max(0,-kv)*W*0.22, lIn=Math.max(0,kh)*H*0.22, rIn=Math.max(0,-kh)*H*0.22;
+  const TL=[tIn,lIn], TR=[W-tIn,rIn], BR=[W-bIn,H-rIn], BL=[bIn,H-lIn];   // destination quad
+  const bilerp=(u,v)=>[ (1-v)*((1-u)*TL[0]+u*TR[0])+v*((1-u)*BL[0]+u*BR[0]), (1-v)*((1-u)*TL[1]+u*TR[1])+v*((1-u)*BL[1]+u*BR[1]) ];
+  const N=12;
+  for(let j=0;j<N;j++) for(let i=0;i<N;i++){
+    const u0=i/N,u1=(i+1)/N,v0=j/N,v1=(j+1)/N;
+    const s00=[u0*W,v0*H],s10=[u1*W,v0*H],s11=[u1*W,v1*H],s01=[u0*W,v1*H];
+    const d00=bilerp(u0,v0),d10=bilerp(u1,v0),d11=bilerp(u1,v1),d01=bilerp(u0,v1);
+    texTri(g,src,[s00,s10,s11],[d00,d10,d11]); texTri(g,src,[s00,s11,s01],[d00,d11,d01]);
+  }
+  return out;
+}
+async function processImage(w){
+  const base=_images[w.id]; if(!base){ delete _proc[w.id]; return; }
+  if(!needsProc(w)){ delete _proc[w.id]; return; }
+  try{
+    let c = w.cut ? cutToCanvas(base, w.cutTol||36) : baseCanvas(base);
+    if(hasPersp(w)) c = warpKeystone(c, (w.persp.kh||0)/100, (w.persp.kv||0)/100);
+    _proc[w.id]=await loadImg(c.toDataURL('image/png'));
+  }catch(e){ console.warn('process',e); }
 }
 function clampTx(tx){ const m=(tx.s-1)/2; tx.x=Math.max(-m,Math.min(m,tx.x)); tx.y=Math.max(-m,Math.min(m,tx.y)); }
 function ideaFont(size){ const fam=S.titleFont; const it=fam.includes('Poppins')?'italic ':'italic '; return `${it}400 ${size}px ${fam}`; }
@@ -998,7 +1040,7 @@ function init(){
 async function restoreImages(){
   const stored=await idbGetAll(); let any=false;
   for(const w of S.works){ if(stored[w.id]){ const im=await loadImg(stored[w.id]); if(im){ _images[w.id]=im; any=true; } } }
-  for(const w of S.works){ if(w.cut && _images[w.id]) await applyCut(w); }
+  for(const w of S.works){ if(needsProc(w) && _images[w.id]) await processImage(w); }
   if(any){ renderWorks(); updateImgCtrl(); draw(); buildCaption(); }
 }
 // register service worker (only works over http/https, e.g. the deployed site — harmless when opened as a local file)

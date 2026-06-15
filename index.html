@@ -435,6 +435,23 @@ uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
 function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
 function cur(){ return S.works[S.current]; }
+
+// ---------------- native (Capacitor) bridge: route exports through the iOS share sheet ----------------
+const CAPP = window.Capacitor;
+const IS_NATIVE = !!(CAPP && CAPP.isNativePlatform && CAPP.isNativePlatform());
+function blobToB64(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(blob); }); }
+async function deliver(blob, filename, caption){
+  if(IS_NATIVE && CAPP.Plugins && CAPP.Plugins.Filesystem && CAPP.Plugins.Share){
+    try{
+      const data=await blobToB64(blob);
+      const w=await CAPP.Plugins.Filesystem.writeFile({ path:filename, data, directory:'CACHE' });
+      await CAPP.Plugins.Share.share({ text:caption||'', url:w.uri, files:[w.uri] });
+      return true;
+    }catch(e){ if(e && /cancel|abort/i.test(e.message||e.name||'')) return true; console.warn('native share',e); }
+  }
+  const a=document.createElement('a'); a.download=filename; a.href=URL.createObjectURL(blob); a.click();
+  return false;
+}
 function txOf(w){ if(!w.tx)w.tx={s:1,x:0,y:0}; return w.tx; }
 
 // ---------------- color helpers (contrast text on any background) ----------------
@@ -861,8 +878,8 @@ tilesBtn.onclick=async ()=>{
       files.push({name:`post-${String(idx).padStart(2,'0')}_r${r+1}c${c+1}.png`, data:new Uint8Array(await blob.arrayBuffer())}); idx++;
     }
     files.push({name:'README.txt', data:new TextEncoder().encode('Upload to Instagram in filename order (post-01 first, then post-02 …). Your profile grid will assemble into the full image.')});
-    const zip=zipStore(files); const a=document.createElement('a');
-    a.download=`${(cur().title||'mural').replace(/\s+/g,'_')}_${cols}x${rows}.zip`; a.href=URL.createObjectURL(new Blob([zip],{type:'application/zip'})); a.click();
+    const zip=zipStore(files);
+    await deliver(new Blob([zip],{type:'application/zip'}), `${(cur().title||'mural').replace(/\s+/g,'_')}_${cols}x${rows}.zip`, '');
     tilesBtn.textContent=t('sliceDone'); setTimeout(()=>tilesBtn.textContent=lbl,1800);
   }catch(e){ console.error(e); alert('Slice error: '+e.message); tilesBtn.textContent=lbl; }
   tilesBtn.disabled=false;
@@ -937,9 +954,8 @@ document.getElementById('copyCap').onclick=async ()=>{ const cap=buildCaption();
 
 // ---------------- export PNG ----------------
 document.getElementById('exportPng').onclick=()=>{ draw();
-  cv.toBlob(b=>{ const a=document.createElement('a');
-    const base=(S.mode==='grid'?(S.seriesTitle||'series'):(cur().title||'artwork')).replace(/\s+/g,'_');
-    a.download=`${base}_${cur().date||'post'}.png`; a.href=URL.createObjectURL(b); a.click(); },'image/png'); };
+  cv.toBlob(b=>{ const base=(S.mode==='grid'?(S.seriesTitle||'series'):(cur().title||'artwork')).replace(/\s+/g,'_');
+    deliver(b, `${base}_${cur().date||'post'}.png`, IS_NATIVE?buildCaption():''); },'image/png'); };
 
 // ---------------- share to Instagram (Web Share API) ----------------
 const shareBtn=document.getElementById('shareIg');
@@ -949,6 +965,7 @@ shareBtn.onclick=async ()=>{
   try{ await navigator.clipboard.writeText(cap); }catch(e){}
   const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
   const fname=((S.mode==='grid'?S.seriesTitle:cur().title)||'artwork').replace(/\s+/g,'_')+'.png';
+  if(IS_NATIVE){ await deliver(blob, fname, cap); const lbl=shareBtn.textContent; shareBtn.textContent=t('shared'); setTimeout(()=>shareBtn.textContent=lbl,1600); return; }
   const fileObj=new File([blob],fname,{type:'image/png'});
   if(navigator.canShare && navigator.canShare({files:[fileObj]})){
     try{ await navigator.share({files:[fileObj], text:cap, title:S.seriesTitle||cur().title||'Artwork'});
@@ -1004,8 +1021,8 @@ vBtn.onclick=async ()=>{
       const trk=stream.getVideoTracks()[0]; if(trk&&trk.requestFrame) trk.requestFrame();
       setTimeout(tick, frameMs); })(); });
     rec.stop(); await stopped;
-    const blob=new Blob(chunks,{type: ext==='mp4'?'video/mp4':'video/webm'}); const a=document.createElement('a');
-    a.download=`${(S.seriesTitle||'series').replace(/\s+/g,'_')}_slideshow.${ext}`; a.href=URL.createObjectURL(blob); a.click();
+    const blob=new Blob(chunks,{type: ext==='mp4'?'video/mp4':'video/webm'});
+    await deliver(blob, `${(S.seriesTitle||'series').replace(/\s+/g,'_')}_slideshow.${ext}`, '');
     vBtn.textContent='✓ '+ext.toUpperCase(); setTimeout(()=>vBtn.textContent=lbl,1800);
   }catch(err){ console.error(err); alert('Video error: '+err.message); vBtn.textContent=lbl; }
   vBtn.disabled=false;

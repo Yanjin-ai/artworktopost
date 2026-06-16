@@ -1,0 +1,9 @@
+{
+  "appId": "com.yanjinli.artworktopost",
+  "appName": "Artwork",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#f7f3ec"
+  }
+}

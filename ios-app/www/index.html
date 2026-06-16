@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Artwork → Post ♡</title>
+<!-- PWA / iOS: installable to the Home Screen, runs full-screen, works offline -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f7f3ec">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Artwork">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Fredoka:wght@400;500;600&family=Great+Vibes&family=Mr+Dafoe&family=Mrs+Saint+Delafield&family=Parisienne&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@400;500;600&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root{ --paper:#f7f3ec; --ink:#3d3a44; --soft:#9b97a1; --line:#e7e0d6; --card:#fff; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{ background:var(--paper); color:var(--ink); font-family:"Fredoka",system-ui,sans-serif; line-height:1.6; padding:26px; }
+  .serif{font-family:"Fraunces",Georgia,serif}
+  .top{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; max-width:1160px; margin:0 auto 24px; flex-wrap:wrap;}
+  h1{font-family:"Fraunces",serif; font-weight:500; font-size:28px; letter-spacing:-.01em; display:flex; align-items:center; gap:10px;}
+  h1 .dot{width:13px;height:13px;border-radius:50%; background:var(--ink);}
+  .sub{color:var(--soft); font-size:13.5px; margin-top:5px;}
+  .langsel{display:flex; gap:6px; flex-wrap:wrap;}
+  .langsel button{font-family:inherit; font-size:13px; padding:6px 11px; border-radius:8px; cursor:pointer;
+    background:#fff; border:1px solid var(--line); color:var(--soft); transition:.15s;}
+  .langsel button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
+
+  .app{display:grid; grid-template-columns:368px 1fr; gap:32px; max-width:1160px; margin:0 auto; align-items:start;}
+  @media(max-width:900px){ .app{grid-template-columns:1fr} }
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px;}
+  .panel + .panel{margin-top:18px;}
+  .ptitle{font-family:"Fraunces",serif; font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;}
+  .ptitle::before{content:""; width:7px;height:7px;border-radius:50%;background:var(--ink); flex:0 0 auto;}
+  .ptitle::after{content:'▾'; margin-left:auto; color:var(--soft); font-size:11px; transition:transform .18s;}
+  .panel.collapsed .ptitle{margin-bottom:0;}
+  .panel.collapsed .ptitle::after{transform:rotate(-90deg);}
+  .panel.collapsed > :not(.ptitle){display:none;}
+  .field{margin-bottom:15px;} .field:last-child{margin-bottom:0;}
+  label{display:block; font-size:12.5px; font-weight:500; color:var(--soft); margin-bottom:6px; letter-spacing:.03em;}
+  input[type=text], input[type=date], textarea{ width:100%; font-family:inherit; font-size:14.5px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; transition:border-color .15s; }
+  input:focus, textarea:focus{outline:none; border-color:var(--ink);}
+  textarea{resize:vertical; min-height:74px; line-height:1.5;}
+
+  .drop{border:1.5px dashed var(--line); border-radius:12px; padding:18px; text-align:center; color:var(--soft); cursor:pointer; transition:.18s; background:var(--paper); font-size:14px;}
+  .drop:hover,.drop.over{border-color:var(--ink); color:var(--ink); background:#fff;}
+  .drop b{color:var(--ink);}
+
+  .works{display:flex; gap:10px; flex-wrap:wrap;}
+  .wk{position:relative; width:66px; height:66px; border-radius:10px; overflow:hidden; cursor:pointer;
+    border:2px solid var(--line); background:var(--paper); display:flex; align-items:center; justify-content:center; transition:.15s;}
+  .wk.on{border-color:var(--ink);}
+  .wk img{width:100%;height:100%;object-fit:cover;}
+  .wk .ph{font-size:20px; color:var(--soft);}
+  .wk .rm{position:absolute; top:2px; right:2px; width:17px;height:17px; border-radius:50%; background:rgba(61,58,68,.78); color:#fff;
+    font-size:12px; line-height:17px; text-align:center; opacity:0; transition:.15s;}
+  .wk:hover .rm{opacity:1;}
+  .wk .idx{position:absolute; bottom:2px; left:2px; min-width:15px;height:15px; padding:0 3px; border-radius:5px; background:rgba(61,58,68,.7); color:#fff; font-size:10px; line-height:15px; text-align:center; font-weight:600;}
+  .wk.drag{opacity:.4;}
+  .wk.add{font-size:24px; color:var(--soft); border-style:dashed;}
+  .wk.add:hover{border-color:var(--ink); color:var(--ink);}
+
+  .swatches{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .sw{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);transition:transform .12s;}
+  .sw:hover{transform:scale(1.12);} .sw.on{box-shadow:0 0 0 2px var(--ink);transform:scale(1.12);}
+  .pick{width:30px;height:30px;padding:0;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;}
+  .pick::-webkit-color-swatch-wrapper{padding:3px} .pick::-webkit-color-swatch{border:none;border-radius:5px}
+
+  .seg{display:flex; gap:7px; flex-wrap:wrap;}
+  .seg button{flex:1; min-width:0; font-family:inherit; font-size:13px; font-weight:500; padding:9px 4px; cursor:pointer; background:var(--paper); border:1px solid var(--line); border-radius:9px; color:var(--soft); transition:.15s; white-space:nowrap;}
+  .seg button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
+  #signFont button{flex:0 0 calc(33.33% - 5px); font-size:20px; padding:6px 4px; line-height:1;}
+  #signFont button[data-f*="Dafoe"]{font-family:'Mr Dafoe',cursive;}
+  #signFont button[data-f*="Delafield"]{font-family:'Mrs Saint Delafield',cursive;}
+  #signFont button[data-f*="Pinyon"]{font-family:'Pinyon Script',cursive;}
+  #signFont button[data-f*="Vibes"]{font-family:'Great Vibes',cursive;}
+  #signFont button[data-f*="Sacramento"]{font-family:'Sacramento',cursive;}
+  #signFont button[data-f*="Parisienne"]{font-family:'Parisienne',cursive;}
+  #titleFont button{font-size:14px;}
+  #titleFont button[data-f*="Fraunces"]{font-family:'Fraunces',serif;}
+  #titleFont button[data-f*="Playfair"]{font-family:'Playfair Display',serif;}
+  #titleFont button[data-f*="Cormorant"]{font-family:'Cormorant Garamond',serif;}
+  #titleFont button[data-f*="Poppins"]{font-family:'Poppins',sans-serif;}
+  #wmPos button{flex:0 0 calc(16.66% - 6px); font-size:15px; padding:7px 2px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  input[type=range]{width:100%; accent-color:var(--ink);}
+  .adjrow{margin-bottom:11px;} .adjrow:last-of-type{margin-bottom:14px;}
+  .adjrow label{display:flex; justify-content:space-between; margin-bottom:3px;}
+  .adjrow .av{color:var(--ink); font-variant-numeric:tabular-nums;}
+  .presets{display:flex; gap:7px; overflow-x:auto; padding-bottom:5px; margin-bottom:13px; scrollbar-width:thin;}
+  .presets button{flex:0 0 auto; font-family:inherit; font-size:12px; font-weight:500; padding:7px 12px; border-radius:9px; background:var(--paper); border:1px solid var(--line); color:var(--soft); cursor:pointer; white-space:nowrap; transition:.15s;}
+  .presets button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .presets button:hover{border-color:var(--ink);}
+
+  .captionbox{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:11px 12px; font-size:13px; color:#6b6675; white-space:pre-wrap; max-height:150px; overflow:auto; line-height:1.55;}
+  .btn{font-family:inherit; font-weight:500; font-size:14.5px; cursor:pointer; border:none; padding:12px; border-radius:11px; transition:.15s; width:100%;}
+  .btn.primary{background:var(--ink); color:#fff;} .btn.primary:hover{opacity:.85;}
+  .btn.ig{background:linear-gradient(95deg,#f58529,#dd2a7b,#8134af); color:#fff;} .btn.ig:hover{opacity:.9;}
+  .btn.line{background:#fff; border:1px solid var(--line); color:var(--ink);} .btn.line:hover{border-color:var(--ink);}
+  .btn:disabled{opacity:.5; cursor:default;}
+  .btnrow{display:flex; gap:10px; margin-top:10px;}
+
+  .stage{position:sticky; top:26px; display:flex; flex-direction:column; align-items:center; gap:12px;}
+  .modetabs{display:flex; gap:8px;}
+  .modetabs button{font-family:inherit; font-size:13.5px; padding:8px 18px; border-radius:20px; cursor:pointer; background:#fff; border:1px solid var(--line); color:var(--soft); transition:.15s;}
+  .modetabs button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .canvas-wrap{background:#2a2730; border-radius:14px; border:none; padding:18px; box-shadow:0 18px 50px -28px rgba(0,0,0,.6);}
+  canvas{display:block; width:100%; height:auto; max-width:430px; border-radius:4px; box-shadow:0 8px 28px -10px rgba(0,0,0,.5);}
+  canvas.pan{cursor:grab;} canvas.pan:active{cursor:grabbing;}
+  .imgctrl{display:flex; align-items:center; gap:10px; width:100%; max-width:430px; font-size:12px; color:var(--soft);}
+  .imgctrl input[type=range]{flex:1;}
+  .imgctrl button{font-family:inherit;font-size:12px;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--soft);cursor:pointer;}
+  .imgctrl button:hover{border-color:var(--ink);color:var(--ink);}
+  .hint{font-size:12px; color:var(--soft); text-align:center; max-width:430px; line-height:1.5;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div>
+    <h1><span class="dot"></span><span data-i18n="appTitle">Artwork → Post</span></h1>
+    <p class="sub serif" style="font-style:italic;color:#6b6675;" data-i18n="appSub"></p>
+  </div>
+  <div class="langsel" id="langsel">
+    <button data-l="en" class="on">EN</button>
+    <button data-l="zh">中文</button>
+    <button data-l="ja">日本語</button>
+    <button data-l="ko">한국어</button>
+    <button data-l="es">ES</button>
+  </div>
+</div>
+
+<div class="app">
+  <!-- ============ 左：控制 ============ -->
+  <div>
+    <!-- 作品 -->
+    <div class="panel">
+      <div class="ptitle" data-i18n="secWorks">Works</div>
+      <div class="field"><div class="works" id="works"></div></div>
+      <div class="field">
+        <div class="drop" id="drop"><b data-i18n="upload">Upload / replace</b><input type="file" id="file" accept="image/*" hidden></div>
+      </div>
+      <div class="field"><label data-i18n="lblTitle">Title</label><input type="text" id="title" maxlength="40"></div>
+      <div class="field"><label data-i18n="lblIdea">Statement</label><textarea id="idea" maxlength="240"></textarea></div>
+      <div class="field"><label data-i18n="lblDate">Date</label><input type="date" id="date"></div>
+    </div>
+
+    <!-- 统一风格 -->
+    <div class="panel">
+      <div class="ptitle" data-i18n="secStyle">Shared style</div>
+      <div class="field"><label data-i18n="lblSign">Signature</label><input type="text" id="sign" maxlength="24"></div>
+      <div class="field">
+        <label data-i18n="lblSignFont">Signature font</label>
+        <div class="seg" id="signFont">
+          <button data-f="'Mr Dafoe', cursive" class="on">Aa</button>
+          <button data-f="'Mrs Saint Delafield', cursive">Aa</button>
+          <button data-f="'Pinyon Script', cursive">Aa</button>
+          <button data-f="'Great Vibes', cursive">Aa</button>
+          <button data-f="'Sacramento', cursive">Aa</button>
+          <button data-f="'Parisienne', cursive">Aa</button>
+        </div>
+      </div>
+      <div class="field">
+        <label data-i18n="lblTitleFont">Title font</label>
+        <div class="seg" id="titleFont">
+          <button data-f="'Fraunces', serif" class="on">Fr</button>
+          <button data-f="'Playfair Display', serif">Pf</button>
+          <button data-f="'Cormorant Garamond', serif">Co</button>
+          <button data-f="'Poppins', sans-serif">Pp</button>
+        </div>
+      </div>
+      <div class="field">
+        <label data-i18n="lblInk">Ink (text / signature)</label>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label data-i18n="lblMargin">Margin</label>
+          <div class="seg" id="margin">
+            <button data-m="0.05" data-i18n="mTight">Tight</button>
+            <button data-m="0.085" class="on" data-i18n="mStd">Std</button>
+            <button data-m="0.13" data-i18n="mRoomy">Roomy</button>
+          </div>
+        </div>
+        <div class="field">
+          <label data-i18n="lblAlign">Align</label>
+          <div class="seg" id="textAlign">
+            <button data-a="left" class="on" data-i18n="aLeft">Left</button>
+            <button data-a="center" data-i18n="aCenter">Center</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 画面：背景 + 水印 -->
+    <div class="panel">
+      <div class="ptitle" data-i18n="secScreen">Background &amp; watermark</div>
+      <div class="field">
+        <label data-i18n="lblBg">Background</label>
+        <div class="swatches" id="bgSwatches"></div>
+      </div>
+      <div class="field">
+        <label data-i18n="lblWm">Watermark text</label>
+        <input type="text" id="wmText" maxlength="30">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label data-i18n="lblWmPos">Position</label>
+          <div class="seg" id="wmPos">
+            <button data-p="tl">↖</button><button data-p="tr">↗</button>
+            <button data-p="bl">↙</button><button data-p="br" class="on">↘</button>
+            <button data-p="center">⊕</button><button data-p="tile">▦</button>
+          </div>
+        </div>
+        <div class="field">
+          <label><span data-i18n="lblWmOp">Opacity</span> <span id="wmOpVal" style="color:var(--ink)"></span></label>
+          <input type="range" id="wmOp" min="0.05" max="0.8" step="0.05" value="0.3">
+        </div>
+      </div>
+    </div>
+
+    <!-- 图像调整 -->
+    <div class="panel">
+      <div class="ptitle" data-i18n="secAdjust">Adjust</div>
+      <label data-i18n="lblPresets">One-tap looks</label>
+      <div class="presets" id="presets"></div>
+      <div class="adjrow"><label><span data-i18n="adjExposure">Exposure</span><span class="av" id="vEx">0</span></label><input type="range" id="aEx" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjBrightness">Brightness</span><span class="av" id="vBr">0</span></label><input type="range" id="aBr" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjContrast">Contrast</span><span class="av" id="vCt">0</span></label><input type="range" id="aCt" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjSaturation">Saturation</span><span class="av" id="vSa">0</span></label><input type="range" id="aSa" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjTemp">Warmth</span><span class="av" id="vTp">0</span></label><input type="range" id="aTp" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="adjStraighten">Straighten</span><span class="av" id="vRot">0°</span></label><input type="range" id="aRot" min="-15" max="15" step="0.5" value="0"></div>
+      <div class="adjrow" style="border-top:1px solid var(--line); padding-top:11px;">
+        <label><span data-i18n="lblCut">Remove background</span><span class="av" id="cutState"></span></label>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn line" id="cutToggle" style="flex:0 0 auto; padding:8px 13px; font-size:13px;" data-i18n="cutBtn">Cut out</button>
+          <input type="range" id="cutTol" min="10" max="120" value="36" style="flex:1;">
+        </div>
+        <p class="hint" style="text-align:left; margin-top:6px;" data-i18n="cutNote">Best for artwork shot on a plain background. Drag the slider to fine-tune.</p>
+      </div>
+      <div class="adjrow" style="border-top:1px solid var(--line); padding-top:11px;"><label><span data-i18n="lblPerspV">Perspective ↕</span><span class="av" id="vKv">0</span></label><input type="range" id="aKv" min="-100" max="100" value="0"></div>
+      <div class="adjrow"><label><span data-i18n="lblPerspH">Perspective ↔</span><span class="av" id="vKh">0</span></label><input type="range" id="aKh" min="-100" max="100" value="0"></div>
+      <div class="btnrow" style="margin-top:4px;">
+        <button class="btn line" id="applyAll" style="flex:1;" data-i18n="applyAll">Apply to all</button>
+        <button class="btn line" id="adjReset" style="flex:1;" data-i18n="adjReset">Reset</button>
+      </div>
+    </div>
+
+    <!-- 文案 + 标签 -->
+    <div class="panel">
+      <div class="ptitle" data-i18n="secCaption">Caption / hashtags</div>
+      <div class="field"><label data-i18n="lblSeries">Series title</label><input type="text" id="seriesTitle" maxlength="40"></div>
+      <div class="field"><label data-i18n="lblTags">Hashtags #</label><textarea id="hashtags" style="min-height:58px"></textarea></div>
+      <div class="field"><label data-i18n="lblCaptionPreview">Caption preview</label><div class="captionbox" id="captionbox"></div></div>
+      <button class="btn line" id="copyCap" data-i18n="copyCap">Copy caption</button>
+    </div>
+  </div>
+
+  <!-- ============ 右：预览 / 导出 ============ -->
+  <div class="stage">
+    <div class="modetabs" id="modetabs">
+      <button data-mode="single" class="on" data-i18n="modeSingle">Single</button>
+      <button data-mode="grid" data-i18n="modeGrid">Series grid</button>
+      <button data-mode="slice" data-i18n="modeSlice">Mural slice</button>
+    </div>
+    <div id="formatRow" style="display:flex; align-items:center; gap:10px; width:100%; max-width:430px;">
+      <span style="font-size:12px;color:var(--soft);white-space:nowrap;" data-i18n="lblFormat">Format</span>
+      <div class="seg" id="format" style="flex:1;">
+        <button data-r="auto" class="on">Auto</button>
+        <button data-r="0.8">4:5</button>
+        <button data-r="1">1:1</button>
+        <button data-r="0.75">3:4</button>
+        <button data-r="1.91">1.91:1</button>
+      </div>
+    </div>
+    <div id="gridRow" style="display:none; align-items:center; gap:10px; width:100%; max-width:430px;">
+      <span style="font-size:12px;color:var(--soft);white-space:nowrap;" data-i18n="lblLayout">Layout</span>
+      <div class="seg" id="gridLayout" style="flex:1;">
+        <button data-gl="auto" class="on">Auto</button>
+        <button data-gl="1">1</button>
+        <button data-gl="2">2</button>
+        <button data-gl="3">3</button>
+        <button data-gl="row">▭▭▭</button>
+      </div>
+    </div>
+    <div class="canvas-wrap"><canvas id="cv" width="1080" height="1350"></canvas></div>
+    <div class="imgctrl" id="imgctrl">
+      <span>🔍</span><input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
+      <button id="resetPos" data-i18n="resetPos">Reset</button>
+    </div>
+    <div id="exportArea" style="width:100%; max-width:430px;">
+      <button class="btn ig" id="shareIg" data-i18n="share">📤 Share to Instagram</button>
+      <button class="btn primary" id="exportPng" style="margin-top:10px;" data-i18n="exportPng">⬇ Export PNG</button>
+      <div class="btnrow">
+        <button class="btn line" id="playPreview" style="flex:0 0 120px;">▶ Preview</button>
+        <div class="seg" id="videoSecs" style="flex:1;">
+          <button data-s="2" data-i18n="s2">2s</button>
+          <button data-s="2.8" class="on" data-i18n="s3">2.8s</button>
+          <button data-s="4" data-i18n="s4">4s</button>
+        </div>
+      </div>
+      <button class="btn line" id="exportVideo" style="margin-top:10px;" data-i18n="exportVideo">🎬 Export slideshow (mp4)</button>
+    </div>
+    <div id="sliceArea" style="display:none; width:100%; max-width:430px;">
+      <label data-i18n="lblGrid" style="margin-bottom:7px;">Grid</label>
+      <div class="seg" id="sliceGrid">
+        <button data-g="3x3" class="on">3×3</button>
+        <button data-g="3x1">3×1</button>
+        <button data-g="1x3">1×3</button>
+        <button data-g="3x2">3×2</button>
+        <button data-g="2x2">2×2</button>
+      </div>
+      <button class="btn primary" id="exportTiles" style="margin-top:12px;" data-i18n="sliceTiles">✂️ Export tiles (zip)</button>
+      <p class="hint" style="margin-top:8px;" data-i18n="sliceNote">Tiles are numbered in upload order — post-01 first.</p>
+    </div>
+    <p class="hint" id="hint"></p>
+  </div>
+</div>
+
+<script>
+// ---------------- i18n (English first) ----------------
+const LANG = {
+  en:{ appTitle:'Artwork → Post', appSub:'Minimal frame · unified type · signature — true to your original ratio, ready for Instagram',
+    secWorks:'Works (add several to form a series)', upload:'Upload / replace current work', lblTitle:'Title', lblIdea:'Statement', lblDate:'Date',
+    secStyle:'Shared style (applies to every work)', lblSign:'Signature', lblSignFont:'Signature font', lblTitleFont:'Title font', lblInk:'Ink (text / signature)', lblMargin:'Margin', lblAlign:'Align',
+    mTight:'Tight', mStd:'Std', mRoomy:'Roomy', aLeft:'Left', aCenter:'Center',
+    secScreen:'Background & watermark', lblBg:'Background', lblWm:'Watermark text', lblWmPos:'Position', lblWmOp:'Opacity',
+    secCaption:'Caption / hashtags', lblSeries:'Series title (for grid / video)', lblTags:'Hashtags #', lblCaptionPreview:'Caption preview', copyCap:'Copy caption', copied:'✓ Copied',
+    modeSingle:'Single', modeGrid:'Series grid', modeSlice:'Mural slice', share:'📤 Share to Instagram', exportPng:'⬇ Export PNG', exportVideo:'🎬 Export slideshow (mp4)', resetPos:'Reset', lblFormat:'Format',
+    lblGrid:'Grid', sliceTiles:'✂️ Export tiles (zip)', sliceNote:'Tiles are numbered in upload order — post-01 first.', sliceDone:'✓ Tiles ready', lblLayout:'Layout',
+    s2:'2s', s3:'2.8s', s4:'4s', untitled:'Untitled', uploadHere:'Upload your artwork', play:'Preview', stop:'Stop',
+    hint:'Local HTML file — double-click to use, no deployment. Drag the artwork on the canvas to reposition, scroll / slider to zoom. Images & settings saved locally. On phone, “Share” sends image + caption straight to Instagram.',
+    generating:'Generating…', needImg:'Please upload at least one work first', videoDone:'✓ Video ready',
+    shareHint:'Image saved & caption copied. Open Instagram and create a post — paste the caption.', shared:'✓ Shared',
+    secAdjust:'Adjust image (current work)', adjExposure:'Exposure', adjBrightness:'Brightness', adjContrast:'Contrast', adjSaturation:'Saturation', adjTemp:'Warmth', adjStraighten:'Straighten', adjReset:'Reset', lblPresets:'One-tap looks', applyAll:'Apply to all', appliedAll:'✓ Applied to all',
+    lblCut:'Remove background', cutBtn:'Cut out', cutUndo:'Restore', cutNote:'Best for artwork shot on a plain background. Drag the slider to fine-tune.', lblPerspV:'Perspective ↕', lblPerspH:'Perspective ↔',
+    phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
+  zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
+    secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期',
+    secStyle:'统一风格（应用于全部作品）', lblSign:'签名', lblSignFont:'签名字体', lblTitleFont:'标题字体', lblInk:'墨色（文字 / 签名）', lblMargin:'留白', lblAlign:'对齐',
+    mTight:'紧凑', mStd:'标准', mRoomy:'宽松', aLeft:'左', aCenter:'中',
+    secScreen:'背景 & 水印', lblBg:'背景色', lblWm:'水印文字', lblWmPos:'位置', lblWmOp:'透明度',
+    secCaption:'发布文案 / 话题标签', lblSeries:'系列标题（用于合集 / 视频）', lblTags:'话题标签 #', lblCaptionPreview:'文案预览', copyCap:'复制文案', copied:'✓ 已复制',
+    modeSingle:'单幅', modeGrid:'系列合集', modeSlice:'九宫格切图', share:'📤 分享到 Instagram', exportPng:'⬇ 导出图片 PNG', exportVideo:'🎬 导出幻灯片视频 (mp4)', resetPos:'重置', lblFormat:'画幅',
+    lblGrid:'网格', sliceTiles:'✂️ 导出切片 (zip)', sliceNote:'切片已按发布顺序编号 —— 先发 post-01。', sliceDone:'✓ 切片已生成', lblLayout:'版式',
+    s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'无题', uploadHere:'上传你的作品', play:'预览', stop:'停止',
+    hint:'本地网页文件，双击即用，无需部署。可在画布上拖动作品调整位置，滚轮/滑杆缩放。图片与设置本地保存。手机上点“分享”可把图片+文案直接发到 Instagram。',
+    generating:'生成中…', needImg:'请先上传至少一幅作品', videoDone:'✓ 视频已生成',
+    shareHint:'图片已保存、文案已复制。打开 Instagram 发帖并粘贴文案即可。', shared:'✓ 已分享',
+    secAdjust:'图像调整（当前作品）', adjExposure:'曝光', adjBrightness:'亮度', adjContrast:'对比度', adjSaturation:'饱和度', adjTemp:'色温', adjStraighten:'拉直', adjReset:'重置', lblPresets:'一键风格', applyAll:'套用到全部', appliedAll:'✓ 已套用全部',
+    lblCut:'抠背景', cutBtn:'抠图', cutUndo:'还原', cutNote:'适合纯色背景拍摄的作品；拖动滑杆微调容差。', lblPerspV:'透视 ↕', lblPerspH:'透视 ↔',
+    phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
+  ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
+    secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付',
+    secStyle:'共通スタイル（全作品に適用）', lblSign:'署名', lblSignFont:'署名書体', lblTitleFont:'タイトル書体', lblInk:'墨色（文字 / 署名）', lblMargin:'余白', lblAlign:'揃え',
+    mTight:'狭い', mStd:'標準', mRoomy:'広い', aLeft:'左', aCenter:'中央',
+    secScreen:'背景 & 透かし', lblBg:'背景色', lblWm:'透かし文字', lblWmPos:'位置', lblWmOp:'不透明度',
+    secCaption:'投稿文 / ハッシュタグ', lblSeries:'シリーズ名（合集 / 動画用）', lblTags:'ハッシュタグ #', lblCaptionPreview:'投稿文プレビュー', copyCap:'投稿文をコピー', copied:'✓ コピー済み',
+    modeSingle:'1枚', modeGrid:'シリーズ合集', modeSlice:'グリッド分割', share:'📤 Instagram で共有', exportPng:'⬇ 画像を PNG 書き出し', exportVideo:'🎬 スライドショー書き出し (mp4)', resetPos:'リセット', lblFormat:'画面比率',
+    lblGrid:'グリッド', sliceTiles:'✂️ 分割を書き出し (zip)', sliceNote:'タイルは投稿順に番号付け — post-01 から投稿。', sliceDone:'✓ 分割完了', lblLayout:'レイアウト',
+    s2:'2秒', s3:'2.8秒', s4:'4秒', untitled:'無題', uploadHere:'作品をアップロード', play:'プレビュー', stop:'停止',
+    hint:'ローカルHTMLファイル。ダブルクリックで使え、デプロイ不要。キャンバス上で作品をドラッグして位置調整、ホイール/スライダーで拡大。画像と設定はローカル保存。スマホでは「共有」で画像＋文を Instagram へ直接送れます。',
+    generating:'生成中…', needImg:'先に作品を1枚以上アップロードしてください', videoDone:'✓ 動画を作成しました',
+    shareHint:'画像を保存し、投稿文をコピーしました。Instagram で投稿し、文を貼り付けてください。', shared:'✓ 共有しました',
+    secAdjust:'画像調整（現在の作品）', adjExposure:'露出', adjBrightness:'明るさ', adjContrast:'コントラスト', adjSaturation:'彩度', adjTemp:'色温', adjStraighten:'傾き補正', adjReset:'リセット', lblPresets:'ワンタップ', applyAll:'全作品に適用', appliedAll:'✓ 全部に適用',
+    lblCut:'背景を消す', cutBtn:'切り抜き', cutUndo:'元に戻す', cutNote:'無地背景で撮った作品向け。スライダーで微調整。', lblPerspV:'遠近 ↕', lblPerspH:'遠近 ↔',
+    phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
+  ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
+    secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜',
+    secStyle:'공통 스타일 (모든 작품에 적용)', lblSign:'서명', lblSignFont:'서명 글꼴', lblTitleFont:'제목 글꼴', lblInk:'잉크색 (텍스트 / 서명)', lblMargin:'여백', lblAlign:'정렬',
+    mTight:'좁게', mStd:'표준', mRoomy:'넓게', aLeft:'왼쪽', aCenter:'가운데',
+    secScreen:'배경 & 워터마크', lblBg:'배경색', lblWm:'워터마크 문구', lblWmPos:'위치', lblWmOp:'투명도',
+    secCaption:'캡션 / 해시태그', lblSeries:'시리즈 제목 (그리드 / 영상용)', lblTags:'해시태그 #', lblCaptionPreview:'캡션 미리보기', copyCap:'캡션 복사', copied:'✓ 복사됨',
+    modeSingle:'단일', modeGrid:'시리즈 그리드', modeSlice:'그리드 분할', share:'📤 인스타그램에 공유', exportPng:'⬇ PNG 내보내기', exportVideo:'🎬 슬라이드쇼 내보내기 (mp4)', resetPos:'초기화', lblFormat:'비율',
+    lblGrid:'그리드', sliceTiles:'✂️ 분할 내보내기 (zip)', sliceNote:'타일은 업로드 순서로 번호 — post-01 부터 게시.', sliceDone:'✓ 분할 완료', lblLayout:'레이아웃',
+    s2:'2초', s3:'2.8초', s4:'4초', untitled:'무제', uploadHere:'작품을 업로드하세요', play:'미리보기', stop:'정지',
+    hint:'로컬 HTML 파일 — 더블클릭으로 실행, 배포 불필요. 캔버스에서 작품을 드래그해 위치 조정, 스크롤/슬라이더로 확대. 이미지와 설정은 로컬 저장. 모바일에서 “공유”로 이미지+캡션을 인스타그램에 바로 보낼 수 있습니다.',
+    generating:'생성 중…', needImg:'먼저 작품을 한 점 이상 업로드하세요', videoDone:'✓ 영상 완료',
+    shareHint:'이미지 저장 및 캡션 복사 완료. 인스타그램에서 게시물을 만들고 캡션을 붙여넣으세요.', shared:'✓ 공유됨',
+    secAdjust:'이미지 보정 (현재 작품)', adjExposure:'노출', adjBrightness:'밝기', adjContrast:'대비', adjSaturation:'채도', adjTemp:'색온도', adjStraighten:'수평 보정', adjReset:'초기화', lblPresets:'원탭 필터', applyAll:'전체 적용', appliedAll:'✓ 전체 적용됨',
+    lblCut:'배경 제거', cutBtn:'배경 제거', cutUndo:'되돌리기', cutNote:'단색 배경에서 촬영한 작품에 적합. 슬라이더로 미세 조정.', lblPerspV:'원근 ↕', lblPerspH:'원근 ↔',
+    phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
+  es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
+    secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha',
+    secStyle:'Estilo común (se aplica a todas)', lblSign:'Firma', lblSignFont:'Fuente de firma', lblTitleFont:'Fuente de título', lblInk:'Tinta (texto / firma)', lblMargin:'Margen', lblAlign:'Alinear',
+    mTight:'Justo', mStd:'Est.', mRoomy:'Amplio', aLeft:'Izq.', aCenter:'Centro',
+    secScreen:'Fondo y marca de agua', lblBg:'Color de fondo', lblWm:'Texto de marca de agua', lblWmPos:'Posición', lblWmOp:'Opacidad',
+    secCaption:'Descripción / hashtags', lblSeries:'Título de serie (para grid / vídeo)', lblTags:'Hashtags #', lblCaptionPreview:'Vista previa', copyCap:'Copiar texto', copied:'✓ Copiado',
+    modeSingle:'Única', modeGrid:'Grid de serie', modeSlice:'Mural', share:'📤 Compartir en Instagram', exportPng:'⬇ Exportar PNG', exportVideo:'🎬 Exportar pase (mp4)', resetPos:'Reiniciar', lblFormat:'Formato',
+    lblGrid:'Cuadrícula', sliceTiles:'✂️ Exportar piezas (zip)', sliceNote:'Las piezas van numeradas por orden — publica post-01 primero.', sliceDone:'✓ Piezas listas', lblLayout:'Disposición',
+    s2:'2s', s3:'2.8s', s4:'4s', untitled:'Sin título', uploadHere:'Sube tu obra', play:'Vista previa', stop:'Parar',
+    hint:'Archivo HTML local — doble clic para usar, sin despliegue. Arrastra la obra en el lienzo para recolocar, rueda/control para acercar. Imágenes y ajustes guardados localmente. En el móvil, “Compartir” envía imagen + texto directo a Instagram.',
+    generating:'Generando…', needImg:'Sube al menos una obra primero', videoDone:'✓ Vídeo listo',
+    shareHint:'Imagen guardada y texto copiado. Abre Instagram, crea una publicación y pega el texto.', shared:'✓ Compartido',
+    secAdjust:'Ajustar imagen (obra actual)', adjExposure:'Exposición', adjBrightness:'Brillo', adjContrast:'Contraste', adjSaturation:'Saturación', adjTemp:'Calidez', adjStraighten:'Enderezar', adjReset:'Restablecer', lblPresets:'Estilos rápidos', applyAll:'Aplicar a todas', appliedAll:'✓ Aplicado a todas',
+    lblCut:'Quitar fondo', cutBtn:'Recortar', cutUndo:'Restaurar', cutNote:'Ideal para obras sobre fondo liso. Ajusta con el deslizador.', lblPerspV:'Perspectiva ↕', lblPerspH:'Perspectiva ↔',
+    phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
+};
+const DEFAULT_TAGS = '#art #artwork #illustration #drawing #sketchbook #originalart #artistsoninstagram #contemporaryart';
+const INK_PALETTE = ['#3d3a44','#6b6675','#8a6f5e','#7d7a5b','#5f6f6a','#8a5c5c','#5c6b8a','#9b97a1'];
+const BG_PALETTE  = ['#f7f3ec','#ffffff','#f2ece2','#eae4da','#f6ede9','#e9eee9','#e7ebf1','#2b2733','#1d1b22','#0f0e12'];
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const _images = {};
+let uid = 1;
+
+// ---------------- IndexedDB image store ----------------
+let _db=null;
+function idb(){ return new Promise((res,rej)=>{ if(_db)return res(_db);
+  const r=indexedDB.open('postmaker',1); r.onupgradeneeded=()=>r.result.createObjectStore('img');
+  r.onsuccess=()=>{_db=r.result;res(_db);}; r.onerror=()=>rej(r.error); }); }
+async function idbPut(id,d){ try{ const db=await idb(); await new Promise((res,rej)=>{ const tx=db.transaction('img','readwrite'); tx.objectStore('img').put(d,id); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){ console.warn('idb',e); } }
+async function idbDel(id){ try{ const db=await idb(); await new Promise(res=>{ const tx=db.transaction('img','readwrite'); tx.objectStore('img').delete(id); tx.oncomplete=res; tx.onerror=res; }); }catch(e){} }
+async function idbGetAll(){ try{ const db=await idb(); return await new Promise(res=>{ const tx=db.transaction('img','readonly'); const st=tx.objectStore('img'); const ks=st.getAllKeys(), vs=st.getAll();
+  tx.oncomplete=()=>{ const out={}; ks.result.forEach((k,i)=>out[k]=vs.result[i]); res(out); }; tx.onerror=()=>res({}); }); }catch(e){ return {}; } }
+function loadImg(src){ return new Promise(res=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src; }); }
+
+// ---------------- state ----------------
+const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
+const S = saved || {
+  lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
+  bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
+  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8, format:'auto', slice:'3x3', gridLayout:'auto',
+  works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
+};
+if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
+S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined) w.tx.rot=0; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; if(w.cut===undefined) w.cut=false; if(w.cutTol===undefined) w.cutTol=36; if(!w.persp) w.persp={kh:0,kv:0}; });
+uid = Math.max(...S.works.map(w=>w.id))+1;
+function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
+function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
+function cur(){ return S.works[S.current]; }
+
+// ---------------- native (Capacitor) bridge: route exports through the iOS share sheet ----------------
+const CAPP = window.Capacitor;
+const IS_NATIVE = !!(CAPP && CAPP.isNativePlatform && CAPP.isNativePlatform());
+function blobToB64(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(blob); }); }
+async function deliver(blob, filename, caption){
+  if(IS_NATIVE && CAPP.Plugins && CAPP.Plugins.Filesystem && CAPP.Plugins.Share){
+    try{
+      const data=await blobToB64(blob);
+      const w=await CAPP.Plugins.Filesystem.writeFile({ path:filename, data, directory:'CACHE' });
+      await CAPP.Plugins.Share.share({ text:caption||'', url:w.uri, files:[w.uri] });
+      return true;
+    }catch(e){ if(e && /cancel|abort/i.test(e.message||e.name||'')) return true; console.warn('native share',e); }
+  }
+  const a=document.createElement('a'); a.download=filename; a.href=URL.createObjectURL(blob); a.click();
+  return false;
+}
+function txOf(w){ if(!w.tx)w.tx={s:1,x:0,y:0}; return w.tx; }
+
+// ---------------- color helpers (contrast text on any background) ----------------
+function lum(hex){ const c=hex.replace('#',''); const r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16); return (0.299*r+0.587*g+0.114*b)/255; }
+function inkSet(){ return lum(S.bg)<0.5
+  ? {ink:'#f3efe8', idea:'#d3cdd4', soft:'#b7b2bd', key:'rgba(255,255,255,.22)', ph:'#2b2733'}
+  : {ink:'#3d3a44', idea:'#6b6675', soft:'#9b97a1', key:'rgba(61,58,68,.16)', ph:'#ffffff'}; }
+// signature uses the accent, but if it would vanish against the background, fall back to readable ink
+function accentOn(){ return Math.abs(lum(S.accent)-lum(S.bg))<0.22 ? inkSet().ink : S.accent; }
+
+// ---------------- language ----------------
+function applyLang(){
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=> el.textContent = t(el.dataset.i18n));
+  document.getElementById('title').placeholder = t('phTitle');
+  document.getElementById('idea').placeholder = t('phIdea');
+  document.getElementById('sign').placeholder = t('phSign');
+  document.getElementById('seriesTitle').placeholder = t('phSeries');
+  document.getElementById('wmText').placeholder = t('phWm');
+  document.getElementById('hint').textContent = t('hint');
+  if(!_playing) document.getElementById('playPreview').textContent='▶ '+t('play');
+  document.querySelectorAll('#langsel button').forEach(b=>b.classList.toggle('on', b.dataset.l===S.lang));
+  buildCaption();
+}
+document.querySelectorAll('#langsel button').forEach(b=> b.onclick=()=>{ S.lang=b.dataset.l; save(); applyLang(); draw(); });
+
+// ---------------- swatches (ink + background) ----------------
+function buildSwatches(box, palette, key, withPicker){
+  box.innerHTML='';
+  palette.forEach(c=>{ const d=document.createElement('div'); d.className='sw'; d.style.background=c; d.dataset.c=c.toLowerCase();
+    d.onclick=()=>{ S[key]=c; syncSw(box,key); save(); draw(); }; box.appendChild(d); });
+  if(withPicker){ const p=document.createElement('input'); p.type='color'; p.className='pick'; p.value=S[key];
+    p.oninput=()=>{ S[key]=p.value; syncSw(box,key); save(); draw(); }; box.appendChild(p); }
+}
+function syncSw(box,key){ [...box.querySelectorAll('.sw')].forEach(d=>d.classList.toggle('on', d.dataset.c===String(S[key]).toLowerCase())); }
+const swEl=document.getElementById('swatches'), bgEl=document.getElementById('bgSwatches');
+buildSwatches(swEl, INK_PALETTE, 'accent', true);
+buildSwatches(bgEl, BG_PALETTE, 'bg', true);
+
+// ---------------- segments ----------------
+function bindSeg(id,key,parse=v=>v,cb){ const box=document.getElementById(id);
+  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r??b.dataset.g??b.dataset.gl;
+    b.onclick=()=>{ box.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S[key]=parse(v); save(); (cb||draw)(); }; }); }
+bindSeg('margin','margin',parseFloat);
+bindSeg('textAlign','align');
+bindSeg('signFont','signFont');
+bindSeg('titleFont','titleFont');
+bindSeg('wmPos','wmPos');
+bindSeg('videoSecs','videoSecs',parseFloat,()=>{});
+bindSeg('format','format', v=> v==='auto'?'auto':parseFloat(v));
+bindSeg('sliceGrid','slice');
+bindSeg('gridLayout','gridLayout');
+bindSeg('modetabs','mode',v=>v,()=>{ updateImgCtrl(); draw(); });
+
+// watermark opacity
+const wmOp=document.getElementById('wmOp'), wmOpVal=document.getElementById('wmOpVal');
+wmOp.value=S.wmOp; wmOpVal.textContent=Math.round(S.wmOp*100)+'%';
+wmOp.oninput=()=>{ S.wmOp=parseFloat(wmOp.value); wmOpVal.textContent=Math.round(S.wmOp*100)+'%'; save(); draw(); };
+
+// ---------------- works list ----------------
+const worksEl=document.getElementById('works');
+let _dragIdx=null;
+function renderWorks(){
+  worksEl.innerHTML='';
+  S.works.forEach((w,i)=>{
+    const d=document.createElement('div'); d.className='wk'+(i===S.current?' on':''); d.draggable=true;
+    if(_images[w.id]){ const im=document.createElement('img'); im.src=_images[w.id].src; d.appendChild(im); }
+    else { const p=document.createElement('div'); p.className='ph'; p.textContent='▢'; d.appendChild(p); }
+    const idx=document.createElement('div'); idx.className='idx'; idx.textContent=i+1; d.appendChild(idx);
+    const rm=document.createElement('div'); rm.className='rm'; rm.textContent='×';
+    rm.onclick=e=>{ e.stopPropagation(); removeWork(i); }; d.appendChild(rm);
+    d.onclick=()=>selectWork(i);
+    d.ondragstart=()=>{ _dragIdx=i; d.classList.add('drag'); };
+    d.ondragend=()=>d.classList.remove('drag');
+    d.ondragover=e=>e.preventDefault();
+    d.ondrop=e=>{ e.preventDefault(); if(_dragIdx===null||_dragIdx===i)return;
+      const[m]=S.works.splice(_dragIdx,1); S.works.splice(i,0,m); S.current=i; _dragIdx=null;
+      save(); renderWorks(); fillFields(); draw(); buildCaption(); };
+    worksEl.appendChild(d);
+  });
+  const add=document.createElement('div'); add.className='wk add'; add.textContent='+'; add.onclick=addWork; worksEl.appendChild(add);
+}
+function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0},cut:false,cutTol:36,persp:{kh:0,kv:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
+function removeWork(i){ const rid=S.works[i].id; delete _images[rid]; idbDel(rid); S.works.splice(i,1); if(!S.works.length){ addWork(); return; } if(S.current>=S.works.length)S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
+function selectWork(i){ S.current=i; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
+function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; fillAdj(); updateCutUI(); }
+
+// ---------------- image adjustment sliders ----------------
+const ADJ=[['aEx','ex','vEx'],['aBr','br','vBr'],['aCt','ct','vCt'],['aSa','sa','vSa'],['aTp','tp','vTp']];
+ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ if(!cur().adj)cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; cur().adj[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; markPreset(); save(); draw(); }); });
+const aRot=document.getElementById('aRot');
+aRot.addEventListener('input',e=>{ if(!cur().tx)cur().tx={s:1,x:0,y:0,rot:0}; cur().tx.rot=parseFloat(e.target.value); document.getElementById('vRot').textContent=e.target.value+'°'; save(); draw(); });
+// one-tap preset looks (a preset is just a named set of adjustments — can be applied to the whole series)
+const PRESETS=[
+  {n:'Original', a:{ex:0,br:0,ct:0,sa:0,tp:0}},
+  {n:'Warm',   a:{ex:6,br:0,ct:8,sa:6,tp:32}},
+  {n:'Cool',   a:{ex:4,br:2,ct:8,sa:2,tp:-30}},
+  {n:'Punch',  a:{ex:4,br:0,ct:30,sa:24,tp:4}},
+  {n:'Soft',   a:{ex:10,br:6,ct:-14,sa:-8,tp:8}},
+  {n:'Film',   a:{ex:4,br:0,ct:12,sa:-12,tp:18}},
+  {n:'Ink',    a:{ex:2,br:-4,ct:26,sa:-34,tp:0}},
+  {n:'Mono',   a:{ex:2,br:2,ct:14,sa:-100,tp:0}},
+  {n:'Bright', a:{ex:20,br:10,ct:6,sa:4,tp:2}},
+];
+const presetsEl=document.getElementById('presets');
+PRESETS.forEach((p,i)=>{ const b=document.createElement('button'); b.textContent=p.n; b.dataset.i=i;
+  b.onclick=()=>{ cur().adj={...p.a}; fillAdj(); save(); draw(); }; presetsEl.appendChild(b); });
+function presetMatch(){ const a=cur().adj||{}; return PRESETS.findIndex(p=>['ex','br','ct','sa','tp'].every(k=>(p.a[k]||0)===(a[k]||0))); }
+function markPreset(){ const idx=presetMatch(); [...presetsEl.children].forEach((b,i)=>b.classList.toggle('on', i===idx)); }
+function fillAdj(){ const a=cur().adj||{ex:0,br:0,ct:0,sa:0,tp:0}; ADJ.forEach(([id,key,vid])=>{ document.getElementById(id).value=a[key]||0; document.getElementById(vid).textContent=a[key]||0; });
+  const rot=(cur().tx&&cur().tx.rot)||0; aRot.value=rot; document.getElementById('vRot').textContent=rot+'°'; markPreset(); }
+document.getElementById('adjReset').onclick=()=>{ cur().adj={ex:0,br:0,ct:0,sa:0,tp:0}; if(cur().tx)cur().tx.rot=0; fillAdj(); save(); draw(); };
+document.getElementById('applyAll').onclick=()=>{ const a={...(cur().adj||{})}, rot=(cur().tx&&cur().tx.rot)||0;
+  S.works.forEach(w=>{ w.adj={...a}; if(w.tx)w.tx.rot=rot; }); save(); draw();
+  const b=document.getElementById('applyAll'); b.textContent=t('appliedAll'); setTimeout(()=>b.textContent=t('applyAll'),1400); };
+
+// background removal controls
+const cutToggle=document.getElementById('cutToggle'), cutTolEl=document.getElementById('cutTol');
+let _cutTimer=null;
+cutToggle.onclick=async ()=>{ cur().cut=!cur().cut; save(); cutToggle.disabled=true; cutToggle.textContent='…'; await processImage(cur()); cutToggle.disabled=false; updateCutUI(); draw(); };
+cutTolEl.addEventListener('input',()=>{ cur().cutTol=parseInt(cutTolEl.value); save(); if(cur().cut){ clearTimeout(_cutTimer); _cutTimer=setTimeout(async()=>{ await processImage(cur()); draw(); },180); } });
+function updateCutUI(){ const on=!!cur().cut; cutToggle.textContent = on? t('cutUndo') : t('cutBtn'); cutToggle.style.background=on?'var(--ink)':''; cutToggle.style.color=on?'#fff':''; cutTolEl.value=cur().cutTol||36;
+  const ps=cur().persp||{kh:0,kv:0}; document.getElementById('aKh').value=ps.kh||0; document.getElementById('aKv').value=ps.kv||0; document.getElementById('vKh').textContent=ps.kh||0; document.getElementById('vKv').textContent=ps.kv||0; }
+// perspective sliders
+let _pTimer=null;
+function perspOf(){ if(!cur().persp)cur().persp={kh:0,kv:0}; return cur().persp; }
+[['aKh','kh','vKh'],['aKv','kv','vKv']].forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ perspOf()[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; save(); clearTimeout(_pTimer); _pTimer=setTimeout(async()=>{ await processImage(cur()); draw(); },200); }); });
+
+['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
+['sign','seriesTitle','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
+
+// ---------------- upload ----------------
+const drop=document.getElementById('drop'), file=document.getElementById('file');
+drop.onclick=()=>file.click();
+file.onchange=e=>loadFile(e.target.files[0]);
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
+function loadFile(f){ if(!f||!f.type.startsWith('image/'))return; const r=new FileReader();
+  r.onload=()=>{ const data=r.result; const id=cur().id; cur().tx={s:1,x:0,y:0,rot:0}; cur().cut=false; cur().persp={kh:0,kv:0}; delete _proc[id]; const im=new Image(); im.onload=()=>{ _images[id]=im; idbPut(id,data); renderWorks(); updateImgCtrl(); updateCutUI(); draw(); buildCaption(); }; im.src=data; }; r.readAsDataURL(f); }
+
+// ---------------- helpers ----------------
+function fmtDate(d){ if(!d)return''; const[y,m,dd]=d.split('-');
+  if(S.lang==='en'){ const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${mn[+m-1]} ${+dd}, ${y}`; }
+  if(S.lang==='es'){ const mn=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']; return `${+dd} ${mn[+m-1]} ${y}`; }
+  if(S.lang==='ja') return `${y}年${+m}月${+dd}日`;
+  if(S.lang==='ko') return `${y}년 ${+m}월 ${+dd}일`;
+  return `${y} · ${m} · ${dd}`; }
+function wrap(text,maxW){ const out=[]; for(const para of text.split(/\n/)){ if(para===''){out.push('');continue;}
+  let line=''; const tok=para.match(/[一-鿿぀-ヿ가-힣，。、；：！？「」（）]|[^一-鿿぀-ヿ가-힣，。、；：！？「」（）\s]+|\s+/g)||[];
+  for(const tk of tok){ const test=line+tk; if(ctx.measureText(test).width>maxW&&line.trim()){out.push(line.trimEnd());line=tk.replace(/^\s+/,'');} else line=test; }
+  if(line.trim())out.push(line.trimEnd()); } return out; }
+function contain(iw,ih,bw,bh){ const s=Math.min(bw/iw,bh/ih); return {w:iw*s,h:ih*s}; }
+function worksWithImg(){ return S.works.filter(w=>_images[w.id]); }
+
+// ---------------- image processing pipeline: background removal + perspective ----------------
+const _proc={}; // id -> processed Image, cached in memory
+function hasPersp(w){ return w.persp && (w.persp.kh||w.persp.kv); }
+function needsProc(w){ return !!(w.cut || hasPersp(w)); }
+function imgOf(w){ return (needsProc(w) && _proc[w.id]) ? _proc[w.id] : _images[w.id]; }
+function baseCanvas(im){ const maxd=1600, sc=Math.min(1,maxd/Math.max(im.width,im.height));
+  const W=Math.max(1,Math.round(im.width*sc)), H=Math.max(1,Math.round(im.height*sc));
+  const c=document.createElement('canvas'); c.width=W; c.height=H; c.getContext('2d').drawImage(im,0,0,W,H); return c; }
+function cutToCanvas(im, tol){
+  const c=baseCanvas(im), W=c.width, H=c.height, g=c.getContext('2d',{willReadFrequently:true});
+  const id=g.getImageData(0,0,W,H), d=id.data;
+  let sr=0,sg=0,sb=0,n=0; const acc=p=>{const i=p*4;sr+=d[i];sg+=d[i+1];sb+=d[i+2];n++;};
+  for(let x=0;x<W;x++){acc(x);acc((H-1)*W+x);} for(let y=0;y<H;y++){acc(y*W);acc(y*W+W-1);}
+  sr/=n; sg/=n; sb/=n;
+  const t2=tol*tol, vis=new Uint8Array(W*H), stack=new Int32Array(W*H); let sp=0;
+  const consider=p=>{ if(vis[p])return; vis[p]=1; const i=p*4, dr=d[i]-sr, dg=d[i+1]-sg, db=d[i+2]-sb; if(dr*dr+dg*dg+db*db<=t2){ d[i+3]=0; stack[sp++]=p; } };
+  for(let x=0;x<W;x++){ consider(x); consider((H-1)*W+x); } for(let y=0;y<H;y++){ consider(y*W); consider(y*W+W-1); }
+  while(sp){ const p=stack[--sp], x=p%W, y=(p/W)|0; if(x+1<W)consider(p+1); if(x>0)consider(p-1); if(y+1<H)consider(p+W); if(y>0)consider(p-W); }
+  g.putImageData(id,0,0); return c;
+}
+// affine-map a source triangle onto a destination triangle (textured)
+function texTri(g,img,s,d){
+  g.save(); g.beginPath(); g.moveTo(d[0][0],d[0][1]); g.lineTo(d[1][0],d[1][1]); g.lineTo(d[2][0],d[2][1]); g.closePath(); g.clip();
+  const x0=s[0][0],y0=s[0][1],x1=s[1][0],y1=s[1][1],x2=s[2][0],y2=s[2][1];
+  const u0=d[0][0],v0=d[0][1],u1=d[1][0],v1=d[1][1],u2=d[2][0],v2=d[2][1];
+  const den=x0*(y2-y1)-x1*y2+x2*y1+(x1-x2)*y0; if(!den){g.restore();return;}
+  const a=-(y0*(u2-u1)-y1*u2+y2*u1+(y1-y2)*u0)/den;
+  const b=(y1*v2+y0*(v1-v2)-y2*v1+(y2-y1)*v0)/den;
+  const c2=(x0*(u2-u1)-x1*u2+x2*u1+(x1-x2)*u0)/den;
+  const dd=-(x1*v2+x0*(v1-v2)-x2*v1+(x2-x1)*v0)/den;
+  const e=(x0*(y2*u1-y1*u2)+y0*(x1*u2-x2*u1)+(x2*y1-x1*y2)*u0)/den;
+  const f=(x0*(y2*v1-y1*v2)+y0*(x1*v2-x2*v1)+(x2*y1-x1*y2)*v0)/den;
+  g.setTransform(a,b,c2,dd,e,f); g.drawImage(img,0,0); g.restore(); g.setTransform(1,0,0,1,0,0);
+}
+// keystone perspective via a triangle mesh (kh,kv in -1..1)
+function warpKeystone(src, kh, kv){
+  const W=src.width, H=src.height, out=document.createElement('canvas'); out.width=W; out.height=H; const g=out.getContext('2d');
+  const tIn=Math.max(0,kv)*W*0.22, bIn=Math.max(0,-kv)*W*0.22, lIn=Math.max(0,kh)*H*0.22, rIn=Math.max(0,-kh)*H*0.22;
+  const TL=[tIn,lIn], TR=[W-tIn,rIn], BR=[W-bIn,H-rIn], BL=[bIn,H-lIn];   // destination quad
+  const bilerp=(u,v)=>[ (1-v)*((1-u)*TL[0]+u*TR[0])+v*((1-u)*BL[0]+u*BR[0]), (1-v)*((1-u)*TL[1]+u*TR[1])+v*((1-u)*BL[1]+u*BR[1]) ];
+  const N=12;
+  for(let j=0;j<N;j++) for(let i=0;i<N;i++){
+    const u0=i/N,u1=(i+1)/N,v0=j/N,v1=(j+1)/N;
+    const s00=[u0*W,v0*H],s10=[u1*W,v0*H],s11=[u1*W,v1*H],s01=[u0*W,v1*H];
+    const d00=bilerp(u0,v0),d10=bilerp(u1,v0),d11=bilerp(u1,v1),d01=bilerp(u0,v1);
+    texTri(g,src,[s00,s10,s11],[d00,d10,d11]); texTri(g,src,[s00,s11,s01],[d00,d11,d01]);
+  }
+  return out;
+}
+async function processImage(w){
+  const base=_images[w.id]; if(!base){ delete _proc[w.id]; return; }
+  if(!needsProc(w)){ delete _proc[w.id]; return; }
+  try{
+    let c = w.cut ? cutToCanvas(base, w.cutTol||36) : baseCanvas(base);
+    if(hasPersp(w)) c = warpKeystone(c, (w.persp.kh||0)/100, (w.persp.kv||0)/100);
+    _proc[w.id]=await loadImg(c.toDataURL('image/png'));
+  }catch(e){ console.warn('process',e); }
+}
+function clampTx(tx){ const m=(tx.s-1)/2; tx.x=Math.max(-m,Math.min(m,tx.x)); tx.y=Math.max(-m,Math.min(m,tx.y)); }
+function ideaFont(size){ const fam=S.titleFont; const it=fam.includes('Poppins')?'italic ':'italic '; return `${it}400 ${size}px ${fam}`; }
+
+// ---------------- watermark ----------------
+function drawWatermark(g,x,y,w,h){
+  _wmBox=null;
+  if(!S.wmText) return;
+  g.save(); g.globalAlpha=S.wmOp; g.fillStyle=S.accent;
+  if(S.wmPos==='tile'){
+    g.beginPath(); g.rect(x,y,w,h); g.clip();
+    g.font=`600 ${Math.round(w*0.03)}px 'Fredoka',sans-serif`; g.textAlign='left'; g.textBaseline='middle';
+    g.translate(x+w/2,y+h/2); g.rotate(-Math.PI/9); g.translate(-(x+w/2),-(y+h/2));
+    const tw=g.measureText(S.wmText).width+w*0.10, th=w*0.11;
+    for(let yy=y-h*0.3; yy<y+h*1.3; yy+=th) for(let xx=x-w*0.3; xx<x+w*1.3; xx+=tw) g.fillText(S.wmText,xx,yy);
+    g.restore(); return;
+  }
+  const fs=Math.round(w*0.033); g.font=`600 ${fs}px 'Fredoka',sans-serif`;
+  const tw=g.measureText(S.wmText).width, th=fs, pad=w*0.035, p=S.wmPos;
+  let bx,by;
+  if(p==='free' && S.wmX!=null){ bx=x+S.wmX*w-tw/2; by=y+S.wmY*h-th/2; }
+  else { bx = p.endsWith('l')?x+pad:(p==='center'?x+w/2-tw/2:x+w-pad-tw);
+         by = p[0]==='t'?y+pad:(p==='center'?y+h/2-th/2:y+h-pad-th); }
+  bx=Math.max(x,Math.min(x+w-tw,bx)); by=Math.max(y,Math.min(y+h-th,by));
+  g.textAlign='left'; g.textBaseline='top'; g.fillText(S.wmText,bx,by);
+  g.restore();
+  _wmBox={x:bx,y:by,w:tw,h:th};
+}
+// ---------------- image adjustments (brightness / contrast / saturation / exposure / warmth) ----------------
+function filterStr(a){ if(!a) return 'none';
+  const b=(1+(a.br||0)/200).toFixed(3), c=(1+(a.ct||0)/150).toFixed(3), s=Math.max(0,1+(a.sa||0)/100).toFixed(3);
+  return `brightness(${b}) contrast(${c}) saturate(${s})`; }
+function applyOverlays(g,x,y,w,h,a){ if(!a) return;
+  const e=(a.ex||0)/100, tp=(a.tp||0)/100;
+  if(e!==0){ g.save(); g.globalCompositeOperation = e>0?'screen':'multiply'; g.globalAlpha=Math.min(0.6,Math.abs(e)*0.55); g.fillStyle = e>0?'#ffffff':'#000000'; g.fillRect(x,y,w,h); g.restore(); }
+  if(tp!==0){ g.save(); g.globalCompositeOperation='soft-light'; g.globalAlpha=Math.min(0.75,Math.abs(tp)*0.7); g.fillStyle = tp>0?'#ff7a2f':'#3a8bff'; g.fillRect(x,y,w,h); g.restore(); }
+}
+// draw an image into a fixed box with adjustments + clip (used by grid / video)
+function drawImgAdj(g,im,x,y,w,h,a){
+  g.save(); g.beginPath(); g.rect(x,y,w,h); g.clip();
+  g.filter=filterStr(a); g.drawImage(im,x,y,w,h); g.filter='none';
+  applyOverlays(g,x,y,w,h,a); g.restore();
+}
+// single mode: pan/zoom/straighten transform + adjustments
+function drawArtImage(g,im,x,y,w,h,tx,a){
+  const rot=(tx.rot||0)*Math.PI/180;
+  const C=Math.abs(Math.cos(rot)), Sn=Math.abs(Math.sin(rot));
+  const cover = rot ? Math.max((w*C+h*Sn)/w, (w*Sn+h*C)/h) : 1;   // scale so the rotated image still fills the box
+  const eff = tx.s*cover, m=(eff-1)/2;
+  tx.x=Math.max(-m,Math.min(m,tx.x)); tx.y=Math.max(-m,Math.min(m,tx.y));
+  g.save(); g.beginPath(); g.rect(x,y,w,h); g.clip();
+  g.filter=filterStr(a);
+  g.translate(x+w/2+tx.x*w, y+h/2+tx.y*h); g.rotate(rot);
+  g.drawImage(im, -w*eff/2, -h*eff/2, w*eff, h*eff);
+  g.filter='none'; g.setTransform(1,0,0,1,0,0);
+  applyOverlays(g,x,y,w,h,a); g.restore();
+}
+
+// ---------------- single render ----------------
+let _lay=null, _objs=null, _wmBox=null;
+function drawSingle(g, work){
+  const W=1080, A=accentOn(), T=inkSet(), alignC=S.align==='center', FAM=S.titleFont;
+  const M=Math.round(W*S.margin), artX=M, artW=W-2*M;
+  const im=imgOf(work); const imgAR=im?im.width/im.height:0.8;
+  const Ts=Math.round(W*0.0335), Is=Math.round(W*0.023), Sg=Math.round(W*0.058), lineH=Math.round(Is*1.6);
+  g.font=ideaFont(Is);
+  const ideaLines = work.idea ? wrap(work.idea,artW) : [];
+  const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(S.sign||work.date);
+  let capH=0; const gTop=Math.round(M*0.85), bottom=Math.round(M*0.95);
+  if(hasT)capH+=Math.round(Ts*1.18); if(hasT&&hasI)capH+=Math.round(Ts*0.35);
+  if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.8); if(hasS)capH+=Math.round(Sg*0.95);
+  // canvas height + art box: Auto = native ratio; fixed = chosen IG ratio (image contained & padded — never cropped)
+  let H, artBoxY=M, artBoxH, capTop;
+  if(S.format==='auto'){ artBoxH=Math.round(artW/imgAR); capTop=artBoxY+artBoxH+gTop; H=capTop+capH+bottom; }
+  else { H=Math.round(W/S.format); capTop=H-bottom-capH; artBoxH=Math.max(40, capTop-gTop-artBoxY); }
+  cv.width=W; cv.height=H;
+  // image display rect: contained inside the art box (no crop) — also the interactive/pan box
+  let ir;
+  if(im){ const c=contain(im.width,im.height,artW,artBoxH); ir={artX:Math.round(artX+(artW-c.w)/2), artY:Math.round(artBoxY+(artBoxH-c.h)/2), artW:Math.round(c.w), artH:Math.round(c.h)}; }
+  else ir={artX, artY:artBoxY, artW, artH:artBoxH};
+  _lay=ir;
+  g.fillStyle=S.bg; g.fillRect(0,0,W,H);
+  if(im){ drawArtImage(g,im,ir.artX,ir.artY,ir.artW,ir.artH,txOf(work),work.adj); drawWatermark(g,ir.artX,ir.artY,ir.artW,ir.artH); }
+  else{ g.fillStyle=T.ph; g.fillRect(ir.artX,ir.artY,ir.artW,ir.artH); g.fillStyle=T.soft; g.font="500 25px 'Fredoka',sans-serif"; g.textAlign='center'; g.fillText(t('uploadHere'),ir.artX+ir.artW/2,ir.artY+ir.artH/2); g.textAlign='left'; }
+  g.strokeStyle=T.key; g.lineWidth=1.5; g.strokeRect(ir.artX+.75,ir.artY+.75,ir.artW-1.5,ir.artH-1.5);
+  const cxL=alignC?W/2:artX; g.textAlign=alignC?'center':'left'; g.textBaseline='top'; let y=capTop; const txt=[];
+  if(hasT){ const ty0=y; g.fillStyle=T.ink; g.font=`500 ${Ts}px ${FAM}`; g.fillText(work.title,cxL,y,artW); txt.push({type:'title',x:artX,y:ty0,w:artW,h:Math.round(Ts*1.18)}); y+=Math.round(Ts*1.18)+(hasI?Math.round(Ts*0.35):0); }
+  if(hasI){ const iy0=y; g.fillStyle=T.idea; g.font=ideaFont(Is); ideaLines.forEach(l=>{g.fillText(l,cxL,y,artW); y+=lineH;}); txt.push({type:'idea',x:artX,y:iy0,w:artW,h:ideaLines.length*lineH}); }
+  if((hasT||hasI)&&hasS) y+=Math.round(M*0.8);
+  if(hasS){ g.textBaseline='alphabetic'; const sb=y+Math.round(Sg*0.7);
+    if(S.sign){ g.font=`${Sg}px ${S.signFont}`; g.fillStyle=A; g.textAlign=alignC?'center':'left'; g.fillText(S.sign,alignC?W/2:artX,sb);
+      const sw=g.measureText(S.sign).width; txt.push({type:'sign',x:alignC?W/2-sw/2:artX,y:sb-Math.round(Sg*0.78),w:sw,h:Math.round(Sg*0.95)}); }
+    if(work.date){ g.font=`500 ${Math.round(W*0.0205)}px ${FAM}`; g.fillStyle=T.soft; g.letterSpacing='3px';
+      const dstr=fmtDate(work.date), dw=g.measureText(dstr).width+3*dstr.length, dh=Math.round(W*0.0205*1.4);
+      if(alignC){ g.textAlign='center'; g.fillText(dstr,W/2,sb+Math.round(Sg*0.42)); txt.push({type:'date',x:W/2-dw/2,y:sb+Math.round(Sg*0.12),w:dw,h:dh}); }
+      else{ g.textAlign='right'; g.fillText(dstr,artX+artW,sb-Math.round(Sg*0.14)); txt.push({type:'date',x:artX+artW-dw,y:sb-Math.round(Sg*0.6),w:dw,h:dh}); }
+      g.letterSpacing='0px'; }
+    g.textAlign='left'; }
+  // interactive object list (single mode): watermark + text + artwork, in hit-priority order
+  _objs=[];
+  if(_wmBox && S.wmText && S.wmPos!=='tile') _objs.push(Object.assign({type:'wm'},_wmBox));
+  _objs.push(...txt);
+  _objs.push({type:'art',x:ir.artX,y:ir.artY,w:ir.artW,h:ir.artH});
+}
+
+// ---------------- series grid render ----------------
+function drawGrid(g){
+  const W=1080, A=accentOn(), T=inkSet(), FAM=S.titleFont, WI=worksWithImg();
+  const pad=Math.round(W*0.052), gap=Math.round(W*0.03);
+  const n=Math.max(WI.length,1);
+  const gl=S.gridLayout||'auto';
+  let cols = gl==='auto' ? (n<=1?1 : n<=4?2 : 3) : gl==='row' ? n : Math.min(n, parseInt(gl));
+  const rows=Math.ceil(n/cols);
+  const cellW=Math.round((W-2*pad-(cols-1)*gap)/cols), artBox=cellW;
+  const tH=Math.round(W*0.034), cellH=artBox+tH;
+  const headH = S.seriesTitle?Math.round(W*0.075):0, footH = S.sign?Math.round(W*0.085):0;
+  const top=pad+headH, H=top+rows*cellH+(rows-1)*gap+footH+pad;
+  cv.width=W; cv.height=H;
+  g.fillStyle=S.bg; g.fillRect(0,0,W,H);
+  if(S.seriesTitle){ g.fillStyle=T.ink; g.font=`500 ${Math.round(W*0.04)}px ${FAM}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(S.seriesTitle,W/2,pad+headH*0.42); }
+  WI.forEach((w,i)=>{ const r=Math.floor(i/cols), c=i%cols;
+    const x=pad+c*(cellW+gap), y=top+r*(cellH+gap);
+    const im=imgOf(w); const {w:dw,h:dh}=contain(im.width,im.height,cellW,artBox);
+    const dx=x+(cellW-dw)/2, dy=y+(artBox-dh)/2;
+    drawImgAdj(g,im,dx,dy,dw,dh,w.adj); drawWatermark(g,dx,dy,dw,dh);
+    g.strokeStyle=T.key; g.lineWidth=1.5; g.strokeRect(dx+.75,dy+.75,dw-1.5,dh-1.5);
+    if(w.title){ g.fillStyle=T.idea; g.font=ideaFont(Math.round(W*0.019)); g.textAlign='center'; g.textBaseline='middle'; g.fillText(w.title,x+cellW/2,y+artBox+tH*0.5,cellW); }
+  });
+  if(!WI.length){ g.fillStyle=T.soft; g.font="500 26px 'Fredoka',sans-serif"; g.textAlign='center'; g.textBaseline='middle'; g.fillText(t('uploadHere'),W/2,top+artBox/2); }
+  if(S.sign){ g.fillStyle=A; g.font=`${Math.round(W*0.05)}px ${S.signFont}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(S.sign,W/2,H-pad-footH*0.42); }
+  g.textBaseline='alphabetic'; g.textAlign='left';
+}
+
+// ---------------- video frame render ----------------
+function drawVideoFrame(g,W,H,work){
+  const A=accentOn(), T=inkSet(), FAM=S.titleFont, M=Math.round(W*0.085);
+  const im=imgOf(work); if(!im)return;
+  const Ts=Math.round(W*0.04), Is=Math.round(W*0.026), Sg=Math.round(W*0.07), lineH=Math.round(Is*1.55);
+  g.font=ideaFont(Is);
+  const ideaLines = work.idea?wrap(work.idea,W-2*M):[];
+  const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(S.sign||work.date);
+  let capH=0; if(hasT)capH+=Math.round(Ts*1.2); if(hasT&&hasI)capH+=Math.round(Ts*0.4);
+  if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.7); if(hasS)capH+=Math.round(Sg*0.9);
+  const gap=Math.round(M*0.7), artMaxH=H-2*M-capH-gap;
+  const {w:dw,h:dh}=contain(im.width,im.height,W-2*M,artMaxH);
+  const blockH=dh+gap+capH, topY=Math.max(M,(H-blockH)/2), dx=(W-dw)/2, dy=topY;
+  drawImgAdj(g,im,dx,dy,dw,dh,work.adj); drawWatermark(g,dx,dy,dw,dh);
+  g.strokeStyle=T.key; g.lineWidth=2; g.strokeRect(dx+1,dy+1,dw-2,dh-2);
+  let y=dy+dh+gap; g.textAlign='center'; g.textBaseline='top';
+  if(hasT){ g.fillStyle=T.ink; g.font=`500 ${Ts}px ${FAM}`; g.fillText(work.title,W/2,y,W-2*M); y+=Math.round(Ts*1.2)+(hasI?Math.round(Ts*0.4):0); }
+  if(hasI){ g.fillStyle=T.idea; g.font=ideaFont(Is); ideaLines.forEach(l=>{g.fillText(l,W/2,y,W-2*M);y+=lineH;}); }
+  if((hasT||hasI)&&hasS) y+=Math.round(M*0.7);
+  if(hasS){ g.textBaseline='alphabetic'; const sb=y+Math.round(Sg*0.7);
+    if(S.sign){ g.font=`${Sg}px ${S.signFont}`; g.fillStyle=A; g.fillText(S.sign,W/2,sb); }
+    if(work.date){ g.font=`500 ${Math.round(W*0.024)}px ${FAM}`; g.fillStyle=T.soft; g.letterSpacing='3px'; g.fillText(fmtDate(work.date),W/2,sb+Math.round(Sg*0.42)); g.letterSpacing='0px'; } }
+  g.textBaseline='alphabetic'; g.textAlign='left';
+}
+
+function draw(){ if(S.mode==='grid') drawGrid(ctx); else if(S.mode==='slice') drawSlice(ctx); else drawSingle(ctx, cur()); }
+
+// ---------------- mural slice (split one artwork into tiles for the IG profile grid) ----------------
+function sliceDims(){ const p=(S.slice||'3x3').split('x').map(Number); return [p[0]||3, p[1]||3]; }
+function renderSliceBase(g,W,H,work){
+  g.fillStyle=S.bg; g.fillRect(0,0,W,H);
+  const im=imgOf(work); if(!im) return;
+  const s=Math.max(W/im.width,H/im.height), dw=im.width*s, dh=im.height*s, dx=(W-dw)/2, dy=(H-dh)/2;
+  g.save(); g.beginPath(); g.rect(0,0,W,H); g.clip();
+  g.filter=filterStr(work.adj); g.drawImage(im,dx,dy,dw,dh); g.filter='none';
+  applyOverlays(g,0,0,W,H,work.adj); g.restore();
+}
+function drawSlice(g){
+  const [cols,rows]=sliceDims(), cell=Math.round(1080/cols), W=cols*cell, H=rows*cell;
+  cv.width=W; cv.height=H; _objs=null;
+  if(!_images[cur().id]){ g.fillStyle=S.bg; g.fillRect(0,0,W,H); g.fillStyle=inkSet().soft; g.font="500 26px 'Fredoka',sans-serif"; g.textAlign='center'; g.textBaseline='middle'; g.fillText(t('uploadHere'),W/2,H/2); g.textAlign='left'; g.textBaseline='alphabetic'; return; }
+  renderSliceBase(g,W,H,cur());
+  g.save(); g.lineWidth=Math.max(2,cell*0.012);
+  g.strokeStyle='rgba(255,255,255,.92)';
+  for(let c=1;c<cols;c++){ g.beginPath(); g.moveTo(c*cell,0); g.lineTo(c*cell,H); g.stroke(); }
+  for(let r=1;r<rows;r++){ g.beginPath(); g.moveTo(0,r*cell); g.lineTo(W,r*cell); g.stroke(); }
+  g.restore();
+}
+// minimal store-method ZIP builder (PNGs are already compressed, so no deflate needed)
+function crc32b(buf){ let c=~0; for(let i=0;i<buf.length;i++){ c^=buf[i]; for(let k=0;k<8;k++) c=(c>>>1)^(0xEDB88320&-(c&1)); } return (~c)>>>0; }
+function zipStore(files){
+  const enc=new TextEncoder(), chunks=[], central=[]; let offset=0;
+  for(const f of files){ const name=enc.encode(f.name), data=f.data, crc=crc32b(data);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint32(14,crc,true); lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,name.length,true);
+    chunks.push(new Uint8Array(lh.buffer),name,data);
+    const cd=new DataView(new ArrayBuffer(46));
+    cd.setUint32(0,0x02014b50,true); cd.setUint16(4,20,true); cd.setUint16(6,20,true); cd.setUint32(16,crc,true); cd.setUint32(20,data.length,true); cd.setUint32(24,data.length,true); cd.setUint16(28,name.length,true); cd.setUint32(42,offset,true);
+    central.push({head:new Uint8Array(cd.buffer),name}); offset+=30+name.length+data.length;
+  }
+  const cdStart=offset; let cdSize=0; const cdChunks=[];
+  for(const c of central){ cdChunks.push(c.head,c.name); cdSize+=c.head.length+c.name.length; }
+  const eocd=new DataView(new ArrayBuffer(22));
+  eocd.setUint32(0,0x06054b50,true); eocd.setUint16(8,files.length,true); eocd.setUint16(10,files.length,true); eocd.setUint32(12,cdSize,true); eocd.setUint32(16,cdStart,true);
+  const all=[...chunks,...cdChunks,new Uint8Array(eocd.buffer)]; let total=0; all.forEach(u=>total+=u.length);
+  const out=new Uint8Array(total); let p=0; all.forEach(u=>{ out.set(u,p); p+=u.length; }); return out;
+}
+const tilesBtn=document.getElementById('exportTiles');
+tilesBtn.onclick=async ()=>{
+  if(!_images[cur().id]){ alert(t('needImg')); return; }
+  const lbl=tilesBtn.textContent; tilesBtn.disabled=true; tilesBtn.textContent=t('generating');
+  try{
+    const [cols,rows]=sliceDims(), cell=Math.round(1080/cols), W=cols*cell, H=rows*cell;
+    const full=document.createElement('canvas'); full.width=W; full.height=H; renderSliceBase(full.getContext('2d'),W,H,cur());
+    const files=[]; let idx=1;
+    for(let r=rows-1;r>=0;r--) for(let c=cols-1;c>=0;c--){          // reverse reading order = IG upload order
+      const tc=document.createElement('canvas'); tc.width=cell; tc.height=cell; tc.getContext('2d').drawImage(full,c*cell,r*cell,cell,cell,0,0,cell,cell);
+      const blob=await new Promise(res=>tc.toBlob(res,'image/png'));
+      files.push({name:`post-${String(idx).padStart(2,'0')}_r${r+1}c${c+1}.png`, data:new Uint8Array(await blob.arrayBuffer())}); idx++;
+    }
+    files.push({name:'README.txt', data:new TextEncoder().encode('Upload to Instagram in filename order (post-01 first, then post-02 …). Your profile grid will assemble into the full image.')});
+    const zip=zipStore(files);
+    await deliver(new Blob([zip],{type:'application/zip'}), `${(cur().title||'mural').replace(/\s+/g,'_')}_${cols}x${rows}.zip`, '');
+    tilesBtn.textContent=t('sliceDone'); setTimeout(()=>tilesBtn.textContent=lbl,1800);
+  }catch(e){ console.error(e); alert('Slice error: '+e.message); tilesBtn.textContent=lbl; }
+  tilesBtn.disabled=false;
+};
+
+// ---------------- drag / zoom on canvas ----------------
+function updateImgCtrl(){
+  const single = S.mode==='single', slice = S.mode==='slice';
+  const show = single && _images[cur().id];
+  document.getElementById('imgctrl').style.display = show?'flex':'none';
+  document.getElementById('formatRow').style.display = single?'flex':'none';
+  document.getElementById('gridRow').style.display = S.mode==='grid'?'flex':'none';
+  document.getElementById('exportArea').style.display = slice?'none':'';
+  document.getElementById('sliceArea').style.display = slice?'':'none';
+  cv.classList.toggle('pan', !!show);
+  if(show) document.getElementById('zoom').value = txOf(cur()).s;
+}
+let _drag=null, _hoverKey=null;
+function toCv(e){ const r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*(cv.width/r.width), y:(e.clientY-r.top)*(cv.height/r.height)}; }
+function hitTest(cx,cy){ if(!_objs)return null; for(const o of _objs){ if(cx>=o.x&&cx<=o.x+o.w&&cy>=o.y&&cy<=o.y+o.h) return o; } return null; }
+function outline(o){ if(!o)return; const g=ctx; g.save(); g.strokeStyle='rgba(122,165,245,.95)'; g.lineWidth=2; g.setLineDash([7,5]); g.strokeRect(o.x-5,o.y-5,o.w+10,o.h+10); g.restore(); }
+function focusObject(type){ const map={title:'title',idea:'idea',sign:'sign',date:'date',wm:'wmText'}; const id=map[type]; if(!id)return;
+  const el=document.getElementById(id); const panel=el.closest('.panel'); if(panel)panel.classList.remove('collapsed');
+  el.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>el.focus(),200);
+  el.style.boxShadow='0 0 0 3px rgba(122,165,245,.55)'; setTimeout(()=>{el.style.boxShadow='';},1000); }
+cv.addEventListener('pointerdown',e=>{ if(S.mode!=='single'||_playing)return;
+  const p=toCv(e), hit=hitTest(p.x,p.y);
+  _drag={sx:e.clientX,sy:e.clientY,moved:false,hit,mode:null};
+  if(hit&&hit.type==='wm') _drag.mode='wm';
+  else if(_images[cur().id] && (!hit||hit.type==='art')){ _drag.mode='pan'; _drag.x=txOf(cur()).x; _drag.y=txOf(cur()).y; }
+  else _drag.mode='select';
+  cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointermove',e=>{
+  if(_drag){ if(Math.abs(e.clientX-_drag.sx)>3||Math.abs(e.clientY-_drag.sy)>3)_drag.moved=true;
+    if(_drag.mode==='wm'&&_lay){ const p=toCv(e); S.wmPos='free'; S.wmX=Math.max(0,Math.min(1,(p.x-_lay.artX)/_lay.artW)); S.wmY=Math.max(0,Math.min(1,(p.y-_lay.artY)/_lay.artH)); document.querySelectorAll('#wmPos button').forEach(b=>b.classList.remove('on')); draw(); if(_wmBox)outline(_wmBox); }
+    else if(_drag.mode==='pan'&&_lay){ const sc=cv.width/cv.clientWidth, tx=txOf(cur()); tx.x=_drag.x+(e.clientX-_drag.sx)*sc/_lay.artW; tx.y=_drag.y+(e.clientY-_drag.sy)*sc/_lay.artH; draw(); }
+    return; }
+  if(S.mode!=='single')return;
+  const p=toCv(e), hit=hitTest(p.x,p.y);
+  cv.style.cursor = hit?(hit.type==='wm'?'grab':(hit.type==='art'?(txOf(cur()).s>1?'grab':'default'):'pointer')):'default';
+  const key=hit?hit.type+'@'+(hit.x|0)+','+(hit.y|0):null;
+  if(key!==_hoverKey){ _hoverKey=key; draw(); if(hit&&hit.type!=='art') outline(hit); }
+});
+cv.addEventListener('pointerup',()=>{ if(!_drag)return;
+  if(_drag.mode==='select'&&!_drag.moved&&_drag.hit&&_drag.hit.type!=='art') focusObject(_drag.hit.type);
+  if(_drag.mode==='wm'||_drag.mode==='pan') save();
+  _drag=null; _hoverKey=null; draw(); });
+cv.addEventListener('pointerleave',()=>{ if(!_drag&&_hoverKey){ _hoverKey=null; cv.style.cursor='default'; draw(); } });
+cv.addEventListener('wheel',e=>{ if(S.mode==='grid'||!_images[cur().id])return; e.preventDefault();
+  const tx=txOf(cur()); tx.s=Math.min(4,Math.max(1, tx.s*(1-e.deltaY*0.0015))); if(tx.s<=1.001){tx.s=1;tx.x=0;tx.y=0;}
+  document.getElementById('zoom').value=tx.s; draw(); save(); },{passive:false});
+document.getElementById('zoom').oninput=e=>{ const tx=txOf(cur()); tx.s=parseFloat(e.target.value); if(tx.s<=1.001){tx.x=0;tx.y=0;} draw(); save(); };
+document.getElementById('resetPos').onclick=()=>{ cur().tx={s:1,x:0,y:0,rot:(cur().tx&&cur().tx.rot)||0}; document.getElementById('zoom').value=1; draw(); save(); };
+
+// ---------------- caption ----------------
+function buildCaption(){
+  const w=cur(); const lines=[];
+  const titleLine = S.seriesTitle ? (w.title? `${S.seriesTitle} — ${w.title}` : S.seriesTitle) : w.title;
+  if(titleLine) lines.push((S.lang==='en'||S.lang==='es')?`“${titleLine}”`:`「${titleLine}」`);
+  if(w.idea) lines.push(w.idea);
+  const meta=[]; if(S.sign)meta.push(S.sign); if(w.date)meta.push(fmtDate(w.date));
+  const sep = (S.lang==='en'||S.lang==='es')?', ':' · ';
+  if(meta.length) lines.push((lines.length?'\n':'')+'— '+meta.join(sep));
+  let cap=lines.join('\n');
+  if(S.hashtags.trim()) cap+='\n\n'+S.hashtags.trim();
+  document.getElementById('captionbox').textContent=cap;
+  return cap;
+}
+document.getElementById('copyCap').onclick=async ()=>{ const cap=buildCaption();
+  try{ await navigator.clipboard.writeText(cap); }catch(e){ const ta=document.createElement('textarea'); ta.value=cap; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  const b=document.getElementById('copyCap'); b.textContent=t('copied'); setTimeout(()=>b.textContent=t('copyCap'),1400); };
+
+// ---------------- export PNG ----------------
+document.getElementById('exportPng').onclick=()=>{ draw();
+  cv.toBlob(b=>{ const base=(S.mode==='grid'?(S.seriesTitle||'series'):(cur().title||'artwork')).replace(/\s+/g,'_');
+    deliver(b, `${base}_${cur().date||'post'}.png`, IS_NATIVE?buildCaption():''); },'image/png'); };
+
+// ---------------- share to Instagram (Web Share API) ----------------
+const shareBtn=document.getElementById('shareIg');
+shareBtn.onclick=async ()=>{
+  draw();
+  const cap=buildCaption();
+  try{ await navigator.clipboard.writeText(cap); }catch(e){}
+  const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+  const fname=((S.mode==='grid'?S.seriesTitle:cur().title)||'artwork').replace(/\s+/g,'_')+'.png';
+  if(IS_NATIVE){ await deliver(blob, fname, cap); const lbl=shareBtn.textContent; shareBtn.textContent=t('shared'); setTimeout(()=>shareBtn.textContent=lbl,1600); return; }
+  const fileObj=new File([blob],fname,{type:'image/png'});
+  if(navigator.canShare && navigator.canShare({files:[fileObj]})){
+    try{ await navigator.share({files:[fileObj], text:cap, title:S.seriesTitle||cur().title||'Artwork'});
+      const lbl=shareBtn.textContent; shareBtn.textContent=t('shared'); setTimeout(()=>shareBtn.textContent=lbl,1600); return;
+    }catch(e){ if(e.name==='AbortError') return; }
+  }
+  // desktop fallback: download image + caption already copied
+  const a=document.createElement('a'); a.download=fname; a.href=URL.createObjectURL(blob); a.click();
+  alert(t('shareHint'));
+};
+
+// ---------------- play preview ----------------
+let _playing=false;
+const playBtn=document.getElementById('playPreview');
+playBtn.onclick=()=>{ if(_playing){ _playing=false; return; } playPreview(); };
+async function playPreview(){
+  const WI=worksWithImg(); if(!WI.length){ alert(t('needImg')); return; }
+  _playing=true; playBtn.textContent='■ '+t('stop'); cv.classList.remove('pan');
+  const W=1080,H=1350,secs=S.videoSecs,fade=Math.min(0.5,secs*0.3);
+  cv.width=W; cv.height=H; const g=ctx;
+  const total=WI.length*secs*1000, start=performance.now();
+  await new Promise(res=>{ (function tick(){ if(!_playing){res();return;} const el=performance.now()-start; if(el>=total){res();return;}
+    const ts=el/1000; let i=Math.min(WI.length-1,Math.floor(ts/secs)); const lo=ts-i*secs;
+    let a=0; if(lo<fade)a=1-lo/fade; else if(lo>secs-fade)a=(lo-(secs-fade))/fade;
+    g.fillStyle=S.bg; g.fillRect(0,0,W,H); drawVideoFrame(g,W,H,WI[i]);
+    if(a>0){ g.globalAlpha=a; g.fillStyle=S.bg; g.fillRect(0,0,W,H); g.globalAlpha=1; }
+    requestAnimationFrame(tick); })(); });
+  _playing=false; playBtn.textContent='▶ '+t('play'); updateImgCtrl(); draw();
+}
+
+// ---------------- export video ----------------
+const vBtn=document.getElementById('exportVideo');
+vBtn.onclick=async ()=>{
+  const WI=worksWithImg(); if(!WI.length){ alert(t('needImg')); return; }
+  const W=1080,H=1350,fps=30,secs=S.videoSecs,fade=Math.min(0.5,secs*0.3);
+  vBtn.disabled=true; const lbl=vBtn.textContent; vBtn.textContent=t('generating');
+  try{
+    const c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+    g.fillStyle=S.bg; g.fillRect(0,0,W,H);
+    const stream=c.captureStream(fps);
+    let mime='', ext='mp4';
+    for(const m of ['video/mp4;codecs=avc1.42E01E','video/mp4']){ if(MediaRecorder.isTypeSupported(m)){mime=m;ext='mp4';break;} }
+    if(!mime) for(const m of ['video/webm;codecs=vp9','video/webm']){ if(MediaRecorder.isTypeSupported(m)){mime=m;ext='webm';break;} }
+    const rec=new MediaRecorder(stream,{mimeType:mime, videoBitsPerSecond:10000000});
+    const chunks=[]; rec.ondataavailable=e=>{ if(e.data.size)chunks.push(e.data); };
+    const stopped=new Promise(r=>rec.onstop=r);
+    rec.start(); const total=WI.length*secs*1000, start=performance.now(), frameMs=1000/fps;
+    await new Promise(res=>{ (function tick(){ const el=performance.now()-start; if(el>=total){res();return;}
+      const ts=el/1000; let i=Math.min(WI.length-1,Math.floor(ts/secs)); const lo=ts-i*secs;
+      let a=0; if(lo<fade)a=1-lo/fade; else if(lo>secs-fade)a=(lo-(secs-fade))/fade;
+      g.fillStyle=S.bg; g.fillRect(0,0,W,H); drawVideoFrame(g,W,H,WI[i]);
+      if(a>0){ g.globalAlpha=a; g.fillStyle=S.bg; g.fillRect(0,0,W,H); g.globalAlpha=1; }
+      const trk=stream.getVideoTracks()[0]; if(trk&&trk.requestFrame) trk.requestFrame();
+      setTimeout(tick, frameMs); })(); });
+    rec.stop(); await stopped;
+    const blob=new Blob(chunks,{type: ext==='mp4'?'video/mp4':'video/webm'});
+    await deliver(blob, `${(S.seriesTitle||'series').replace(/\s+/g,'_')}_slideshow.${ext}`, '');
+    vBtn.textContent='✓ '+ext.toUpperCase(); setTimeout(()=>vBtn.textContent=lbl,1800);
+  }catch(err){ console.error(err); alert('Video error: '+err.message); vBtn.textContent=lbl; }
+  vBtn.disabled=false;
+};
+
+// ---------------- collapsible panels (declutter the form wall into an inspector) ----------------
+document.querySelectorAll('.app > div:first-child .panel').forEach((p,i)=>{
+  const tt=p.querySelector('.ptitle'); if(!tt)return;
+  tt.addEventListener('click',()=>p.classList.toggle('collapsed'));
+  if(i>=2) p.classList.add('collapsed');   // keep Works + Style open, fold the rest
+});
+
+// ---------------- init ----------------
+function init(){
+  document.getElementById('sign').value=S.sign||'';
+  document.getElementById('seriesTitle').value=S.seriesTitle||'';
+  document.getElementById('wmText').value=S.wmText||'';
+  document.getElementById('hashtags').value=S.hashtags||DEFAULT_TAGS; S.hashtags=document.getElementById('hashtags').value;
+  document.querySelectorAll('#margin button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.m)===S.margin));
+  document.querySelectorAll('#textAlign button').forEach(b=>b.classList.toggle('on',b.dataset.a===S.align));
+  document.querySelectorAll('#signFont button').forEach(b=>b.classList.toggle('on',b.dataset.f===S.signFont));
+  document.querySelectorAll('#titleFont button').forEach(b=>b.classList.toggle('on',b.dataset.f===S.titleFont));
+  document.querySelectorAll('#wmPos button').forEach(b=>b.classList.toggle('on',b.dataset.p===S.wmPos));
+  document.querySelectorAll('#videoSecs button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.s)===S.videoSecs));
+  document.querySelectorAll('#format button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='auto'?'auto':parseFloat(b.dataset.r))===S.format));
+  document.querySelectorAll('#sliceGrid button').forEach(b=>b.classList.toggle('on',b.dataset.g===S.slice));
+  document.querySelectorAll('#gridLayout button').forEach(b=>b.classList.toggle('on',b.dataset.gl===S.gridLayout));
+  document.querySelectorAll('#modetabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
+  syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); applyLang(); draw();
+  restoreImages();
+}
+async function restoreImages(){
+  const stored=await idbGetAll(); let any=false;
+  for(const w of S.works){ if(stored[w.id]){ const im=await loadImg(stored[w.id]); if(im){ _images[w.id]=im; any=true; } } }
+  for(const w of S.works){ if(needsProc(w) && _images[w.id]) await processImage(w); }
+  if(any){ renderWorks(); updateImgCtrl(); draw(); buildCaption(); }
+}
+// register service worker (only works over http/https, e.g. the deployed site — harmless when opened as a local file)
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+if(document.fonts&&document.fonts.ready){
+  Promise.all([
+    document.fonts.load("400 60px 'Mr Dafoe'"), document.fonts.load("400 60px 'Great Vibes'"),
+    document.fonts.load("500 40px 'Fraunces'"), document.fonts.load("italic 400 30px 'Fraunces'"),
+    document.fonts.load("500 40px 'Playfair Display'"),
+  ]).then(init).catch(init);
+  document.fonts.ready.then(()=>{ if(!_playing) draw(); });
+}else init();
+</script>
+</body>
+</html>

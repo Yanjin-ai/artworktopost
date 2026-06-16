@@ -19,27 +19,52 @@
 <style>
   :root{ --paper:#f7f3ec; --ink:#3d3a44; --soft:#9b97a1; --line:#e7e0d6; --card:#fff; }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{ background:var(--paper); color:var(--ink); font-family:"Fredoka",system-ui,sans-serif; line-height:1.6; padding:26px; }
+  html,body{height:100%}
+  body{ background:var(--paper); color:var(--ink); font-family:"Fredoka",system-ui,sans-serif; line-height:1.6; }
   .serif{font-family:"Fraunces",Georgia,serif}
-  .top{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; max-width:1160px; margin:0 auto 24px; flex-wrap:wrap;}
-  h1{font-family:"Fraunces",serif; font-weight:500; font-size:28px; letter-spacing:-.01em; display:flex; align-items:center; gap:10px;}
-  h1 .dot{width:13px;height:13px;border-radius:50%; background:var(--ink);}
-  .sub{color:var(--soft); font-size:13.5px; margin-top:5px;}
-  .langsel{display:flex; gap:6px; flex-wrap:wrap;}
-  .langsel button{font-family:inherit; font-size:13px; padding:6px 11px; border-radius:8px; cursor:pointer;
-    background:#fff; border:1px solid var(--line); color:var(--soft); transition:.15s;}
-  .langsel button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
 
-  .app{display:grid; grid-template-columns:368px 1fr; gap:32px; max-width:1160px; margin:0 auto; align-items:start;}
-  @media(max-width:900px){ .app{grid-template-columns:1fr} }
-  .panel{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px;}
-  .panel + .panel{margin-top:18px;}
-  .ptitle{font-family:"Fraunces",serif; font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;}
-  .ptitle::before{content:""; width:7px;height:7px;border-radius:50%;background:var(--ink); flex:0 0 auto;}
-  .ptitle::after{content:'▾'; margin-left:auto; color:var(--soft); font-size:11px; transition:transform .18s;}
-  .panel.collapsed .ptitle{margin-bottom:0;}
-  .panel.collapsed .ptitle::after{transform:rotate(-90deg);}
-  .panel.collapsed > :not(.ptitle){display:none;}
+  /* ---- app shell: centered phone column ---- */
+  .appwrap{ max-width:480px; margin:0 auto; min-height:100%; display:flex; flex-direction:column; background:var(--paper); }
+
+  /* sticky preview (the core visual anchor) */
+  .preview{ position:sticky; top:0; z-index:20; background:var(--paper); padding:12px 16px 10px; border-bottom:1px solid var(--line); }
+  .gear{ position:absolute; top:12px; right:14px; z-index:25; width:36px;height:36px;border-radius:50%; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:17px; cursor:pointer; display:flex;align-items:center;justify-content:center; }
+  .gear:hover{border-color:var(--ink);}
+  .stagebox{ display:flex; justify-content:center; align-items:center; min-height:130px; }
+  .emptyup{ width:100%; }
+  .emptyup .drop{ padding:48px 18px; font-size:15px; }
+  .pvfoot{ margin-top:9px; }
+  .playbtn{font-family:inherit;font-size:14px;font-weight:500;padding:9px 26px;border-radius:22px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;display:block;margin:0 auto;}
+  .playbtn:hover{border-color:var(--ink);}
+
+  /* scrollable edit area */
+  .editscroll{ flex:1 1 auto; overflow-y:auto; padding:4px 0 96px; }
+  .section{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; margin:14px 16px; }
+  .section.hide{display:none;}
+  .stitle{ font-family:"Fraunces",serif; font-size:15px; font-weight:600; margin-bottom:13px; display:flex; align-items:center; gap:8px; }
+  .stitle::before{content:""; width:6px;height:6px;border-radius:50%;background:var(--ink); flex:0 0 auto;}
+  .shint{font-size:11.5px;color:var(--soft);line-height:1.5;margin-top:6px;}
+
+  /* bottom nav: 3 modes */
+  .tabbar{ position:sticky; bottom:0; z-index:20; display:flex; background:rgba(251,245,238,.95); backdrop-filter:blur(10px); border-top:1px solid var(--line); }
+  .tabbar button{ flex:1; padding:8px 0 9px; background:none; border:none; cursor:pointer; color:var(--soft); font-family:inherit; font-size:11px; display:flex; flex-direction:column; align-items:center; gap:3px; transition:color .15s;}
+  .tabbar button .ic{ font-size:19px; line-height:1; }
+  .tabbar button.on{ color:var(--ink); }
+
+  /* settings overlay */
+  .settings{ position:fixed; inset:0; z-index:60; background:var(--paper); overflow-y:auto; }
+  .settings[hidden]{display:none;}
+  .shead{ position:sticky; top:0; background:var(--paper); display:flex; align-items:center; gap:12px; padding:15px 16px; border-bottom:1px solid var(--line); }
+  .shead .sback{ font-size:22px; background:none;border:none;cursor:pointer;color:var(--ink); line-height:1; }
+  .shead h2{ font-family:"Fraunces",serif; font-weight:600; font-size:18px; }
+  .sbody{ padding:16px; max-width:480px; margin:0 auto; }
+  .srow{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; }
+  .srow label{ margin-bottom:9px; }
+
+  .langsel{display:flex; gap:6px; flex-wrap:wrap;}
+  .langsel button{font-family:inherit; font-size:13px; padding:7px 13px; border-radius:8px; cursor:pointer;
+    background:var(--paper); border:1px solid var(--line); color:var(--soft); transition:.15s;}
+  .langsel button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
   .field{margin-bottom:15px;} .field:last-child{margin-bottom:0;}
   label{display:block; font-size:12.5px; font-weight:500; color:var(--soft); margin-bottom:6px; letter-spacing:.03em;}
   input[type=text], input[type=date], textarea{ width:100%; font-family:inherit; font-size:14.5px; color:var(--ink);
@@ -105,128 +130,60 @@
   .btn:disabled{opacity:.5; cursor:default;}
   .btnrow{display:flex; gap:10px; margin-top:10px;}
 
-  .stage{position:sticky; top:26px; display:flex; flex-direction:column; align-items:center; gap:12px;}
-  .modetabs{display:flex; gap:8px;}
-  .modetabs button{font-family:inherit; font-size:13.5px; padding:8px 18px; border-radius:20px; cursor:pointer; background:#fff; border:1px solid var(--line); color:var(--soft); transition:.15s;}
-  .modetabs button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
-  .canvas-wrap{background:#2a2730; border-radius:14px; border:none; padding:18px; box-shadow:0 18px 50px -28px rgba(0,0,0,.6);}
-  canvas{display:block; width:100%; height:auto; max-width:430px; border-radius:4px; box-shadow:0 8px 28px -10px rgba(0,0,0,.5);}
+  .canvas-wrap{background:#2a2730; border-radius:12px; border:none; padding:11px; box-shadow:0 14px 38px -24px rgba(0,0,0,.6); max-width:100%;}
+  canvas{display:block; max-width:100%; max-height:44vh; width:auto; height:auto; border-radius:4px; box-shadow:0 8px 24px -10px rgba(0,0,0,.5);}
   canvas.pan{cursor:grab;} canvas.pan:active{cursor:grabbing;}
-  .imgctrl{display:flex; align-items:center; gap:10px; width:100%; max-width:430px; font-size:12px; color:var(--soft);}
+  .imgctrl{display:flex; align-items:center; gap:10px; width:100%; font-size:12px; color:var(--soft);}
   .imgctrl input[type=range]{flex:1;}
   .imgctrl button{font-family:inherit;font-size:12px;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--soft);cursor:pointer;}
   .imgctrl button:hover{border-color:var(--ink);color:var(--ink);}
-  .hint{font-size:12px; color:var(--soft); text-align:center; max-width:430px; line-height:1.5;}
+  .hint{font-size:12px; color:var(--soft); text-align:center; line-height:1.5;}
 </style>
 </head>
 <body>
 
-<div class="top">
-  <div>
-    <h1><span class="dot"></span><span data-i18n="appTitle">Artwork → Post</span></h1>
-    <p class="sub serif" style="font-style:italic;color:#6b6675;" data-i18n="appSub"></p>
-  </div>
-  <div class="langsel" id="langsel">
-    <button data-l="en" class="on">EN</button>
-    <button data-l="zh">中文</button>
-    <button data-l="ja">日本語</button>
-    <button data-l="ko">한국어</button>
-    <button data-l="es">ES</button>
-  </div>
-</div>
+<div class="appwrap">
 
-<div class="app">
-  <!-- ============ 左：控制 ============ -->
-  <div>
-    <!-- 作品 -->
-    <div class="panel">
-      <div class="ptitle" data-i18n="secWorks">Works</div>
-      <div class="field"><div class="works" id="works"></div></div>
-      <div class="field">
-        <div class="drop" id="drop"><b data-i18n="upload">Upload / replace</b><input type="file" id="file" accept="image/*" hidden></div>
+  <!-- ============ STICKY PREVIEW ============ -->
+  <header class="preview">
+    <button class="gear" id="gearBtn" aria-label="Settings">⚙</button>
+    <div class="stagebox">
+      <div class="canvas-wrap" id="canvasWrap"><canvas id="cv" width="1080" height="1350"></canvas></div>
+      <div class="emptyup" id="emptyup" style="display:none;">
+        <div class="drop" id="dropBig"><b data-i18n="emptyAdd">Add your artwork</b><div class="shint" data-i18n="emptyHint">Drop an image or tap to choose</div></div>
       </div>
+    </div>
+    <div class="pvfoot">
+      <div class="imgctrl" id="imgctrl">
+        <span>🔍</span><input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
+        <button id="resetPos" data-i18n="resetPos">Reset</button>
+      </div>
+      <button class="playbtn" id="playPreview" style="display:none;">▶ <span data-i18n="play">Preview</span></button>
+    </div>
+  </header>
+
+  <!-- ============ EDIT AREA (mode-specific sections) ============ -->
+  <main class="editscroll">
+    <input type="file" id="file" accept="image/*" hidden>
+
+    <!-- Works strip (shared) -->
+    <section class="section" data-modes="artwork series story">
+      <div class="stitle" data-i18n="secWorks">Works</div>
+      <div class="works" id="works"></div>
+      <div class="drop" id="drop" style="margin-top:13px;"><b data-i18n="upload">Upload / replace current work</b></div>
+    </section>
+
+    <!-- ARTWORK · Caption (title / statement / date) -->
+    <section class="section" data-modes="artwork">
+      <div class="stitle" data-i18n="secCaptionInfo">Caption</div>
       <div class="field"><label data-i18n="lblTitle">Title</label><input type="text" id="title" maxlength="40"></div>
       <div class="field"><label data-i18n="lblIdea">Statement</label><textarea id="idea" maxlength="240"></textarea></div>
       <div class="field"><label data-i18n="lblDate">Date</label><input type="date" id="date"></div>
-    </div>
+    </section>
 
-    <!-- 统一风格 -->
-    <div class="panel">
-      <div class="ptitle" data-i18n="secStyle">Shared style</div>
-      <div class="field"><label data-i18n="lblSign">Signature</label><input type="text" id="sign" maxlength="24"></div>
-      <div class="field">
-        <label data-i18n="lblSignFont">Signature font</label>
-        <div class="seg" id="signFont">
-          <button data-f="'Mr Dafoe', cursive" class="on">Aa</button>
-          <button data-f="'Mrs Saint Delafield', cursive">Aa</button>
-          <button data-f="'Pinyon Script', cursive">Aa</button>
-          <button data-f="'Great Vibes', cursive">Aa</button>
-          <button data-f="'Sacramento', cursive">Aa</button>
-          <button data-f="'Parisienne', cursive">Aa</button>
-        </div>
-      </div>
-      <div class="field">
-        <label data-i18n="lblTitleFont">Title font</label>
-        <div class="seg" id="titleFont">
-          <button data-f="'Fraunces', serif" class="on">Fr</button>
-          <button data-f="'Playfair Display', serif">Pf</button>
-          <button data-f="'Cormorant Garamond', serif">Co</button>
-          <button data-f="'Poppins', sans-serif">Pp</button>
-        </div>
-      </div>
-      <div class="field">
-        <label data-i18n="lblInk">Ink (text / signature)</label>
-        <div class="swatches" id="swatches"></div>
-      </div>
-      <div class="row2">
-        <div class="field">
-          <label data-i18n="lblMargin">Margin</label>
-          <div class="seg" id="margin">
-            <button data-m="0.05" data-i18n="mTight">Tight</button>
-            <button data-m="0.085" class="on" data-i18n="mStd">Std</button>
-            <button data-m="0.13" data-i18n="mRoomy">Roomy</button>
-          </div>
-        </div>
-        <div class="field">
-          <label data-i18n="lblAlign">Align</label>
-          <div class="seg" id="textAlign">
-            <button data-a="left" class="on" data-i18n="aLeft">Left</button>
-            <button data-a="center" data-i18n="aCenter">Center</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 画面：背景 + 水印 -->
-    <div class="panel">
-      <div class="ptitle" data-i18n="secScreen">Background &amp; watermark</div>
-      <div class="field">
-        <label data-i18n="lblBg">Background</label>
-        <div class="swatches" id="bgSwatches"></div>
-      </div>
-      <div class="field">
-        <label data-i18n="lblWm">Watermark text</label>
-        <input type="text" id="wmText" maxlength="30">
-      </div>
-      <div class="row2">
-        <div class="field">
-          <label data-i18n="lblWmPos">Position</label>
-          <div class="seg" id="wmPos">
-            <button data-p="tl">↖</button><button data-p="tr">↗</button>
-            <button data-p="bl">↙</button><button data-p="br" class="on">↘</button>
-            <button data-p="center">⊕</button><button data-p="tile">▦</button>
-          </div>
-        </div>
-        <div class="field">
-          <label><span data-i18n="lblWmOp">Opacity</span> <span id="wmOpVal" style="color:var(--ink)"></span></label>
-          <input type="range" id="wmOp" min="0.05" max="0.8" step="0.05" value="0.3">
-        </div>
-      </div>
-    </div>
-
-    <!-- 图像调整 -->
-    <div class="panel">
-      <div class="ptitle" data-i18n="secAdjust">Adjust</div>
+    <!-- ARTWORK · Adjust image -->
+    <section class="section" data-modes="artwork">
+      <div class="stitle" data-i18n="secAdjust">Adjust image</div>
       <label data-i18n="lblPresets">One-tap looks</label>
       <div class="presets" id="presets"></div>
       <div class="adjrow"><label><span data-i18n="adjExposure">Exposure</span><span class="av" id="vEx">0</span></label><input type="range" id="aEx" min="-100" max="100" value="0"></div>
@@ -241,84 +198,245 @@
           <button class="btn line" id="cutToggle" style="flex:0 0 auto; padding:8px 13px; font-size:13px;" data-i18n="cutBtn">Cut out</button>
           <input type="range" id="cutTol" min="10" max="120" value="36" style="flex:1;">
         </div>
-        <p class="hint" style="text-align:left; margin-top:6px;" data-i18n="cutNote">Best for artwork shot on a plain background. Drag the slider to fine-tune.</p>
+        <p class="shint" data-i18n="cutNote">Best for artwork shot on a plain background. Drag the slider to fine-tune.</p>
       </div>
       <div class="adjrow" style="border-top:1px solid var(--line); padding-top:11px;"><label><span data-i18n="lblPerspV">Perspective ↕</span><span class="av" id="vKv">0</span></label><input type="range" id="aKv" min="-100" max="100" value="0"></div>
       <div class="adjrow"><label><span data-i18n="lblPerspH">Perspective ↔</span><span class="av" id="vKh">0</span></label><input type="range" id="aKh" min="-100" max="100" value="0"></div>
-      <div class="btnrow" style="margin-top:4px;">
-        <button class="btn line" id="applyAll" style="flex:1;" data-i18n="applyAll">Apply to all</button>
-        <button class="btn line" id="adjReset" style="flex:1;" data-i18n="adjReset">Reset</button>
-      </div>
-    </div>
+      <button class="btn line" id="adjReset" data-i18n="adjReset">Reset adjustments</button>
+    </section>
 
-    <!-- 文案 + 标签 -->
-    <div class="panel">
-      <div class="ptitle" data-i18n="secCaption">Caption / hashtags</div>
-      <div class="field"><label data-i18n="lblSeries">Series title</label><input type="text" id="seriesTitle" maxlength="40"></div>
+    <!-- ARTWORK · Style -->
+    <section class="section" data-modes="artwork">
+      <div class="stitle" data-i18n="secStyle">Style</div>
+      <div class="field"><label data-i18n="lblFormat">Canvas format</label>
+        <div class="seg" id="format">
+          <button data-r="auto" class="on">Auto</button>
+          <button data-r="0.8">4:5</button>
+          <button data-r="1">1:1</button>
+          <button data-r="0.75">3:4</button>
+          <button data-r="1.91">1.91:1</button>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label data-i18n="lblMargin">Margin</label>
+          <div class="seg" id="margin">
+            <button data-m="0.05" data-i18n="mTight">Tight</button>
+            <button data-m="0.085" class="on" data-i18n="mStd">Std</button>
+            <button data-m="0.13" data-i18n="mRoomy">Roomy</button>
+          </div>
+        </div>
+        <div class="field"><label data-i18n="lblAlign">Align</label>
+          <div class="seg" id="textAlign">
+            <button data-a="left" class="on" data-i18n="aLeft">Left</button>
+            <button data-a="center" data-i18n="aCenter">Center</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTWORK · Background -->
+    <section class="section" data-modes="artwork">
+      <div class="stitle" data-i18n="lblBg">Background</div>
+      <div class="swatches" id="bgSwatches"></div>
+    </section>
+
+    <!-- ARTWORK · Watermark -->
+    <section class="section" data-modes="artwork">
+      <div class="stitle" data-i18n="lblWm">Watermark</div>
+      <div class="field"><label data-i18n="lblWmText">Text</label><input type="text" id="wmText" maxlength="30"></div>
+      <div class="row2">
+        <div class="field"><label data-i18n="lblWmPos">Position</label>
+          <div class="seg" id="wmPos">
+            <button data-p="tl">↖</button><button data-p="tr">↗</button>
+            <button data-p="bl">↙</button><button data-p="br" class="on">↘</button>
+            <button data-p="center">⊕</button><button data-p="tile">▦</button>
+          </div>
+        </div>
+        <div class="field"><label><span data-i18n="lblWmOp">Opacity</span> <span id="wmOpVal" style="color:var(--ink)"></span></label>
+          <input type="range" id="wmOp" min="0.05" max="0.8" step="0.05" value="0.3">
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTWORK · Signature -->
+    <section class="section" data-modes="artwork">
+      <div class="stitle" data-i18n="lblSign">Signature</div>
+      <div class="field"><input type="text" id="sign" maxlength="24"></div>
+      <label data-i18n="lblSignFont">Signature font</label>
+      <div class="seg" id="signFont">
+        <button data-f="'Mr Dafoe', cursive" class="on">Aa</button>
+        <button data-f="'Mrs Saint Delafield', cursive">Aa</button>
+        <button data-f="'Pinyon Script', cursive">Aa</button>
+        <button data-f="'Great Vibes', cursive">Aa</button>
+        <button data-f="'Sacramento', cursive">Aa</button>
+        <button data-f="'Parisienne', cursive">Aa</button>
+      </div>
+    </section>
+
+    <!-- ARTWORK · Text & typography -->
+    <section class="section" data-modes="artwork">
+      <div class="stitle" data-i18n="secType">Text &amp; typography</div>
+      <label data-i18n="lblTitleFont">Title font</label>
+      <div class="seg" id="titleFont">
+        <button data-f="'Fraunces', serif" class="on">Fr</button>
+        <button data-f="'Playfair Display', serif">Pf</button>
+        <button data-f="'Cormorant Garamond', serif">Co</button>
+        <button data-f="'Poppins', sans-serif">Pp</button>
+      </div>
+      <div class="field" style="margin-top:14px;"><label data-i18n="lblInk">Ink (text / signature)</label><div class="swatches" id="swatches"></div></div>
+    </section>
+
+    <!-- ARTWORK + SERIES · Tags -->
+    <section class="section" data-modes="artwork series">
+      <div class="stitle" data-i18n="secTags">Tags &amp; caption</div>
       <div class="field"><label data-i18n="lblTags">Hashtags #</label><textarea id="hashtags" style="min-height:58px"></textarea></div>
       <div class="field"><label data-i18n="lblCaptionPreview">Caption preview</label><div class="captionbox" id="captionbox"></div></div>
       <button class="btn line" id="copyCap" data-i18n="copyCap">Copy caption</button>
-    </div>
-  </div>
+    </section>
 
-  <!-- ============ 右：预览 / 导出 ============ -->
-  <div class="stage">
-    <div class="modetabs" id="modetabs">
-      <button data-mode="single" class="on" data-i18n="modeSingle">Single</button>
-      <button data-mode="grid" data-i18n="modeGrid">Series grid</button>
-      <button data-mode="slice" data-i18n="modeSlice">Mural slice</button>
-    </div>
-    <div id="formatRow" style="display:flex; align-items:center; gap:10px; width:100%; max-width:430px;">
-      <span style="font-size:12px;color:var(--soft);white-space:nowrap;" data-i18n="lblFormat">Format</span>
-      <div class="seg" id="format" style="flex:1;">
-        <button data-r="auto" class="on">Auto</button>
-        <button data-r="0.8">4:5</button>
-        <button data-r="1">1:1</button>
-        <button data-r="0.75">3:4</button>
-        <button data-r="1.91">1.91:1</button>
+    <!-- ARTWORK + SERIES · Export -->
+    <section class="section" data-modes="artwork series">
+      <div class="stitle" data-i18n="secExport">Export &amp; share</div>
+      <button class="btn primary" id="exportPng" data-i18n="exportPng">⬇ Export image</button>
+      <button class="btn ig" id="shareIg" style="margin-top:10px;" data-i18n="share">📤 Share</button>
+    </section>
+
+    <!-- SERIES · Series story -->
+    <section class="section" data-modes="series">
+      <div class="stitle" data-i18n="secSeriesStory">Series story</div>
+      <div class="field"><label data-i18n="lblSeries">Series title</label><input type="text" id="seriesTitle" maxlength="40"></div>
+      <div class="field"><label data-i18n="lblSeriesNote">Concept / statement</label><textarea id="seriesNote" maxlength="400" style="min-height:84px"></textarea></div>
+    </section>
+
+    <!-- SERIES · Unified style -->
+    <section class="section" data-modes="series">
+      <div class="stitle" data-i18n="secUnified">Unified style</div>
+      <p class="shint" data-i18n="unifiedHint">Apply the current work's look — color, framing, signature — to the whole series so the set reads as one body of work.</p>
+      <button class="btn line" id="applyAll" style="margin-top:12px;" data-i18n="applyAll">Apply to all</button>
+    </section>
+
+    <!-- SERIES · Layout (grid / mural) -->
+    <section class="section" data-modes="series">
+      <div class="stitle" data-i18n="secLayout">Presentation</div>
+      <div class="seg" id="seriesView" style="margin-bottom:13px;">
+        <button data-sv="grid" class="on" data-i18n="svGrid">Grid</button>
+        <button data-sv="mural" data-i18n="svMural">Mural (sliced)</button>
       </div>
-    </div>
-    <div id="gridRow" style="display:none; align-items:center; gap:10px; width:100%; max-width:430px;">
-      <span style="font-size:12px;color:var(--soft);white-space:nowrap;" data-i18n="lblLayout">Layout</span>
-      <div class="seg" id="gridLayout" style="flex:1;">
-        <button data-gl="auto" class="on">Auto</button>
-        <button data-gl="1">1</button>
-        <button data-gl="2">2</button>
-        <button data-gl="3">3</button>
-        <button data-gl="row">▭▭▭</button>
-      </div>
-    </div>
-    <div class="canvas-wrap"><canvas id="cv" width="1080" height="1350"></canvas></div>
-    <div class="imgctrl" id="imgctrl">
-      <span>🔍</span><input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
-      <button id="resetPos" data-i18n="resetPos">Reset</button>
-    </div>
-    <div id="exportArea" style="width:100%; max-width:430px;">
-      <button class="btn ig" id="shareIg" data-i18n="share">📤 Share to Instagram</button>
-      <button class="btn primary" id="exportPng" style="margin-top:10px;" data-i18n="exportPng">⬇ Export PNG</button>
-      <div class="btnrow">
-        <button class="btn line" id="playPreview" style="flex:0 0 120px;">▶ Preview</button>
-        <div class="seg" id="videoSecs" style="flex:1;">
-          <button data-s="2" data-i18n="s2">2s</button>
-          <button data-s="2.8" class="on" data-i18n="s3">2.8s</button>
-          <button data-s="4" data-i18n="s4">4s</button>
+      <div id="gridOpts">
+        <label data-i18n="lblLayout">Columns</label>
+        <div class="seg" id="gridLayout">
+          <button data-gl="auto" class="on">Auto</button>
+          <button data-gl="1">1</button>
+          <button data-gl="2">2</button>
+          <button data-gl="3">3</button>
+          <button data-gl="row">▭▭▭</button>
         </div>
       </div>
-      <button class="btn line" id="exportVideo" style="margin-top:10px;" data-i18n="exportVideo">🎬 Export slideshow (mp4)</button>
-    </div>
-    <div id="sliceArea" style="display:none; width:100%; max-width:430px;">
-      <label data-i18n="lblGrid" style="margin-bottom:7px;">Grid</label>
-      <div class="seg" id="sliceGrid">
-        <button data-g="3x3" class="on">3×3</button>
-        <button data-g="3x1">3×1</button>
-        <button data-g="1x3">1×3</button>
-        <button data-g="3x2">3×2</button>
-        <button data-g="2x2">2×2</button>
+      <div id="muralOpts" style="display:none;">
+        <label data-i18n="lblGrid">Grid</label>
+        <div class="seg" id="sliceGrid">
+          <button data-g="3x3" class="on">3×3</button>
+          <button data-g="3x1">3×1</button>
+          <button data-g="1x3">1×3</button>
+          <button data-g="3x2">3×2</button>
+          <button data-g="2x2">2×2</button>
+        </div>
+        <button class="btn primary" id="exportTiles" style="margin-top:12px;" data-i18n="sliceTiles">✂️ Export tiles (zip)</button>
+        <p class="shint" data-i18n="sliceNote">Tiles are numbered in upload order — post-01 first.</p>
       </div>
-      <button class="btn primary" id="exportTiles" style="margin-top:12px;" data-i18n="sliceTiles">✂️ Export tiles (zip)</button>
-      <p class="hint" style="margin-top:8px;" data-i18n="sliceNote">Tiles are numbered in upload order — post-01 first.</p>
+    </section>
+
+    <!-- STORY · Format -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secVidFormat">Format</div>
+      <div class="seg" id="vidRatio">
+        <button data-vr="4:5" class="on">4:5</button>
+        <button data-vr="1:1">1:1</button>
+        <button data-vr="9:16">9:16</button>
+        <button data-vr="16:9">16:9</button>
+      </div>
+    </section>
+
+    <!-- STORY · Motion -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secMotion">Motion</div>
+      <div class="seg" id="vidMotion">
+        <button data-vm="none" class="on" data-i18n="vmNone">None</button>
+        <button data-vm="zoom" data-i18n="vmZoom">Slow zoom</button>
+      </div>
+      <p class="shint" data-i18n="motionHint">Slow zoom (Ken Burns) adds gentle movement to each artwork.</p>
+    </section>
+
+    <!-- STORY · Timing -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secTiming">Timing &amp; rhythm</div>
+      <label data-i18n="lblPerSlide">Seconds per artwork</label>
+      <div class="seg" id="videoSecs">
+        <button data-s="2" data-i18n="s2">2s</button>
+        <button data-s="2.8" class="on" data-i18n="s3">2.8s</button>
+        <button data-s="4" data-i18n="s4">4s</button>
+      </div>
+    </section>
+
+    <!-- STORY · Transition -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secTransition">Transition</div>
+      <div class="seg" id="vidTrans">
+        <button data-vt="fade" class="on" data-i18n="vtFade">Fade</button>
+        <button data-vt="none" data-i18n="vtNone">Cut</button>
+      </div>
+    </section>
+
+    <!-- STORY · Music (placeholder) -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secMusic">Background music</div>
+      <button class="btn line" disabled data-i18n="musicSoon">🎵 Coming soon</button>
+    </section>
+
+    <!-- STORY · Export -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secExport">Export</div>
+      <button class="btn primary" id="exportVideo" data-i18n="exportVideo">🎬 Export video (mp4)</button>
+    </section>
+  </main>
+
+  <!-- ============ BOTTOM NAV ============ -->
+  <nav class="tabbar" id="tabbar">
+    <button data-mode="artwork" class="on"><span class="ic">❒</span><span data-i18n="navArtwork">Artwork</span></button>
+    <button data-mode="series"><span class="ic">▦</span><span data-i18n="navSeries">Series</span></button>
+    <button data-mode="story"><span class="ic">►</span><span data-i18n="navStory">Story</span></button>
+  </nav>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div class="settings" id="settings" hidden>
+  <div class="shead">
+    <button class="sback" id="setBack" aria-label="Back">‹</button>
+    <h2 data-i18n="settings">Settings</h2>
+  </div>
+  <div class="sbody">
+    <div class="srow">
+      <label data-i18n="setLang">Language</label>
+      <div class="langsel" id="langsel">
+        <button data-l="en" class="on">EN</button>
+        <button data-l="zh">中文</button>
+        <button data-l="ja">日本語</button>
+        <button data-l="ko">한국어</button>
+        <button data-l="es">ES</button>
+      </div>
     </div>
-    <p class="hint" id="hint"></p>
+    <div class="srow">
+      <label data-i18n="setAccount">Account</label>
+      <button class="btn line" disabled data-i18n="setSignin">Sign in — coming soon</button>
+    </div>
+    <div class="srow">
+      <label data-i18n="setDefaults">Defaults</label>
+      <p class="shint" data-i18n="setDefaultsHint">New works inherit your signature, fonts and format — edit them in Artwork; they're remembered automatically.</p>
+    </div>
+    <div class="srow">
+      <label data-i18n="setAbout">About</label>
+      <p class="shint"><b>Artwork</b> · portfolio workbench · v1.0</p>
+    </div>
   </div>
 </div>
 
@@ -401,6 +519,66 @@ const LANG = {
     lblCut:'Quitar fondo', cutBtn:'Recortar', cutUndo:'Restaurar', cutNote:'Ideal para obras sobre fondo liso. Ajusta con el deslizador.', lblPerspV:'Perspectiva ↕', lblPerspH:'Perspectiva ↔',
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
 };
+// ---- workbench reframe: nav / sections / settings / story keys (merged over LANG) ----
+const LANG_EXT = {
+  en:{ navArtwork:'Artwork', navSeries:'Series', navStory:'Story', emptyAdd:'Add your artwork', emptyHint:'Drop an image or tap to choose',
+    secStyle:'Style', secCaptionInfo:'Caption', secType:'Text & typography', secTags:'Tags & caption', secExport:'Export & share',
+    lblWm:'Watermark', lblWmText:'Text', exportPng:'⬇ Export image', share:'📤 Share',
+    secSeriesStory:'Series story', lblSeriesNote:'Concept / statement', phSeriesNote:'What ties this series together — the idea, the thread, what you want it to say…',
+    secUnified:'Unified style', unifiedHint:"Apply the current work's look — color, framing, signature — to the whole series so the set reads as one body of work.",
+    secLayout:'Presentation', svGrid:'Grid', svMural:'Mural (sliced)',
+    secVidFormat:'Format', secMotion:'Motion', vmNone:'None', vmZoom:'Slow zoom', motionHint:'Slow zoom (Ken Burns) adds gentle movement to each artwork.',
+    secTiming:'Timing & rhythm', lblPerSlide:'Seconds per artwork', secTransition:'Transition', vtFade:'Fade', vtNone:'Cut',
+    secMusic:'Background music', musicSoon:'🎵 Coming soon',
+    settings:'Settings', setLang:'Language', setAccount:'Account', setSignin:'Sign in — coming soon', setDefaults:'Defaults',
+    setDefaultsHint:"New works inherit your signature, fonts and format — edit them in Artwork; they're remembered automatically.", setAbout:'About' },
+  zh:{ navArtwork:'作品', navSeries:'作品集', navStory:'影像', emptyAdd:'添加你的作品', emptyHint:'拖入图片，或点击选择',
+    secStyle:'样式', secCaptionInfo:'文字信息', secType:'文字与排版', secTags:'标签与文案', secExport:'导出与分享',
+    lblWm:'水印', lblWmText:'文字', exportPng:'⬇ 导出图片', share:'📤 分享',
+    secSeriesStory:'系列叙事', lblSeriesNote:'概念 / 创作理念', phSeriesNote:'是什么把这个系列串在一起——理念、线索、你想表达的东西…',
+    secUnified:'统一风格', unifiedHint:'把当前作品的风格——色调、画框、签名——套用到整个系列，让一组作品读起来像一个整体。',
+    secLayout:'呈现方式', svGrid:'网格', svMural:'九宫格切图',
+    secVidFormat:'画面比例', secMotion:'运动', vmNone:'无', vmZoom:'缓慢推拉', motionHint:'缓慢推拉（Ken Burns）让每幅作品有轻微的动感。',
+    secTiming:'时长与节奏', lblPerSlide:'每幅作品秒数', secTransition:'转场', vtFade:'淡入淡出', vtNone:'硬切',
+    secMusic:'背景音乐', musicSoon:'🎵 即将上线',
+    settings:'设置', setLang:'语言', setAccount:'账户', setSignin:'登录 — 即将上线', setDefaults:'默认偏好',
+    setDefaultsHint:'新作品会沿用你的签名、字体与画幅——在「作品」里调整即可，会自动记住。', setAbout:'关于' },
+  ja:{ navArtwork:'作品', navSeries:'シリーズ', navStory:'映像', emptyAdd:'作品を追加', emptyHint:'画像をドロップ、またはタップして選択',
+    secStyle:'スタイル', secCaptionInfo:'テキスト情報', secType:'文字と組版', secTags:'タグと投稿文', secExport:'書き出しと共有',
+    lblWm:'透かし', lblWmText:'文字', exportPng:'⬇ 画像を書き出し', share:'📤 共有',
+    secSeriesStory:'シリーズの物語', lblSeriesNote:'コンセプト / ステートメント', phSeriesNote:'このシリーズを束ねるもの——着想、つながり、伝えたいこと…',
+    secUnified:'統一スタイル', unifiedHint:'現在の作品の見え方——色・額装・署名——をシリーズ全体に適用し、一つの作品群としてまとめます。',
+    secLayout:'見せ方', svGrid:'グリッド', svMural:'分割（モザイク）',
+    secVidFormat:'画面比率', secMotion:'モーション', vmNone:'なし', vmZoom:'ゆっくりズーム', motionHint:'ゆっくりズーム（Ken Burns）で各作品に動きを加えます。',
+    secTiming:'尺とリズム', lblPerSlide:'作品ごとの秒数', secTransition:'トランジション', vtFade:'フェード', vtNone:'カット',
+    secMusic:'BGM', musicSoon:'🎵 近日対応',
+    settings:'設定', setLang:'言語', setAccount:'アカウント', setSignin:'サインイン — 近日対応', setDefaults:'デフォルト',
+    setDefaultsHint:'新しい作品は署名・書体・比率を引き継ぎます——「作品」で編集すれば自動的に記憶されます。', setAbout:'情報' },
+  ko:{ navArtwork:'작품', navSeries:'시리즈', navStory:'스토리', emptyAdd:'작품 추가', emptyHint:'이미지를 끌어다 놓거나 탭하여 선택',
+    secStyle:'스타일', secCaptionInfo:'텍스트 정보', secType:'텍스트 & 타이포', secTags:'태그 & 캡션', secExport:'내보내기 & 공유',
+    lblWm:'워터마크', lblWmText:'문구', exportPng:'⬇ 이미지 내보내기', share:'📤 공유',
+    secSeriesStory:'시리즈 서사', lblSeriesNote:'콘셉트 / 작가 노트', phSeriesNote:'이 시리즈를 하나로 묶는 것 — 아이디어, 흐름, 전하고 싶은 것…',
+    secUnified:'통일 스타일', unifiedHint:'현재 작품의 룩 — 색감·액자·서명 — 을 시리즈 전체에 적용해 하나의 작품군으로 보이게 합니다.',
+    secLayout:'표현 방식', svGrid:'그리드', svMural:'분할(모자이크)',
+    secVidFormat:'화면 비율', secMotion:'모션', vmNone:'없음', vmZoom:'느린 줌', motionHint:'느린 줌(켄 번스)으로 각 작품에 은은한 움직임을 더합니다.',
+    secTiming:'길이 & 리듬', lblPerSlide:'작품당 초', secTransition:'전환', vtFade:'페이드', vtNone:'컷',
+    secMusic:'배경 음악', musicSoon:'🎵 곧 제공',
+    settings:'설정', setLang:'언어', setAccount:'계정', setSignin:'로그인 — 곧 제공', setDefaults:'기본값',
+    setDefaultsHint:'새 작품은 서명·글꼴·비율을 이어받습니다 — 「작품」에서 편집하면 자동 저장됩니다.', setAbout:'정보' },
+  es:{ navArtwork:'Obra', navSeries:'Serie', navStory:'Historia', emptyAdd:'Añade tu obra', emptyHint:'Suelta una imagen o toca para elegir',
+    secStyle:'Estilo', secCaptionInfo:'Texto', secType:'Texto y tipografía', secTags:'Etiquetas y texto', secExport:'Exportar y compartir',
+    lblWm:'Marca de agua', lblWmText:'Texto', exportPng:'⬇ Exportar imagen', share:'📤 Compartir',
+    secSeriesStory:'Relato de la serie', lblSeriesNote:'Concepto / declaración', phSeriesNote:'Lo que une esta serie — la idea, el hilo, lo que quieres decir…',
+    secUnified:'Estilo unificado', unifiedHint:'Aplica el aspecto de la obra actual — color, marco, firma — a toda la serie para que se lea como un solo cuerpo de trabajo.',
+    secLayout:'Presentación', svGrid:'Cuadrícula', svMural:'Mural (en piezas)',
+    secVidFormat:'Formato', secMotion:'Movimiento', vmNone:'Ninguno', vmZoom:'Zoom lento', motionHint:'El zoom lento (Ken Burns) añade un movimiento suave a cada obra.',
+    secTiming:'Duración y ritmo', lblPerSlide:'Segundos por obra', secTransition:'Transición', vtFade:'Fundido', vtNone:'Corte',
+    secMusic:'Música de fondo', musicSoon:'🎵 Próximamente',
+    settings:'Ajustes', setLang:'Idioma', setAccount:'Cuenta', setSignin:'Iniciar sesión — próximamente', setDefaults:'Predeterminados',
+    setDefaultsHint:'Las obras nuevas heredan tu firma, fuentes y formato — edítalos en Obra; se recuerdan automáticamente.', setAbout:'Acerca de' },
+};
+for(const l in LANG_EXT) Object.assign(LANG[l], LANG_EXT[l]);
+
 const DEFAULT_TAGS = '#art #artwork #illustration #drawing #sketchbook #originalart #artistsoninstagram #contemporaryart';
 const INK_PALETTE = ['#3d3a44','#6b6675','#8a6f5e','#7d7a5b','#5f6f6a','#8a5c5c','#5c6b8a','#9b97a1'];
 const BG_PALETTE  = ['#f7f3ec','#ffffff','#f2ece2','#eae4da','#f6ede9','#e9eee9','#e7ebf1','#2b2733','#1d1b22','#0f0e12'];
@@ -426,11 +604,16 @@ const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
 const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
-  seriesTitle:'', hashtags:DEFAULT_TAGS, mode:'single', videoSecs:2.8, format:'auto', slice:'3x3', gridLayout:'auto',
+  seriesTitle:'', seriesNote:'', hashtags:DEFAULT_TAGS, mode:'artwork', seriesView:'grid', videoSecs:2.8, videoRatio:'4:5', videoMotion:'none', videoTransition:'fade', format:'auto', slice:'3x3', gridLayout:'auto',
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
 if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
 S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined) w.tx.rot=0; if(!w.adj) w.adj={ex:0,br:0,ct:0,sa:0,tp:0}; if(w.cut===undefined) w.cut=false; if(w.cutTol===undefined) w.cutTol=36; if(!w.persp) w.persp={kh:0,kv:0}; });
+// migrate old mode model → artwork/series/story
+if(S.mode==='single') S.mode='artwork'; if(S.mode==='grid') S.mode='series'; if(S.mode==='slice'){ S.mode='series'; S.seriesView='mural'; }
+if(!['artwork','series','story'].includes(S.mode)) S.mode='artwork';
+if(S.seriesNote===undefined) S.seriesNote=''; if(!S.seriesView) S.seriesView='grid';
+if(!S.videoRatio) S.videoRatio='4:5'; if(!S.videoMotion) S.videoMotion='none'; if(!S.videoTransition) S.videoTransition='fade';
 uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
 function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
@@ -471,8 +654,7 @@ function applyLang(){
   document.getElementById('sign').placeholder = t('phSign');
   document.getElementById('seriesTitle').placeholder = t('phSeries');
   document.getElementById('wmText').placeholder = t('phWm');
-  document.getElementById('hint').textContent = t('hint');
-  if(!_playing) document.getElementById('playPreview').textContent='▶ '+t('play');
+  document.getElementById('seriesNote').placeholder = t('phSeriesNote');
   document.querySelectorAll('#langsel button').forEach(b=>b.classList.toggle('on', b.dataset.l===S.lang));
   buildCaption();
 }
@@ -493,7 +675,7 @@ buildSwatches(bgEl, BG_PALETTE, 'bg', true);
 
 // ---------------- segments ----------------
 function bindSeg(id,key,parse=v=>v,cb){ const box=document.getElementById(id);
-  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r??b.dataset.g??b.dataset.gl;
+  box.querySelectorAll('button').forEach(b=>{ const v=b.dataset.m??b.dataset.a??b.dataset.f??b.dataset.s??b.dataset.mode??b.dataset.p??b.dataset.r??b.dataset.g??b.dataset.gl??b.dataset.vr??b.dataset.vm??b.dataset.vt??b.dataset.sv;
     b.onclick=()=>{ box.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S[key]=parse(v); save(); (cb||draw)(); }; }); }
 bindSeg('margin','margin',parseFloat);
 bindSeg('textAlign','align');
@@ -504,7 +686,16 @@ bindSeg('videoSecs','videoSecs',parseFloat,()=>{});
 bindSeg('format','format', v=> v==='auto'?'auto':parseFloat(v));
 bindSeg('sliceGrid','slice');
 bindSeg('gridLayout','gridLayout');
-bindSeg('modetabs','mode',v=>v,()=>{ updateImgCtrl(); draw(); });
+bindSeg('vidRatio','videoRatio', v=>v, ()=>draw());
+bindSeg('vidMotion','videoMotion', v=>v, ()=>{});
+bindSeg('vidTrans','videoTransition', v=>v, ()=>{});
+bindSeg('seriesView','seriesView', v=>v, ()=>{ applyMode(); draw(); });
+bindSeg('tabbar','mode', v=>v, ()=>{ applyMode(); draw(); buildCaption(); });
+
+// settings overlay + empty-state upload
+document.getElementById('gearBtn').onclick=()=>document.getElementById('settings').hidden=false;
+document.getElementById('setBack').onclick=()=>document.getElementById('settings').hidden=true;
+document.getElementById('dropBig').onclick=()=>document.getElementById('file').click();
 
 // watermark opacity
 const wmOp=document.getElementById('wmOp'), wmOpVal=document.getElementById('wmOpVal');
@@ -581,7 +772,7 @@ function perspOf(){ if(!cur().persp)cur().persp={kh:0,kv:0}; return cur().persp;
 [['aKh','kh','vKh'],['aKv','kv','vKv']].forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ perspOf()[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; save(); clearTimeout(_pTimer); _pTimer=setTimeout(async()=>{ await processImage(cur()); draw(); },200); }); });
 
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
-['sign','seriesTitle','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
+['sign','seriesTitle','seriesNote','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
 
 // ---------------- upload ----------------
 const drop=document.getElementById('drop'), file=document.getElementById('file');
@@ -779,11 +970,19 @@ function drawGrid(g){
   const rows=Math.ceil(n/cols);
   const cellW=Math.round((W-2*pad-(cols-1)*gap)/cols), artBox=cellW;
   const tH=Math.round(W*0.034), cellH=artBox+tH;
-  const headH = S.seriesTitle?Math.round(W*0.075):0, footH = S.sign?Math.round(W*0.085):0;
+  const titleH = S.seriesTitle?Math.round(W*0.052):0;
+  const noteSize=Math.round(W*0.0225), noteLH=Math.round(noteSize*1.5);
+  g.font=ideaFont(noteSize);
+  const noteLines = S.seriesNote?wrap(S.seriesNote, W-2*pad):[];
+  const noteH = noteLines.length?noteLines.length*noteLH+Math.round(W*0.012):0;
+  const headH = (S.seriesTitle||noteLines.length)?(Math.round(W*0.028)+titleH+noteH):0;
+  const footH = S.sign?Math.round(W*0.085):0;
   const top=pad+headH, H=top+rows*cellH+(rows-1)*gap+footH+pad;
   cv.width=W; cv.height=H;
   g.fillStyle=S.bg; g.fillRect(0,0,W,H);
-  if(S.seriesTitle){ g.fillStyle=T.ink; g.font=`500 ${Math.round(W*0.04)}px ${FAM}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(S.seriesTitle,W/2,pad+headH*0.42); }
+  let hy=pad+Math.round(W*0.02);
+  if(S.seriesTitle){ g.fillStyle=T.ink; g.font=`500 ${Math.round(W*0.04)}px ${FAM}`; g.textAlign='center'; g.textBaseline='top'; g.fillText(S.seriesTitle,W/2,hy); hy+=titleH; }
+  if(noteLines.length){ g.fillStyle=T.idea; g.font=ideaFont(noteSize); g.textAlign='center'; g.textBaseline='top'; hy+=Math.round(W*0.006); noteLines.forEach(l=>{ g.fillText(l,W/2,hy,W-2*pad); hy+=noteLH; }); }
   WI.forEach((w,i)=>{ const r=Math.floor(i/cols), c=i%cols;
     const x=pad+c*(cellW+gap), y=top+r*(cellH+gap);
     const im=imgOf(w); const {w:dw,h:dh}=contain(im.width,im.height,cellW,artBox);
@@ -798,7 +997,7 @@ function drawGrid(g){
 }
 
 // ---------------- video frame render ----------------
-function drawVideoFrame(g,W,H,work){
+function drawVideoFrame(g,W,H,work,prog){
   const A=accentOn(), T=inkSet(), FAM=S.titleFont, M=Math.round(W*0.085);
   const im=imgOf(work); if(!im)return;
   const Ts=Math.round(W*0.04), Is=Math.round(W*0.026), Sg=Math.round(W*0.07), lineH=Math.round(Is*1.55);
@@ -810,7 +1009,9 @@ function drawVideoFrame(g,W,H,work){
   const gap=Math.round(M*0.7), artMaxH=H-2*M-capH-gap;
   const {w:dw,h:dh}=contain(im.width,im.height,W-2*M,artMaxH);
   const blockH=dh+gap+capH, topY=Math.max(M,(H-blockH)/2), dx=(W-dw)/2, dy=topY;
-  drawImgAdj(g,im,dx,dy,dw,dh,work.adj); drawWatermark(g,dx,dy,dw,dh);
+  const z=(S.videoMotion==='zoom')?1+(prog||0)*0.10:1;
+  if(z!==1){ g.save(); g.beginPath(); g.rect(dx,dy,dw,dh); g.clip(); const zw=dw*z, zh=dh*z; drawImgAdj(g,im,dx-(zw-dw)/2,dy-(zh-dh)/2,zw,zh,work.adj); drawWatermark(g,dx,dy,dw,dh); g.restore(); }
+  else { drawImgAdj(g,im,dx,dy,dw,dh,work.adj); drawWatermark(g,dx,dy,dw,dh); }
   g.strokeStyle=T.key; g.lineWidth=2; g.strokeRect(dx+1,dy+1,dw-2,dh-2);
   let y=dy+dh+gap; g.textAlign='center'; g.textBaseline='top';
   if(hasT){ g.fillStyle=T.ink; g.font=`500 ${Ts}px ${FAM}`; g.fillText(work.title,W/2,y,W-2*M); y+=Math.round(Ts*1.2)+(hasI?Math.round(Ts*0.4):0); }
@@ -822,7 +1023,14 @@ function drawVideoFrame(g,W,H,work){
   g.textBaseline='alphabetic'; g.textAlign='left';
 }
 
-function draw(){ if(S.mode==='grid') drawGrid(ctx); else if(S.mode==='slice') drawSlice(ctx); else drawSingle(ctx, cur()); }
+function vidDims(){ const m={'4:5':[1080,1350],'1:1':[1080,1080],'9:16':[1080,1920],'16:9':[1920,1080]}; return m[S.videoRatio]||[1080,1350]; }
+function drawStory(g){ const [W,H]=vidDims(); cv.width=W; cv.height=H; g.fillStyle=S.bg; g.fillRect(0,0,W,H); _objs=null;
+  const WI=worksWithImg(); if(!WI.length) return; drawVideoFrame(g,W,H,_images[cur().id]?cur():WI[0],0); }
+function draw(){
+  if(S.mode==='series'){ S.seriesView==='mural' ? drawSlice(ctx) : drawGrid(ctx); }
+  else if(S.mode==='story') drawStory(ctx);
+  else drawSingle(ctx, cur());
+}
 
 // ---------------- mural slice (split one artwork into tiles for the IG profile grid) ----------------
 function sliceDims(){ const p=(S.slice||'3x3').split('x').map(Number); return [p[0]||3, p[1]||3]; }
@@ -887,16 +1095,29 @@ tilesBtn.onclick=async ()=>{
 
 // ---------------- drag / zoom on canvas ----------------
 function updateImgCtrl(){
-  const single = S.mode==='single', slice = S.mode==='slice';
-  const show = single && _images[cur().id];
-  document.getElementById('imgctrl').style.display = show?'flex':'none';
-  document.getElementById('formatRow').style.display = single?'flex':'none';
-  document.getElementById('gridRow').style.display = S.mode==='grid'?'flex':'none';
-  document.getElementById('exportArea').style.display = slice?'none':'';
-  document.getElementById('sliceArea').style.display = slice?'':'none';
-  cv.classList.toggle('pan', !!show);
-  if(show) document.getElementById('zoom').value = txOf(cur()).s;
+  const mode=S.mode, anyImg=worksWithImg().length>0;
+  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.mode===mode));
+  document.querySelectorAll('.section[data-modes]').forEach(s=> s.classList.toggle('hide', !s.dataset.modes.split(' ').includes(mode)));
+  // series sub-views: grid vs mural
+  const muralOn = mode==='series' && S.seriesView==='mural';
+  const go=document.getElementById('gridOpts'), mo=document.getElementById('muralOpts');
+  if(go) go.style.display = (mode==='series' && !muralOn)?'':'none';
+  if(mo) mo.style.display = muralOn?'':'none';
+  document.querySelectorAll('#seriesView button').forEach(b=>b.classList.toggle('on', b.dataset.sv===S.seriesView));
+  // preview footer: zoom (artwork w/ image) · play (story)
+  const showZoom = mode==='artwork' && _images[cur().id];
+  document.getElementById('imgctrl').style.display = showZoom?'flex':'none';
+  const pb=document.getElementById('playPreview');
+  pb.style.display = (mode==='story' && anyImg)?'block':'none';
+  if(!_playing) pb.textContent='▶ '+t('play');
+  cv.classList.toggle('pan', !!showZoom);
+  if(showZoom) document.getElementById('zoom').value = txOf(cur()).s;
+  // empty-state preview
+  const empty = (mode==='artwork') ? !_images[cur().id] : !anyImg;
+  document.getElementById('canvasWrap').style.display = empty?'none':'';
+  document.getElementById('emptyup').style.display = empty?'':'none';
 }
+const applyMode = updateImgCtrl;
 let _drag=null, _hoverKey=null;
 function toCv(e){ const r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*(cv.width/r.width), y:(e.clientY-r.top)*(cv.height/r.height)}; }
 function hitTest(cx,cy){ if(!_objs)return null; for(const o of _objs){ if(cx>=o.x&&cx<=o.x+o.w&&cy>=o.y&&cy<=o.y+o.h) return o; } return null; }
@@ -905,7 +1126,7 @@ function focusObject(type){ const map={title:'title',idea:'idea',sign:'sign',dat
   const el=document.getElementById(id); const panel=el.closest('.panel'); if(panel)panel.classList.remove('collapsed');
   el.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>el.focus(),200);
   el.style.boxShadow='0 0 0 3px rgba(122,165,245,.55)'; setTimeout(()=>{el.style.boxShadow='';},1000); }
-cv.addEventListener('pointerdown',e=>{ if(S.mode!=='single'||_playing)return;
+cv.addEventListener('pointerdown',e=>{ if(S.mode!=='artwork'||_playing)return;
   const p=toCv(e), hit=hitTest(p.x,p.y);
   _drag={sx:e.clientX,sy:e.clientY,moved:false,hit,mode:null};
   if(hit&&hit.type==='wm') _drag.mode='wm';
@@ -917,7 +1138,7 @@ cv.addEventListener('pointermove',e=>{
     if(_drag.mode==='wm'&&_lay){ const p=toCv(e); S.wmPos='free'; S.wmX=Math.max(0,Math.min(1,(p.x-_lay.artX)/_lay.artW)); S.wmY=Math.max(0,Math.min(1,(p.y-_lay.artY)/_lay.artH)); document.querySelectorAll('#wmPos button').forEach(b=>b.classList.remove('on')); draw(); if(_wmBox)outline(_wmBox); }
     else if(_drag.mode==='pan'&&_lay){ const sc=cv.width/cv.clientWidth, tx=txOf(cur()); tx.x=_drag.x+(e.clientX-_drag.sx)*sc/_lay.artW; tx.y=_drag.y+(e.clientY-_drag.sy)*sc/_lay.artH; draw(); }
     return; }
-  if(S.mode!=='single')return;
+  if(S.mode!=='artwork')return;
   const p=toCv(e), hit=hitTest(p.x,p.y);
   cv.style.cursor = hit?(hit.type==='wm'?'grab':(hit.type==='art'?(txOf(cur()).s>1?'grab':'default'):'pointer')):'default';
   const key=hit?hit.type+'@'+(hit.x|0)+','+(hit.y|0):null;
@@ -928,7 +1149,7 @@ cv.addEventListener('pointerup',()=>{ if(!_drag)return;
   if(_drag.mode==='wm'||_drag.mode==='pan') save();
   _drag=null; _hoverKey=null; draw(); });
 cv.addEventListener('pointerleave',()=>{ if(!_drag&&_hoverKey){ _hoverKey=null; cv.style.cursor='default'; draw(); } });
-cv.addEventListener('wheel',e=>{ if(S.mode==='grid'||!_images[cur().id])return; e.preventDefault();
+cv.addEventListener('wheel',e=>{ if(S.mode!=='artwork'||!_images[cur().id])return; e.preventDefault();
   const tx=txOf(cur()); tx.s=Math.min(4,Math.max(1, tx.s*(1-e.deltaY*0.0015))); if(tx.s<=1.001){tx.s=1;tx.x=0;tx.y=0;}
   document.getElementById('zoom').value=tx.s; draw(); save(); },{passive:false});
 document.getElementById('zoom').oninput=e=>{ const tx=txOf(cur()); tx.s=parseFloat(e.target.value); if(tx.s<=1.001){tx.x=0;tx.y=0;} draw(); save(); };
@@ -936,11 +1157,16 @@ document.getElementById('resetPos').onclick=()=>{ cur().tx={s:1,x:0,y:0,rot:(cur
 
 // ---------------- caption ----------------
 function buildCaption(){
-  const w=cur(); const lines=[];
-  const titleLine = S.seriesTitle ? (w.title? `${S.seriesTitle} — ${w.title}` : S.seriesTitle) : w.title;
-  if(titleLine) lines.push((S.lang==='en'||S.lang==='es')?`“${titleLine}”`:`「${titleLine}」`);
-  if(w.idea) lines.push(w.idea);
-  const meta=[]; if(S.sign)meta.push(S.sign); if(w.date)meta.push(fmtDate(w.date));
+  const w=cur(); const lines=[]; const series=S.mode==='series';
+  if(series){
+    if(S.seriesTitle) lines.push((S.lang==='en'||S.lang==='es')?`“${S.seriesTitle}”`:`「${S.seriesTitle}」`);
+    if(S.seriesNote) lines.push(S.seriesNote);
+  } else {
+    const titleLine = S.seriesTitle ? (w.title? `${S.seriesTitle} — ${w.title}` : S.seriesTitle) : w.title;
+    if(titleLine) lines.push((S.lang==='en'||S.lang==='es')?`“${titleLine}”`:`「${titleLine}」`);
+    if(w.idea) lines.push(w.idea);
+  }
+  const meta=[]; if(S.sign)meta.push(S.sign); if(!series&&w.date)meta.push(fmtDate(w.date));
   const sep = (S.lang==='en'||S.lang==='es')?', ':' · ';
   if(meta.length) lines.push((lines.length?'\n':'')+'— '+meta.join(sep));
   let cap=lines.join('\n');
@@ -954,7 +1180,7 @@ document.getElementById('copyCap').onclick=async ()=>{ const cap=buildCaption();
 
 // ---------------- export PNG ----------------
 document.getElementById('exportPng').onclick=()=>{ draw();
-  cv.toBlob(b=>{ const base=(S.mode==='grid'?(S.seriesTitle||'series'):(cur().title||'artwork')).replace(/\s+/g,'_');
+  cv.toBlob(b=>{ const base=(S.mode==='series'?(S.seriesTitle||'series'):(cur().title||'artwork')).replace(/\s+/g,'_');
     deliver(b, `${base}_${cur().date||'post'}.png`, IS_NATIVE?buildCaption():''); },'image/png'); };
 
 // ---------------- share to Instagram (Web Share API) ----------------
@@ -964,7 +1190,7 @@ shareBtn.onclick=async ()=>{
   const cap=buildCaption();
   try{ await navigator.clipboard.writeText(cap); }catch(e){}
   const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
-  const fname=((S.mode==='grid'?S.seriesTitle:cur().title)||'artwork').replace(/\s+/g,'_')+'.png';
+  const fname=((S.mode==='series'?S.seriesTitle:cur().title)||'artwork').replace(/\s+/g,'_')+'.png';
   if(IS_NATIVE){ await deliver(blob, fname, cap); const lbl=shareBtn.textContent; shareBtn.textContent=t('shared'); setTimeout(()=>shareBtn.textContent=lbl,1600); return; }
   const fileObj=new File([blob],fname,{type:'image/png'});
   if(navigator.canShare && navigator.canShare({files:[fileObj]})){
@@ -984,13 +1210,13 @@ playBtn.onclick=()=>{ if(_playing){ _playing=false; return; } playPreview(); };
 async function playPreview(){
   const WI=worksWithImg(); if(!WI.length){ alert(t('needImg')); return; }
   _playing=true; playBtn.textContent='■ '+t('stop'); cv.classList.remove('pan');
-  const W=1080,H=1350,secs=S.videoSecs,fade=Math.min(0.5,secs*0.3);
+  const [W,H]=vidDims(), secs=S.videoSecs, fade=Math.min(0.5,secs*0.3), noFade=S.videoTransition==='none';
   cv.width=W; cv.height=H; const g=ctx;
   const total=WI.length*secs*1000, start=performance.now();
   await new Promise(res=>{ (function tick(){ if(!_playing){res();return;} const el=performance.now()-start; if(el>=total){res();return;}
     const ts=el/1000; let i=Math.min(WI.length-1,Math.floor(ts/secs)); const lo=ts-i*secs;
-    let a=0; if(lo<fade)a=1-lo/fade; else if(lo>secs-fade)a=(lo-(secs-fade))/fade;
-    g.fillStyle=S.bg; g.fillRect(0,0,W,H); drawVideoFrame(g,W,H,WI[i]);
+    let a=0; if(!noFade){ if(lo<fade)a=1-lo/fade; else if(lo>secs-fade)a=(lo-(secs-fade))/fade; }
+    g.fillStyle=S.bg; g.fillRect(0,0,W,H); drawVideoFrame(g,W,H,WI[i],lo/secs);
     if(a>0){ g.globalAlpha=a; g.fillStyle=S.bg; g.fillRect(0,0,W,H); g.globalAlpha=1; }
     requestAnimationFrame(tick); })(); });
   _playing=false; playBtn.textContent='▶ '+t('play'); updateImgCtrl(); draw();
@@ -1000,7 +1226,7 @@ async function playPreview(){
 const vBtn=document.getElementById('exportVideo');
 vBtn.onclick=async ()=>{
   const WI=worksWithImg(); if(!WI.length){ alert(t('needImg')); return; }
-  const W=1080,H=1350,fps=30,secs=S.videoSecs,fade=Math.min(0.5,secs*0.3);
+  const [W,H]=vidDims(), fps=30, secs=S.videoSecs, fade=Math.min(0.5,secs*0.3), noFade=S.videoTransition==='none';
   vBtn.disabled=true; const lbl=vBtn.textContent; vBtn.textContent=t('generating');
   try{
     const c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
@@ -1015,8 +1241,8 @@ vBtn.onclick=async ()=>{
     rec.start(); const total=WI.length*secs*1000, start=performance.now(), frameMs=1000/fps;
     await new Promise(res=>{ (function tick(){ const el=performance.now()-start; if(el>=total){res();return;}
       const ts=el/1000; let i=Math.min(WI.length-1,Math.floor(ts/secs)); const lo=ts-i*secs;
-      let a=0; if(lo<fade)a=1-lo/fade; else if(lo>secs-fade)a=(lo-(secs-fade))/fade;
-      g.fillStyle=S.bg; g.fillRect(0,0,W,H); drawVideoFrame(g,W,H,WI[i]);
+      let a=0; if(!noFade){ if(lo<fade)a=1-lo/fade; else if(lo>secs-fade)a=(lo-(secs-fade))/fade; }
+      g.fillStyle=S.bg; g.fillRect(0,0,W,H); drawVideoFrame(g,W,H,WI[i],lo/secs);
       if(a>0){ g.globalAlpha=a; g.fillStyle=S.bg; g.fillRect(0,0,W,H); g.globalAlpha=1; }
       const trk=stream.getVideoTracks()[0]; if(trk&&trk.requestFrame) trk.requestFrame();
       setTimeout(tick, frameMs); })(); });
@@ -1028,17 +1254,11 @@ vBtn.onclick=async ()=>{
   vBtn.disabled=false;
 };
 
-// ---------------- collapsible panels (declutter the form wall into an inspector) ----------------
-document.querySelectorAll('.app > div:first-child .panel').forEach((p,i)=>{
-  const tt=p.querySelector('.ptitle'); if(!tt)return;
-  tt.addEventListener('click',()=>p.classList.toggle('collapsed'));
-  if(i>=2) p.classList.add('collapsed');   // keep Works + Style open, fold the rest
-});
-
 // ---------------- init ----------------
 function init(){
   document.getElementById('sign').value=S.sign||'';
   document.getElementById('seriesTitle').value=S.seriesTitle||'';
+  document.getElementById('seriesNote').value=S.seriesNote||'';
   document.getElementById('wmText').value=S.wmText||'';
   document.getElementById('hashtags').value=S.hashtags||DEFAULT_TAGS; S.hashtags=document.getElementById('hashtags').value;
   document.querySelectorAll('#margin button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.m)===S.margin));
@@ -1050,7 +1270,11 @@ function init(){
   document.querySelectorAll('#format button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='auto'?'auto':parseFloat(b.dataset.r))===S.format));
   document.querySelectorAll('#sliceGrid button').forEach(b=>b.classList.toggle('on',b.dataset.g===S.slice));
   document.querySelectorAll('#gridLayout button').forEach(b=>b.classList.toggle('on',b.dataset.gl===S.gridLayout));
-  document.querySelectorAll('#modetabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
+  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
+  document.querySelectorAll('#vidRatio button').forEach(b=>b.classList.toggle('on',b.dataset.vr===S.videoRatio));
+  document.querySelectorAll('#vidMotion button').forEach(b=>b.classList.toggle('on',b.dataset.vm===S.videoMotion));
+  document.querySelectorAll('#vidTrans button').forEach(b=>b.classList.toggle('on',b.dataset.vt===S.videoTransition));
+  document.querySelectorAll('#seriesView button').forEach(b=>b.classList.toggle('on',b.dataset.sv===S.seriesView));
   syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); applyLang(); draw();
   restoreImages();
 }

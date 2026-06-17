@@ -475,6 +475,9 @@
       <button data-l="ja">日本語</button>
       <button data-l="ko">한국어</button>
       <button data-l="es">ES</button>
+      <button data-l="fr">FR</button>
+      <button data-l="de">DE</button>
+      <button data-l="it">IT</button>
     </div>
   </div>
 </div>
@@ -557,6 +560,51 @@ const LANG = {
     secAdjust:'Ajustar imagen (obra actual)', adjExposure:'Exposición', adjBrightness:'Brillo', adjContrast:'Contraste', adjSaturation:'Saturación', adjTemp:'Calidez', adjStraighten:'Enderezar', adjReset:'Restablecer', lblPresets:'Estilos rápidos', applyAll:'Aplicar a todas', appliedAll:'✓ Aplicado a todas',
     lblCut:'Quitar fondo', cutBtn:'Recortar', cutUndo:'Restaurar', cutNote:'Ideal para obras sobre fondo liso. Ajusta con el deslizador.', lblPerspV:'Perspectiva ↕', lblPerspH:'Perspectiva ↔',
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
+  fr:{ appTitle:'Œuvre → Post', appSub:'Cadre minimal · typographie unifiée · signature — fidèle à votre format d’origine, prêt pour Instagram',
+    secWorks:'Œuvres (ajoutez-en plusieurs pour une série)', upload:'Importer / remplacer l’œuvre actuelle', lblTitle:'Titre', lblIdea:'Texte', lblDate:'Date', datePick:'Choisir une date',
+    secStyle:'Style commun (s’applique à toutes)', lblSign:'Signature', lblSignFont:'Police de signature', lblTitleFont:'Police du titre', lblInk:'Encre (texte / signature)', lblMargin:'Marge', lblAlign:'Aligner',
+    mTight:'Serré', mStd:'Std', mRoomy:'Ample', aLeft:'Gauche', aCenter:'Centre',
+    secScreen:'Fond et filigrane', lblBg:'Couleur de fond', lblWm:'Texte du filigrane', lblWmPos:'Position', lblWmOp:'Opacité',
+    secCaption:'Légende / hashtags', lblSeries:'Titre de série (pour grille / vidéo)', lblTags:'Hashtags #', lblCaptionPreview:'Aperçu de la légende', copyCap:'Copier la légende', copied:'✓ Copié',
+    modeSingle:'Unique', modeGrid:'Grille de série', modeSlice:'Mural', share:'Partager sur Instagram', exportPng:'Exporter en PNG', exportVideo:'Exporter le diaporama (mp4)', resetPos:'Réinitialiser', lblFormat:'Format',
+    lblGrid:'Grille', sliceTiles:'Exporter les tuiles (zip)', sliceNote:'Les tuiles sont numérotées dans l’ordre — publiez post-01 d’abord.', sliceDone:'✓ Tuiles prêtes', lblLayout:'Disposition',
+    s2:'2s', s3:'2,8s', s4:'4s', untitled:'Sans titre', uploadHere:'Importez votre œuvre', play:'Aperçu', stop:'Arrêter',
+    hint:'Fichier HTML local — double-cliquez pour l’utiliser, sans déploiement. Faites glisser l’œuvre sur le canevas pour la repositionner, molette/curseur pour zoomer. Images et réglages enregistrés localement. Sur mobile, « Partager » envoie l’image + la légende directement vers Instagram.',
+    generating:'Génération…', needImg:'Importez d’abord au moins une œuvre', videoDone:'✓ Vidéo prête',
+    shareHint:'Image enregistrée et légende copiée. Ouvrez Instagram, créez une publication et collez la légende.', shared:'✓ Partagé',
+    secAdjust:'Ajuster l’image (œuvre actuelle)', adjExposure:'Exposition', adjBrightness:'Luminosité', adjContrast:'Contraste', adjSaturation:'Saturation', adjTemp:'Chaleur', adjStraighten:'Redresser', adjReset:'Réinitialiser', lblPresets:'Styles rapides', applyAll:'Appliquer à toutes', appliedAll:'✓ Appliqué à toutes',
+    lblCut:'Supprimer le fond', cutBtn:'Détourer', cutUndo:'Restaurer', cutNote:'Idéal pour les œuvres sur fond uni. Ajustez avec le curseur.', lblPerspV:'Perspective ↕', lblPerspH:'Perspective ↔',
+    phTitle:'p. ex. Fenêtre l’après-midi', phIdea:'l’émotion, l’inspiration…', phSign:'votre nom', phSeries:'p. ex. Saisons', phWm:'@votrenom' },
+  de:{ appTitle:'Werk → Post', appSub:'Minimaler Rahmen · einheitliche Typografie · Signatur — originalgetreues Format, bereit für Instagram',
+    secWorks:'Werke (mehrere für eine Serie hinzufügen)', upload:'Aktuelles Werk hochladen / ersetzen', lblTitle:'Titel', lblIdea:'Text', lblDate:'Datum', datePick:'Datum wählen',
+    secStyle:'Gemeinsamer Stil (gilt für alle)', lblSign:'Signatur', lblSignFont:'Signatur-Schrift', lblTitleFont:'Titel-Schrift', lblInk:'Tinte (Text / Signatur)', lblMargin:'Rand', lblAlign:'Ausrichten',
+    mTight:'Eng', mStd:'Std', mRoomy:'Weit', aLeft:'Links', aCenter:'Mitte',
+    secScreen:'Hintergrund & Wasserzeichen', lblBg:'Hintergrundfarbe', lblWm:'Wasserzeichen-Text', lblWmPos:'Position', lblWmOp:'Deckkraft',
+    secCaption:'Bildunterschrift / Hashtags', lblSeries:'Serientitel (für Raster / Video)', lblTags:'Hashtags #', lblCaptionPreview:'Vorschau', copyCap:'Text kopieren', copied:'✓ Kopiert',
+    modeSingle:'Einzeln', modeGrid:'Serienraster', modeSlice:'Mosaik', share:'Auf Instagram teilen', exportPng:'PNG exportieren', exportVideo:'Diashow exportieren (mp4)', resetPos:'Zurücksetzen', lblFormat:'Format',
+    lblGrid:'Raster', sliceTiles:'Kacheln exportieren (zip)', sliceNote:'Kacheln sind in Reihenfolge nummeriert — post-01 zuerst posten.', sliceDone:'✓ Kacheln bereit', lblLayout:'Layout',
+    s2:'2s', s3:'2,8s', s4:'4s', untitled:'Ohne Titel', uploadHere:'Lade dein Werk hoch', play:'Vorschau', stop:'Stopp',
+    hint:'Lokale HTML-Datei — Doppelklick genügt, keine Bereitstellung nötig. Ziehe das Werk auf der Leinwand, um es zu positionieren, Rad/Regler zum Zoomen. Bilder und Einstellungen werden lokal gespeichert. Auf dem Handy sendet „Teilen“ Bild + Text direkt an Instagram.',
+    generating:'Wird erstellt…', needImg:'Lade zuerst mindestens ein Werk hoch', videoDone:'✓ Video fertig',
+    shareHint:'Bild gespeichert und Text kopiert. Öffne Instagram, erstelle einen Beitrag und füge den Text ein.', shared:'✓ Geteilt',
+    secAdjust:'Bild anpassen (aktuelles Werk)', adjExposure:'Belichtung', adjBrightness:'Helligkeit', adjContrast:'Kontrast', adjSaturation:'Sättigung', adjTemp:'Wärme', adjStraighten:'Ausrichten', adjReset:'Zurücksetzen', lblPresets:'Ein-Tipp-Looks', applyAll:'Auf alle anwenden', appliedAll:'✓ Auf alle angewendet',
+    lblCut:'Hintergrund entfernen', cutBtn:'Freistellen', cutUndo:'Wiederherstellen', cutNote:'Ideal für Werke auf einfarbigem Hintergrund. Mit dem Regler fein abstimmen.', lblPerspV:'Perspektive ↕', lblPerspH:'Perspektive ↔',
+    phTitle:'z. B. Fensterbank am Nachmittag', phIdea:'das Gefühl, die Inspiration…', phSign:'dein Name', phSeries:'z. B. Jahreszeiten', phWm:'@deinname' },
+  it:{ appTitle:'Opera → Post', appSub:'Cornice minimale · tipografia unificata · firma — fedele al formato originale, pronta per Instagram',
+    secWorks:'Opere (aggiungine più d’una per una serie)', upload:'Carica / sostituisci l’opera attuale', lblTitle:'Titolo', lblIdea:'Testo', lblDate:'Data', datePick:'Scegli una data',
+    secStyle:'Stile comune (si applica a tutte)', lblSign:'Firma', lblSignFont:'Carattere firma', lblTitleFont:'Carattere titolo', lblInk:'Inchiostro (testo / firma)', lblMargin:'Margine', lblAlign:'Allinea',
+    mTight:'Stretto', mStd:'Std', mRoomy:'Ampio', aLeft:'Sinistra', aCenter:'Centro',
+    secScreen:'Sfondo e filigrana', lblBg:'Colore di sfondo', lblWm:'Testo filigrana', lblWmPos:'Posizione', lblWmOp:'Opacità',
+    secCaption:'Didascalia / hashtag', lblSeries:'Titolo della serie (per griglia / video)', lblTags:'Hashtag #', lblCaptionPreview:'Anteprima', copyCap:'Copia didascalia', copied:'✓ Copiato',
+    modeSingle:'Singola', modeGrid:'Griglia serie', modeSlice:'Mosaico', share:'Condividi su Instagram', exportPng:'Esporta PNG', exportVideo:'Esporta presentazione (mp4)', resetPos:'Reimposta', lblFormat:'Formato',
+    lblGrid:'Griglia', sliceTiles:'Esporta tessere (zip)', sliceNote:'Le tessere sono numerate nell’ordine — pubblica post-01 per primo.', sliceDone:'✓ Tessere pronte', lblLayout:'Disposizione',
+    s2:'2s', s3:'2,8s', s4:'4s', untitled:'Senza titolo', uploadHere:'Carica la tua opera', play:'Anteprima', stop:'Stop',
+    hint:'File HTML locale — doppio clic per usarlo, nessun deploy. Trascina l’opera sulla tela per riposizionarla, rotella/cursore per ingrandire. Immagini e impostazioni salvate localmente. Su cellulare, «Condividi» invia immagine + testo direttamente a Instagram.',
+    generating:'Generazione…', needImg:'Carica prima almeno un’opera', videoDone:'✓ Video pronto',
+    shareHint:'Immagine salvata e didascalia copiata. Apri Instagram, crea un post e incolla la didascalia.', shared:'✓ Condiviso',
+    secAdjust:'Regola immagine (opera attuale)', adjExposure:'Esposizione', adjBrightness:'Luminosità', adjContrast:'Contrasto', adjSaturation:'Saturazione', adjTemp:'Calore', adjStraighten:'Raddrizza', adjReset:'Reimposta', lblPresets:'Stili rapidi', applyAll:'Applica a tutte', appliedAll:'✓ Applicato a tutte',
+    lblCut:'Rimuovi sfondo', cutBtn:'Scontorna', cutUndo:'Ripristina', cutNote:'Ideale per opere su sfondo uniforme. Regola con il cursore.', lblPerspV:'Prospettiva ↕', lblPerspH:'Prospettiva ↔',
+    phTitle:'es. Davanzale nel pomeriggio', phIdea:'l’emozione, l’ispirazione…', phSign:'il tuo nome', phSeries:'es. Stagioni', phWm:'@iltuonome' },
 };
 // ---- workbench reframe: nav / sections / settings / story keys (merged over LANG) ----
 const LANG_EXT = {
@@ -615,6 +663,39 @@ const LANG_EXT = {
     secMusic:'Música de fondo', musicSoon:'Próximamente', secStoryText:'Texto', aiGenerate:'Escribir una frase con IA', aiKeySave:'Guardar clave', aiKeyForget:'Quitar clave', aiKeyHint:'Tu clave de API de Anthropic se guarda solo en este dispositivo y se envía directamente a Anthropic — nunca a nosotros. Consíguela en console.anthropic.com.', aiNeedKey:'Añade tu clave de API de Anthropic para usar la IA.', aiThinking:'Leyendo tu obra…', aiError:'No se pudo conectar con Anthropic. Revisa tu clave y conexión.', aiPick:'Toca una frase para usarla o vuelve a generar.', aiRegen:'Volver a generar', storyTextHint:'Este texto flota sobre tu vídeo. Toca «Escribir una frase con IA» para crearla a partir de tu obra, o escríbela tú.', phStoryText:'Una frase para tu historia…',
     settings:'Ajustes', setLang:'Idioma', menuJump:'Ir a', setAccount:'Cuenta', setSignin:'Iniciar sesión — próximamente', setDefaults:'Predeterminados',
     setDefaultsHint:'Las obras nuevas heredan tu firma, fuentes y formato — edítalos en Obra; se recuerdan automáticamente.', setAbout:'Acerca de' },
+  fr:{ navArtwork:'Œuvre', navSeries:'Série', navStory:'Récit', emptyAdd:'Ajoutez votre œuvre', emptyHint:'Déposez une image ou touchez pour choisir',
+    secStyle:'Style', secCaptionInfo:'Texte', secType:'Texte et typographie', secTags:'Étiquettes et légende', secExport:'Exporter et partager',
+    lblWm:'Filigrane', lblWmText:'Texte', exportPng:'Exporter l’image', share:'Partager',
+    secSeriesStory:'Récit de la série', lblSeriesNote:'Concept / déclaration', phSeriesNote:'Ce qui relie cette série — l’idée, le fil, ce que vous voulez dire…',
+    secUnified:'Style unifié', unifiedHint:'Appliquez l’aspect de l’œuvre actuelle — couleur, cadrage, signature — à toute la série pour qu’elle se lise comme un ensemble.',
+    secLayout:'Présentation', svGrid:'Grille', svMural:'Mural (en pièces)',
+    secVidFormat:'Format', secMotion:'Mouvement', vmNone:'Aucun', vmZoom:'Zoom lent', motionHint:'Le zoom lent (Ken Burns) ajoute un léger mouvement à chaque œuvre.', secRhythm:'Rythme', rhGallery:'Galerie', rhStandard:'Standard', rhDynamic:'Dynamique', rhReel:'Reel', rhythmHint:'Un rythme en un geste — règle durée, mouvement et transition d’un coup. Affinez ci-dessous.', vmIn:'Zoom avant', vmOut:'Zoom arrière', vmPan:'Panoramique',
+    secTiming:'Durée et rythme', lblPerSlide:'Secondes par œuvre', secTransition:'Transition', vtFade:'Fondu', vtNone:'Coupe',
+    secMusic:'Musique de fond', musicSoon:'Bientôt', secStoryText:'Texte', aiGenerate:'Écrire une phrase avec l’IA', aiKeySave:'Enregistrer la clé', aiKeyForget:'Supprimer la clé', aiKeyHint:'Votre clé API Anthropic est stockée uniquement sur cet appareil et envoyée directement à Anthropic — jamais à nous. Obtenez-en une sur console.anthropic.com.', aiNeedKey:'Ajoutez votre clé API Anthropic pour utiliser l’IA.', aiThinking:'Lecture de votre œuvre…', aiError:'Connexion à Anthropic impossible. Vérifiez votre clé et votre connexion.', aiPick:'Touchez une phrase pour l’utiliser, ou régénérez.', aiRegen:'Régénérer', storyTextHint:'Ce texte flotte sur votre vidéo. Touchez « Écrire une phrase avec l’IA » pour en générer une à partir de votre œuvre, ou saisissez la vôtre.', phStoryText:'Une phrase pour votre récit…',
+    settings:'Réglages', setLang:'Langue', menuJump:'Aller à', setAccount:'Compte', setSignin:'Se connecter — bientôt', setDefaults:'Préférences',
+    setDefaultsHint:'Les nouvelles œuvres héritent de votre signature, vos polices et votre format — modifiez-les dans Œuvre ; ils sont mémorisés automatiquement.', setAbout:'À propos' },
+  de:{ navArtwork:'Werk', navSeries:'Serie', navStory:'Story', emptyAdd:'Füge dein Werk hinzu', emptyHint:'Bild ablegen oder zum Auswählen tippen',
+    secStyle:'Stil', secCaptionInfo:'Text', secType:'Text & Typografie', secTags:'Tags & Text', secExport:'Exportieren & teilen',
+    lblWm:'Wasserzeichen', lblWmText:'Text', exportPng:'Bild exportieren', share:'Teilen',
+    secSeriesStory:'Serien-Erzählung', lblSeriesNote:'Konzept / Statement', phSeriesNote:'Was diese Serie zusammenhält — die Idee, der rote Faden, was du sagen willst…',
+    secUnified:'Einheitlicher Stil', unifiedHint:'Übertrage den Look des aktuellen Werks — Farbe, Rahmung, Signatur — auf die ganze Serie, damit sie als ein Werkkörper wirkt.',
+    secLayout:'Präsentation', svGrid:'Raster', svMural:'Mosaik (geteilt)',
+    secVidFormat:'Format', secMotion:'Bewegung', vmNone:'Keine', vmZoom:'Langsamer Zoom', motionHint:'Langsamer Zoom (Ken Burns) verleiht jedem Werk eine sanfte Bewegung.', secRhythm:'Rhythmus', rhGallery:'Galerie', rhStandard:'Standard', rhDynamic:'Dynamisch', rhReel:'Reel', rhythmHint:'Tempo per Tipp — legt Dauer, Bewegung und Übergang zusammen fest. Unten feinjustieren.', vmIn:'Heranzoomen', vmOut:'Herauszoomen', vmPan:'Schwenk',
+    secTiming:'Dauer & Rhythmus', lblPerSlide:'Sekunden pro Werk', secTransition:'Übergang', vtFade:'Überblenden', vtNone:'Schnitt',
+    secMusic:'Hintergrundmusik', musicSoon:'Demnächst', secStoryText:'Text', aiGenerate:'Mit KI eine Zeile schreiben', aiKeySave:'Schlüssel speichern', aiKeyForget:'Schlüssel entfernen', aiKeyHint:'Dein Anthropic-API-Schlüssel wird nur auf diesem Gerät gespeichert und direkt an Anthropic gesendet — nie an uns. Erhältlich unter console.anthropic.com.', aiNeedKey:'Füge deinen Anthropic-API-Schlüssel hinzu, um die KI zu nutzen.', aiThinking:'Dein Werk wird gelesen…', aiError:'Anthropic nicht erreichbar. Prüfe Schlüssel und Verbindung.', aiPick:'Tippe eine Zeile an, um sie zu verwenden, oder generiere neu.', aiRegen:'Neu generieren', storyTextHint:'Dieser Text schwebt über deinem Video. Tippe auf „Mit KI eine Zeile schreiben“, um ihn aus deinem Werk zu entwerfen, oder gib ihn selbst ein.', phStoryText:'Eine Zeile für deine Story…',
+    settings:'Einstellungen', setLang:'Sprache', menuJump:'Springe zu', setAccount:'Konto', setSignin:'Anmelden — demnächst', setDefaults:'Standards',
+    setDefaultsHint:'Neue Werke übernehmen deine Signatur, Schriften und das Format — bearbeite sie in Werk; sie werden automatisch gemerkt.', setAbout:'Über' },
+  it:{ navArtwork:'Opera', navSeries:'Serie', navStory:'Storia', emptyAdd:'Aggiungi la tua opera', emptyHint:'Trascina un’immagine o tocca per scegliere',
+    secStyle:'Stile', secCaptionInfo:'Testo', secType:'Testo e tipografia', secTags:'Etichette e didascalia', secExport:'Esporta e condividi',
+    lblWm:'Filigrana', lblWmText:'Testo', exportPng:'Esporta immagine', share:'Condividi',
+    secSeriesStory:'Racconto della serie', lblSeriesNote:'Concetto / dichiarazione', phSeriesNote:'Ciò che lega questa serie — l’idea, il filo, ciò che vuoi dire…',
+    secUnified:'Stile unificato', unifiedHint:'Applica l’aspetto dell’opera attuale — colore, cornice, firma — a tutta la serie perché si legga come un unico corpus.',
+    secLayout:'Presentazione', svGrid:'Griglia', svMural:'Mosaico (a tessere)',
+    secVidFormat:'Formato', secMotion:'Movimento', vmNone:'Nessuno', vmZoom:'Zoom lento', motionHint:'Lo zoom lento (Ken Burns) aggiunge un movimento delicato a ogni opera.', secRhythm:'Ritmo', rhGallery:'Galleria', rhStandard:'Standard', rhDynamic:'Dinamico', rhReel:'Reel', rhythmHint:'Un ritmo con un tocco — imposta durata, movimento e transizione insieme. Affina sotto.', vmIn:'Zoom avanti', vmOut:'Zoom indietro', vmPan:'Panoramica',
+    secTiming:'Durata e ritmo', lblPerSlide:'Secondi per opera', secTransition:'Transizione', vtFade:'Dissolvenza', vtNone:'Stacco',
+    secMusic:'Musica di sottofondo', musicSoon:'Prossimamente', secStoryText:'Testo', aiGenerate:'Scrivi una frase con l’IA', aiKeySave:'Salva chiave', aiKeyForget:'Rimuovi chiave', aiKeyHint:'La tua chiave API Anthropic è salvata solo su questo dispositivo e inviata direttamente ad Anthropic — mai a noi. Ottienila su console.anthropic.com.', aiNeedKey:'Aggiungi la tua chiave API Anthropic per usare l’IA.', aiThinking:'Lettura della tua opera…', aiError:'Impossibile raggiungere Anthropic. Controlla chiave e connessione.', aiPick:'Tocca una frase per usarla, o rigenera.', aiRegen:'Rigenera', storyTextHint:'Questo testo galleggia sul tuo video. Tocca «Scrivi una frase con l’IA» per crearne una dalla tua opera, o scrivila tu.', phStoryText:'Una frase per la tua storia…',
+    settings:'Impostazioni', setLang:'Lingua', menuJump:'Vai a', setAccount:'Account', setSignin:'Accedi — prossimamente', setDefaults:'Predefiniti',
+    setDefaultsHint:'Le nuove opere ereditano firma, caratteri e formato — modificali in Opera; vengono ricordati automaticamente.', setAbout:'Info' },
 };
 for(const l in LANG_EXT) Object.assign(LANG[l], LANG_EXT[l]);
 
@@ -845,7 +926,7 @@ function perspOf(){ if(!cur().persp)cur().persp={kh:0,kv:0}; return cur().persp;
         sugs=document.getElementById('aiSugs'), keyRow=document.getElementById('aiKeyRow'),
         keyInp=document.getElementById('aiKey'), keySave=document.getElementById('aiKeySave'),
         keyForget=document.getElementById('aiKeyForget'), msg=document.getElementById('aiMsg');
-  const LANGNAME={en:'English', zh:'Simplified Chinese', ja:'Japanese', ko:'Korean', es:'Spanish'};
+  const LANGNAME={en:'English', zh:'Simplified Chinese', ja:'Japanese', ko:'Korean', es:'Spanish', fr:'French', de:'German', it:'Italian'};
   const getKey=()=>localStorage.getItem(KEY)||'';
   const setMsg=k=>{ msg.textContent=t(k); };
   function showKeyRow(focus){ keyRow.style.display=''; keyForget.style.display=getKey()?'':'none'; if(focus) keyInp.focus(); }

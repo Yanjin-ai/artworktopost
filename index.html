@@ -1041,7 +1041,8 @@ function drawVideoFrame(g,W,H,work,prog){
   const ideaLines = work.idea?wrap(work.idea,W-2*M):[];
   const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(S.sign||work.date);
   let capH=0; if(hasT)capH+=Math.round(Ts*1.2); if(hasT&&hasI)capH+=Math.round(Ts*0.4);
-  if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.7); if(hasS)capH+=Math.round(Sg*0.9);
+  if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.7);
+  const dsz=Math.round(W*0.024); if(hasS)capH+=(S.sign?Math.round(Sg*0.9):0)+(work.date?Math.round(dsz*1.9):0);
   const gap=Math.round(M*0.7), artMaxH=H-2*M-capH-gap;
   const {w:dw,h:dh}=contain(im.width,im.height,W-2*M,artMaxH);
   const blockH=dh+gap+capH, topY=Math.max(M,(H-blockH)/2), dx=(W-dw)/2, dy=topY;
@@ -1061,7 +1062,8 @@ function drawVideoFrame(g,W,H,work,prog){
   if((hasT||hasI)&&hasS) y+=Math.round(M*0.7);
   if(hasS){ g.textBaseline='alphabetic'; const sb=y+Math.round(Sg*0.7);
     if(S.sign){ g.font=`${Sg}px ${S.signFont}`; g.fillStyle=A; g.fillText(S.sign,W/2,sb); }
-    if(work.date){ g.font=`500 ${Math.round(W*0.024)}px ${FAM}`; g.fillStyle=T.soft; g.letterSpacing='3px'; g.fillText(fmtDate(work.date),W/2,sb+Math.round(Sg*0.42)); g.letterSpacing='0px'; } }
+    if(work.date){ const dBase = S.sign ? sb+Math.round(Sg*0.5)+dsz : y+dsz;
+      g.font=`500 ${dsz}px ${FAM}`; g.fillStyle=T.soft; g.letterSpacing='3px'; g.fillText(fmtDate(work.date),W/2,dBase); g.letterSpacing='0px'; } }
   g.textBaseline='alphabetic'; g.textAlign='left';
 }
 

@@ -1,5 +1,5 @@
 // Service worker: offline-capable, but always prefer fresh content when online.
-const CACHE = 'artworkpost-v2';
+const CACHE = 'artworkpost-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

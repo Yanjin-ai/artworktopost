@@ -69,6 +69,9 @@
     background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; transition:border-color .15s; }
   input:focus, textarea:focus{outline:none; border-color:var(--ink);}
   textarea{resize:vertical; min-height:74px; line-height:1.5;}
+  .datefield{ display:block; width:100%; text-align:left; font-family:inherit; font-size:14.5px; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; cursor:pointer; }
+  .datefield:hover{ border-color:var(--ink); }
+  .datehidden{ position:absolute; width:1px; height:1px; padding:0; opacity:0; pointer-events:none; border:none; }
 
   .drop{border:1.5px dashed var(--line); border-radius:12px; padding:18px; text-align:center; color:var(--soft); cursor:pointer; transition:.18s; background:var(--paper); font-size:14px;}
   .drop:hover,.drop.over{border-color:var(--ink); color:var(--ink); background:#fff;}
@@ -194,7 +197,10 @@
       <div class="stitle" data-i18n="secCaptionInfo">Caption</div>
       <div class="field"><label data-i18n="lblTitle">Title</label><input type="text" id="title" maxlength="40"></div>
       <div class="field"><label data-i18n="lblIdea">Statement</label><textarea id="idea" maxlength="240"></textarea></div>
-      <div class="field"><label data-i18n="lblDate">Date</label><input type="date" id="date"></div>
+      <div class="field"><label data-i18n="lblDate">Date</label>
+        <button type="button" class="datefield" id="dateField"></button>
+        <input type="date" id="date" class="datehidden">
+      </div>
     </section>
 
     <!-- ARTWORK · Adjust image -->
@@ -373,6 +379,14 @@
       </div>
     </section>
 
+    <!-- STORY · Text (floats over the video) -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secStoryText">Text</div>
+      <textarea id="storyText" maxlength="120" style="min-height:54px"></textarea>
+      <button class="btn line" id="aiSuggest" style="margin-top:10px;" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M18 14l.9 2.1L21 17l-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z"/></svg><span data-i18n="aiSoon">AI assist — coming soon</span></button>
+      <p class="shint" data-i18n="storyTextHint">This text floats over your video. Type it now; AI assistance is coming.</p>
+    </section>
+
     <!-- STORY · Rhythm (one-tap templates) -->
     <section class="section" data-modes="story">
       <div class="stitle" data-i18n="secRhythm">Rhythm</div>
@@ -460,7 +474,7 @@
 // ---------------- i18n (English first) ----------------
 const LANG = {
   en:{ appTitle:'Artwork → Post', appSub:'Minimal frame · unified type · signature — true to your original ratio, ready for Instagram',
-    secWorks:'Works (add several to form a series)', upload:'Upload / replace current work', lblTitle:'Title', lblIdea:'Statement', lblDate:'Date',
+    secWorks:'Works (add several to form a series)', upload:'Upload / replace current work', lblTitle:'Title', lblIdea:'Statement', lblDate:'Date', datePick:'Pick a date',
     secStyle:'Shared style (applies to every work)', lblSign:'Signature', lblSignFont:'Signature font', lblTitleFont:'Title font', lblInk:'Ink (text / signature)', lblMargin:'Margin', lblAlign:'Align',
     mTight:'Tight', mStd:'Std', mRoomy:'Roomy', aLeft:'Left', aCenter:'Center',
     secScreen:'Background & watermark', lblBg:'Background', lblWm:'Watermark text', lblWmPos:'Position', lblWmOp:'Opacity',
@@ -475,7 +489,7 @@ const LANG = {
     lblCut:'Remove background', cutBtn:'Cut out', cutUndo:'Restore', cutNote:'Best for artwork shot on a plain background. Drag the slider to fine-tune.', lblPerspV:'Perspective ↕', lblPerspH:'Perspective ↔',
     phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
   zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
-    secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期',
+    secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期', datePick:'选择日期',
     secStyle:'统一风格（应用于全部作品）', lblSign:'签名', lblSignFont:'签名字体', lblTitleFont:'标题字体', lblInk:'墨色（文字 / 签名）', lblMargin:'留白', lblAlign:'对齐',
     mTight:'紧凑', mStd:'标准', mRoomy:'宽松', aLeft:'左', aCenter:'中',
     secScreen:'背景 & 水印', lblBg:'背景色', lblWm:'水印文字', lblWmPos:'位置', lblWmOp:'透明度',
@@ -490,7 +504,7 @@ const LANG = {
     lblCut:'抠背景', cutBtn:'抠图', cutUndo:'还原', cutNote:'适合纯色背景拍摄的作品；拖动滑杆微调容差。', lblPerspV:'透视 ↕', lblPerspH:'透视 ↔',
     phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
   ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
-    secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付',
+    secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付', datePick:'日付を選択',
     secStyle:'共通スタイル（全作品に適用）', lblSign:'署名', lblSignFont:'署名書体', lblTitleFont:'タイトル書体', lblInk:'墨色（文字 / 署名）', lblMargin:'余白', lblAlign:'揃え',
     mTight:'狭い', mStd:'標準', mRoomy:'広い', aLeft:'左', aCenter:'中央',
     secScreen:'背景 & 透かし', lblBg:'背景色', lblWm:'透かし文字', lblWmPos:'位置', lblWmOp:'不透明度',
@@ -505,7 +519,7 @@ const LANG = {
     lblCut:'背景を消す', cutBtn:'切り抜き', cutUndo:'元に戻す', cutNote:'無地背景で撮った作品向け。スライダーで微調整。', lblPerspV:'遠近 ↕', lblPerspH:'遠近 ↔',
     phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
   ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
-    secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜',
+    secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜', datePick:'날짜 선택',
     secStyle:'공통 스타일 (모든 작품에 적용)', lblSign:'서명', lblSignFont:'서명 글꼴', lblTitleFont:'제목 글꼴', lblInk:'잉크색 (텍스트 / 서명)', lblMargin:'여백', lblAlign:'정렬',
     mTight:'좁게', mStd:'표준', mRoomy:'넓게', aLeft:'왼쪽', aCenter:'가운데',
     secScreen:'배경 & 워터마크', lblBg:'배경색', lblWm:'워터마크 문구', lblWmPos:'위치', lblWmOp:'투명도',
@@ -520,7 +534,7 @@ const LANG = {
     lblCut:'배경 제거', cutBtn:'배경 제거', cutUndo:'되돌리기', cutNote:'단색 배경에서 촬영한 작품에 적합. 슬라이더로 미세 조정.', lblPerspV:'원근 ↕', lblPerspH:'원근 ↔',
     phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
   es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
-    secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha',
+    secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha', datePick:'Elegir fecha',
     secStyle:'Estilo común (se aplica a todas)', lblSign:'Firma', lblSignFont:'Fuente de firma', lblTitleFont:'Fuente de título', lblInk:'Tinta (texto / firma)', lblMargin:'Margen', lblAlign:'Alinear',
     mTight:'Justo', mStd:'Est.', mRoomy:'Amplio', aLeft:'Izq.', aCenter:'Centro',
     secScreen:'Fondo y marca de agua', lblBg:'Color de fondo', lblWm:'Texto de marca de agua', lblWmPos:'Posición', lblWmOp:'Opacidad',
@@ -545,7 +559,7 @@ const LANG_EXT = {
     secLayout:'Presentation', svGrid:'Grid', svMural:'Mural (sliced)',
     secVidFormat:'Format', secMotion:'Motion', vmNone:'None', vmZoom:'Slow zoom', motionHint:'Slow zoom (Ken Burns) adds gentle movement to each artwork.', secRhythm:'Rhythm', rhGallery:'Gallery', rhStandard:'Standard', rhDynamic:'Dynamic', rhReel:'Reel', rhythmHint:'A one-tap pace — sets timing, motion and transition together. Fine-tune below.', vmIn:'Zoom in', vmOut:'Zoom out', vmPan:'Pan',
     secTiming:'Timing & rhythm', lblPerSlide:'Seconds per artwork', secTransition:'Transition', vtFade:'Fade', vtNone:'Cut',
-    secMusic:'Background music', musicSoon:'Coming soon',
+    secMusic:'Background music', musicSoon:'Coming soon', secStoryText:'Text', aiSoon:'AI assist — coming soon', storyTextHint:'This text floats over your video. Type it now; AI assistance is coming.', phStoryText:'A line for your story…',
     settings:'Settings', setLang:'Language', menuJump:'Jump to', setAccount:'Account', setSignin:'Sign in — coming soon', setDefaults:'Defaults',
     setDefaultsHint:"New works inherit your signature, fonts and format — edit them in Artwork; they're remembered automatically.", setAbout:'About' },
   zh:{ navArtwork:'作品', navSeries:'作品集', navStory:'影像', emptyAdd:'添加你的作品', emptyHint:'拖入图片，或点击选择',
@@ -556,7 +570,7 @@ const LANG_EXT = {
     secLayout:'呈现方式', svGrid:'网格', svMural:'九宫格切图',
     secVidFormat:'画面比例', secMotion:'运动', vmNone:'无', vmZoom:'缓慢推拉', motionHint:'缓慢推拉（Ken Burns）让每幅作品有轻微的动感。', secRhythm:'节奏', rhGallery:'画廊', rhStandard:'标准', rhDynamic:'动感', rhReel:'快剪', rhythmHint:'一键定节奏 —— 同时设定时长、运动与转场，可在下方微调。', vmIn:'推近', vmOut:'拉远', vmPan:'平移',
     secTiming:'时长与节奏', lblPerSlide:'每幅作品秒数', secTransition:'转场', vtFade:'淡入淡出', vtNone:'硬切',
-    secMusic:'背景音乐', musicSoon:'即将上线',
+    secMusic:'背景音乐', musicSoon:'即将上线', secStoryText:'文字', aiSoon:'AI 辅助 — 即将上线', storyTextHint:'这段文字会悬浮在视频上。先手动输入，AI 生成稍后上线。', phStoryText:'给你的故事写一句…',
     settings:'设置', setLang:'语言', menuJump:'跳转到', setAccount:'账户', setSignin:'登录 — 即将上线', setDefaults:'默认偏好',
     setDefaultsHint:'新作品会沿用你的签名、字体与画幅——在「作品」里调整即可，会自动记住。', setAbout:'关于' },
   ja:{ navArtwork:'作品', navSeries:'シリーズ', navStory:'映像', emptyAdd:'作品を追加', emptyHint:'画像をドロップ、またはタップして選択',
@@ -567,7 +581,7 @@ const LANG_EXT = {
     secLayout:'見せ方', svGrid:'グリッド', svMural:'分割（モザイク）',
     secVidFormat:'画面比率', secMotion:'モーション', vmNone:'なし', vmZoom:'ゆっくりズーム', motionHint:'ゆっくりズーム（Ken Burns）で各作品に動きを加えます。', secRhythm:'リズム', rhGallery:'ギャラリー', rhStandard:'標準', rhDynamic:'ダイナミック', rhReel:'リール', rhythmHint:'ワンタップでテンポ設定 — 尺・モーション・トランジションをまとめて。下で微調整。', vmIn:'ズームイン', vmOut:'ズームアウト', vmPan:'パン',
     secTiming:'尺とリズム', lblPerSlide:'作品ごとの秒数', secTransition:'トランジション', vtFade:'フェード', vtNone:'カット',
-    secMusic:'BGM', musicSoon:'近日対応',
+    secMusic:'BGM', musicSoon:'近日対応', secStoryText:'テキスト', aiSoon:'AI支援 — 近日対応', storyTextHint:'このテキストは動画に重ねて表示。今は手入力、AI生成は近日。', phStoryText:'ストーリーに一言…',
     settings:'設定', setLang:'言語', menuJump:'移動先', setAccount:'アカウント', setSignin:'サインイン — 近日対応', setDefaults:'デフォルト',
     setDefaultsHint:'新しい作品は署名・書体・比率を引き継ぎます——「作品」で編集すれば自動的に記憶されます。', setAbout:'情報' },
   ko:{ navArtwork:'작품', navSeries:'시리즈', navStory:'스토리', emptyAdd:'작품 추가', emptyHint:'이미지를 끌어다 놓거나 탭하여 선택',
@@ -578,7 +592,7 @@ const LANG_EXT = {
     secLayout:'표현 방식', svGrid:'그리드', svMural:'분할(모자이크)',
     secVidFormat:'화면 비율', secMotion:'모션', vmNone:'없음', vmZoom:'느린 줌', motionHint:'느린 줌(켄 번스)으로 각 작품에 은은한 움직임을 더합니다.', secRhythm:'리듬', rhGallery:'갤러리', rhStandard:'표준', rhDynamic:'다이내믹', rhReel:'릴', rhythmHint:'원탭으로 템포 설정 — 길이·모션·전환을 한 번에. 아래에서 미세 조정.', vmIn:'줌 인', vmOut:'줌 아웃', vmPan:'팬',
     secTiming:'길이 & 리듬', lblPerSlide:'작품당 초', secTransition:'전환', vtFade:'페이드', vtNone:'컷',
-    secMusic:'배경 음악', musicSoon:'곧 제공',
+    secMusic:'배경 음악', musicSoon:'곧 제공', secStoryText:'텍스트', aiSoon:'AI 도움 — 곧 제공', storyTextHint:'이 텍스트는 영상 위에 표시됩니다. 지금은 직접 입력, AI는 곧.', phStoryText:'스토리 한 줄…',
     settings:'설정', setLang:'언어', menuJump:'이동', setAccount:'계정', setSignin:'로그인 — 곧 제공', setDefaults:'기본값',
     setDefaultsHint:'새 작품은 서명·글꼴·비율을 이어받습니다 — 「작품」에서 편집하면 자동 저장됩니다.', setAbout:'정보' },
   es:{ navArtwork:'Obra', navSeries:'Serie', navStory:'Historia', emptyAdd:'Añade tu obra', emptyHint:'Suelta una imagen o toca para elegir',
@@ -589,7 +603,7 @@ const LANG_EXT = {
     secLayout:'Presentación', svGrid:'Cuadrícula', svMural:'Mural (en piezas)',
     secVidFormat:'Formato', secMotion:'Movimiento', vmNone:'Ninguno', vmZoom:'Zoom lento', motionHint:'El zoom lento (Ken Burns) añade un movimiento suave a cada obra.', secRhythm:'Ritmo', rhGallery:'Galería', rhStandard:'Estándar', rhDynamic:'Dinámico', rhReel:'Reel', rhythmHint:'Un ritmo con un toque — fija duración, movimiento y transición a la vez. Ajusta abajo.', vmIn:'Acercar', vmOut:'Alejar', vmPan:'Paneo',
     secTiming:'Duración y ritmo', lblPerSlide:'Segundos por obra', secTransition:'Transición', vtFade:'Fundido', vtNone:'Corte',
-    secMusic:'Música de fondo', musicSoon:'Próximamente',
+    secMusic:'Música de fondo', musicSoon:'Próximamente', secStoryText:'Texto', aiSoon:'Asistencia IA — próximamente', storyTextHint:'Este texto flota sobre tu vídeo. Escríbelo ahora; la IA llegará pronto.', phStoryText:'Una frase para tu historia…',
     settings:'Ajustes', setLang:'Idioma', menuJump:'Ir a', setAccount:'Cuenta', setSignin:'Iniciar sesión — próximamente', setDefaults:'Predeterminados',
     setDefaultsHint:'Las obras nuevas heredan tu firma, fuentes y formato — edítalos en Obra; se recuerdan automáticamente.', setAbout:'Acerca de' },
 };
@@ -620,7 +634,7 @@ const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
 const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
-  seriesTitle:'', seriesNote:'', hashtags:DEFAULT_TAGS, mode:'artwork', seriesView:'grid', videoSecs:2.8, videoRatio:'4:5', videoMotion:'in', videoTransition:'fade', videoRhythm:'standard', format:'auto', slice:'3x3', gridLayout:'auto',
+  seriesTitle:'', seriesNote:'', hashtags:DEFAULT_TAGS, mode:'artwork', seriesView:'grid', videoSecs:2.8, videoRatio:'4:5', videoMotion:'in', videoTransition:'fade', videoRhythm:'standard', storyText:'', format:'auto', slice:'3x3', gridLayout:'auto',
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
 if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
@@ -671,7 +685,8 @@ function applyLang(){
   document.getElementById('seriesTitle').placeholder = t('phSeries');
   document.getElementById('wmText').placeholder = t('phWm');
   document.getElementById('seriesNote').placeholder = t('phSeriesNote');
-  document.getElementById('date').setAttribute('lang', S.lang); // native date picker follows language
+  document.getElementById('storyText').placeholder = t('phStoryText');
+  document.getElementById('date').setAttribute('lang', S.lang); refreshDateField(); // date display follows app language
   document.querySelectorAll('#langsel button').forEach(b=>b.classList.toggle('on', b.dataset.l===S.lang));
   buildCaption();
 }
@@ -764,7 +779,11 @@ function renderWorks(){
 function addWork(){ const w={id:uid++,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0},cut:false,cutTol:36,persp:{kh:0,kv:0}}; S.works.push(w); S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function removeWork(i){ const rid=S.works[i].id; delete _images[rid]; idbDel(rid); S.works.splice(i,1); if(!S.works.length){ addWork(); return; } if(S.current>=S.works.length)S.current=S.works.length-1; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
 function selectWork(i){ S.current=i; save(); renderWorks(); fillFields(); updateImgCtrl(); draw(); buildCaption(); }
-function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; fillAdj(); updateCutUI(); }
+function refreshDateField(){ const el=document.getElementById('dateField'); if(el) el.textContent = cur().date ? fmtDate(cur().date) : t('datePick'); }
+function fillFields(){ const w=cur(); document.getElementById('title').value=w.title||''; document.getElementById('idea').value=w.idea||''; document.getElementById('date').value=w.date||''; refreshDateField(); fillAdj(); updateCutUI(); }
+// custom date field: tap opens the native picker, but the displayed value follows the app language
+document.getElementById('dateField').onclick=()=>{ const d=document.getElementById('date'); if(d.showPicker){ try{ d.showPicker(); return; }catch(e){} } d.focus(); d.click(); };
+document.getElementById('date').addEventListener('change',()=>{ cur().date=document.getElementById('date').value; save(); refreshDateField(); draw(); buildCaption(); });
 
 // ---------------- image adjustment sliders ----------------
 const ADJ=[['aEx','ex','vEx'],['aBr','br','vBr'],['aCt','ct','vCt'],['aSa','sa','vSa'],['aTp','tp','vTp']];
@@ -808,7 +827,7 @@ function perspOf(){ if(!cur().persp)cur().persp={kh:0,kv:0}; return cur().persp;
 [['aKh','kh','vKh'],['aKv','kv','vKv']].forEach(([id,key,vid])=>{ document.getElementById(id).addEventListener('input',e=>{ perspOf()[key]=parseInt(e.target.value); document.getElementById(vid).textContent=e.target.value; save(); clearTimeout(_pTimer); _pTimer=setTimeout(async()=>{ await processImage(cur()); draw(); },200); }); });
 
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
-['sign','seriesTitle','seriesNote','hashtags','wmText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
+['sign','seriesTitle','seriesNote','hashtags','wmText','storyText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
 
 // ---------------- upload ----------------
 const drop=document.getElementById('drop'), file=document.getElementById('file');
@@ -1032,6 +1051,25 @@ function drawGrid(g){
   g.textBaseline='alphabetic'; g.textAlign='left';
 }
 
+// ---------------- story text overlay (floats over the video artwork) ----------------
+function drawStoryOverlay(g, x, y, w, h){
+  if(!S.storyText) return;
+  const fs=Math.round(w*0.062), pad=Math.round(w*0.05), maxW=w-2*pad;
+  ctx.font=`600 ${fs}px ${S.titleFont}`;                 // measure with the global ctx
+  const lines=wrap(S.storyText, maxW);
+  const lh=Math.round(fs*1.28), blockH=lines.length*lh;
+  const cx=x+w/2, cy=y+h-Math.round(h*0.11)-blockH/2;    // float near the artwork's lower edge
+  const bw=maxW+pad*1.4, bh=blockH+pad;
+  g.save();
+  g.globalAlpha=0.42; g.fillStyle='#16151a';
+  if(g.roundRect){ g.beginPath(); g.roundRect(cx-bw/2, cy-bh/2, bw, bh, Math.round(bh*0.16)); g.fill(); }
+  else g.fillRect(cx-bw/2, cy-bh/2, bw, bh);
+  g.globalAlpha=1; g.fillStyle='#fbf7f0'; g.font=`600 ${fs}px ${S.titleFont}`; g.textAlign='center'; g.textBaseline='middle';
+  g.shadowColor='rgba(0,0,0,.35)'; g.shadowBlur=Math.round(fs*0.25);
+  let ty=cy-blockH/2+lh/2; lines.forEach(l=>{ g.fillText(l,cx,ty,maxW); ty+=lh; });
+  g.restore();
+}
+
 // ---------------- video frame render ----------------
 function drawVideoFrame(g,W,H,work,prog){
   const A=accentOn(), T=inkSet(), FAM=S.titleFont, M=Math.round(W*0.085);
@@ -1056,6 +1094,7 @@ function drawVideoFrame(g,W,H,work,prog){
     const zw=dw*s, zh=dh*s; drawImgAdj(g,im, dx-(zw-dw)/2+ox*dw, dy-(zh-dh)/2+oy*dh, zw, zh, work.adj); drawWatermark(g,dx,dy,dw,dh); g.restore(); }
   else { drawImgAdj(g,im,dx,dy,dw,dh,work.adj); drawWatermark(g,dx,dy,dw,dh); }
   g.strokeStyle=T.key; g.lineWidth=2; g.strokeRect(dx+1,dy+1,dw-2,dh-2);
+  drawStoryOverlay(g,dx,dy,dw,dh);
   let y=dy+dh+gap; g.textAlign='center'; g.textBaseline='top';
   if(hasT){ g.fillStyle=T.ink; g.font=`500 ${Ts}px ${FAM}`; g.fillText(work.title,W/2,y,W-2*M); y+=Math.round(Ts*1.2)+(hasI?Math.round(Ts*0.4):0); }
   if(hasI){ g.fillStyle=T.idea; g.font=ideaFont(Is); ideaLines.forEach(l=>{g.fillText(l,W/2,y,W-2*M);y+=lineH;}); }
@@ -1304,6 +1343,7 @@ function init(){
   document.getElementById('seriesTitle').value=S.seriesTitle||'';
   document.getElementById('seriesNote').value=S.seriesNote||'';
   document.getElementById('wmText').value=S.wmText||'';
+  document.getElementById('storyText').value=S.storyText||'';
   document.getElementById('hashtags').value=S.hashtags||DEFAULT_TAGS; S.hashtags=document.getElementById('hashtags').value;
   document.querySelectorAll('#margin button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.m)===S.margin));
   document.querySelectorAll('#textAlign button').forEach(b=>b.classList.toggle('on',b.dataset.a===S.align));
@@ -1330,7 +1370,18 @@ async function restoreImages(){
   if(any){ renderWorks(); updateImgCtrl(); draw(); buildCaption(); }
 }
 // register service worker (only works over http/https, e.g. the deployed site — harmless when opened as a local file)
-if('serviceWorker' in navigator && location.protocol.startsWith('http')){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+if('serviceWorker' in navigator){
+  const native = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) || !location.protocol.startsWith('http');
+  if(native){
+    // native app bundles its own assets — never let a (possibly stale) service worker serve an old page
+    navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});
+  } else {
+    window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(reg=>{
+      // when a new version activates, refresh once so users never get stuck on an old build
+      reg.addEventListener('updatefound',()=>{ const nw=reg.installing; if(nw) nw.addEventListener('statechange',()=>{ if(nw.state==='activated' && navigator.serviceWorker.controller) location.reload(); }); });
+    }).catch(()=>{}));
+  }
+}
 if(document.fonts&&document.fonts.ready){
   Promise.all([
     document.fonts.load("400 60px 'Mr Dafoe'"), document.fonts.load("400 60px 'Great Vibes'"),

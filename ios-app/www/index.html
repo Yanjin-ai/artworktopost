@@ -373,24 +373,40 @@
       </div>
     </section>
 
+    <!-- STORY · Rhythm (one-tap templates) -->
+    <section class="section" data-modes="story">
+      <div class="stitle" data-i18n="secRhythm">Rhythm</div>
+      <div class="seg" id="vidRhythm" style="flex-wrap:wrap;">
+        <button data-rh="gallery" data-i18n="rhGallery">Gallery</button>
+        <button data-rh="standard" class="on" data-i18n="rhStandard">Standard</button>
+        <button data-rh="dynamic" data-i18n="rhDynamic">Dynamic</button>
+        <button data-rh="reel" data-i18n="rhReel">Reel</button>
+      </div>
+      <p class="shint" data-i18n="rhythmHint">A one-tap pace — sets timing, motion and transition together. Fine-tune below.</p>
+    </section>
+
     <!-- STORY · Motion -->
     <section class="section" data-modes="story">
       <div class="stitle" data-i18n="secMotion">Motion</div>
-      <div class="seg" id="vidMotion">
-        <button data-vm="none" class="on" data-i18n="vmNone">None</button>
-        <button data-vm="zoom" data-i18n="vmZoom">Slow zoom</button>
+      <div class="seg" id="vidMotion" style="flex-wrap:wrap;">
+        <button data-vm="none" data-i18n="vmNone">None</button>
+        <button data-vm="in" class="on" data-i18n="vmIn">Zoom in</button>
+        <button data-vm="out" data-i18n="vmOut">Zoom out</button>
+        <button data-vm="pan" data-i18n="vmPan">Pan</button>
       </div>
-      <p class="shint" data-i18n="motionHint">Slow zoom (Ken Burns) adds gentle movement to each artwork.</p>
+      <p class="shint" data-i18n="motionHint">Ken Burns movement — a slow zoom or pan over each artwork.</p>
     </section>
 
     <!-- STORY · Timing -->
     <section class="section" data-modes="story">
-      <div class="stitle" data-i18n="secTiming">Timing &amp; rhythm</div>
+      <div class="stitle" data-i18n="secTiming">Timing</div>
       <label data-i18n="lblPerSlide">Seconds per artwork</label>
       <div class="seg" id="videoSecs">
-        <button data-s="2" data-i18n="s2">2s</button>
-        <button data-s="2.8" class="on" data-i18n="s3">2.8s</button>
-        <button data-s="4" data-i18n="s4">4s</button>
+        <button data-s="1.5">1.5s</button>
+        <button data-s="2">2s</button>
+        <button data-s="2.8" class="on">2.8s</button>
+        <button data-s="4">4s</button>
+        <button data-s="6">6s</button>
       </div>
     </section>
 
@@ -527,7 +543,7 @@ const LANG_EXT = {
     secSeriesStory:'Series story', lblSeriesNote:'Concept / statement', phSeriesNote:'What ties this series together — the idea, the thread, what you want it to say…',
     secUnified:'Unified style', unifiedHint:"Apply the current work's look — color, framing, signature — to the whole series so the set reads as one body of work.",
     secLayout:'Presentation', svGrid:'Grid', svMural:'Mural (sliced)',
-    secVidFormat:'Format', secMotion:'Motion', vmNone:'None', vmZoom:'Slow zoom', motionHint:'Slow zoom (Ken Burns) adds gentle movement to each artwork.',
+    secVidFormat:'Format', secMotion:'Motion', vmNone:'None', vmZoom:'Slow zoom', motionHint:'Slow zoom (Ken Burns) adds gentle movement to each artwork.', secRhythm:'Rhythm', rhGallery:'Gallery', rhStandard:'Standard', rhDynamic:'Dynamic', rhReel:'Reel', rhythmHint:'A one-tap pace — sets timing, motion and transition together. Fine-tune below.', vmIn:'Zoom in', vmOut:'Zoom out', vmPan:'Pan',
     secTiming:'Timing & rhythm', lblPerSlide:'Seconds per artwork', secTransition:'Transition', vtFade:'Fade', vtNone:'Cut',
     secMusic:'Background music', musicSoon:'Coming soon',
     settings:'Settings', setLang:'Language', menuJump:'Jump to', setAccount:'Account', setSignin:'Sign in — coming soon', setDefaults:'Defaults',
@@ -538,7 +554,7 @@ const LANG_EXT = {
     secSeriesStory:'系列叙事', lblSeriesNote:'概念 / 创作理念', phSeriesNote:'是什么把这个系列串在一起——理念、线索、你想表达的东西…',
     secUnified:'统一风格', unifiedHint:'把当前作品的风格——色调、画框、签名——套用到整个系列，让一组作品读起来像一个整体。',
     secLayout:'呈现方式', svGrid:'网格', svMural:'九宫格切图',
-    secVidFormat:'画面比例', secMotion:'运动', vmNone:'无', vmZoom:'缓慢推拉', motionHint:'缓慢推拉（Ken Burns）让每幅作品有轻微的动感。',
+    secVidFormat:'画面比例', secMotion:'运动', vmNone:'无', vmZoom:'缓慢推拉', motionHint:'缓慢推拉（Ken Burns）让每幅作品有轻微的动感。', secRhythm:'节奏', rhGallery:'画廊', rhStandard:'标准', rhDynamic:'动感', rhReel:'快剪', rhythmHint:'一键定节奏 —— 同时设定时长、运动与转场，可在下方微调。', vmIn:'推近', vmOut:'拉远', vmPan:'平移',
     secTiming:'时长与节奏', lblPerSlide:'每幅作品秒数', secTransition:'转场', vtFade:'淡入淡出', vtNone:'硬切',
     secMusic:'背景音乐', musicSoon:'即将上线',
     settings:'设置', setLang:'语言', menuJump:'跳转到', setAccount:'账户', setSignin:'登录 — 即将上线', setDefaults:'默认偏好',
@@ -549,7 +565,7 @@ const LANG_EXT = {
     secSeriesStory:'シリーズの物語', lblSeriesNote:'コンセプト / ステートメント', phSeriesNote:'このシリーズを束ねるもの——着想、つながり、伝えたいこと…',
     secUnified:'統一スタイル', unifiedHint:'現在の作品の見え方——色・額装・署名——をシリーズ全体に適用し、一つの作品群としてまとめます。',
     secLayout:'見せ方', svGrid:'グリッド', svMural:'分割（モザイク）',
-    secVidFormat:'画面比率', secMotion:'モーション', vmNone:'なし', vmZoom:'ゆっくりズーム', motionHint:'ゆっくりズーム（Ken Burns）で各作品に動きを加えます。',
+    secVidFormat:'画面比率', secMotion:'モーション', vmNone:'なし', vmZoom:'ゆっくりズーム', motionHint:'ゆっくりズーム（Ken Burns）で各作品に動きを加えます。', secRhythm:'リズム', rhGallery:'ギャラリー', rhStandard:'標準', rhDynamic:'ダイナミック', rhReel:'リール', rhythmHint:'ワンタップでテンポ設定 — 尺・モーション・トランジションをまとめて。下で微調整。', vmIn:'ズームイン', vmOut:'ズームアウト', vmPan:'パン',
     secTiming:'尺とリズム', lblPerSlide:'作品ごとの秒数', secTransition:'トランジション', vtFade:'フェード', vtNone:'カット',
     secMusic:'BGM', musicSoon:'近日対応',
     settings:'設定', setLang:'言語', menuJump:'移動先', setAccount:'アカウント', setSignin:'サインイン — 近日対応', setDefaults:'デフォルト',
@@ -560,7 +576,7 @@ const LANG_EXT = {
     secSeriesStory:'시리즈 서사', lblSeriesNote:'콘셉트 / 작가 노트', phSeriesNote:'이 시리즈를 하나로 묶는 것 — 아이디어, 흐름, 전하고 싶은 것…',
     secUnified:'통일 스타일', unifiedHint:'현재 작품의 룩 — 색감·액자·서명 — 을 시리즈 전체에 적용해 하나의 작품군으로 보이게 합니다.',
     secLayout:'표현 방식', svGrid:'그리드', svMural:'분할(모자이크)',
-    secVidFormat:'화면 비율', secMotion:'모션', vmNone:'없음', vmZoom:'느린 줌', motionHint:'느린 줌(켄 번스)으로 각 작품에 은은한 움직임을 더합니다.',
+    secVidFormat:'화면 비율', secMotion:'모션', vmNone:'없음', vmZoom:'느린 줌', motionHint:'느린 줌(켄 번스)으로 각 작품에 은은한 움직임을 더합니다.', secRhythm:'리듬', rhGallery:'갤러리', rhStandard:'표준', rhDynamic:'다이내믹', rhReel:'릴', rhythmHint:'원탭으로 템포 설정 — 길이·모션·전환을 한 번에. 아래에서 미세 조정.', vmIn:'줌 인', vmOut:'줌 아웃', vmPan:'팬',
     secTiming:'길이 & 리듬', lblPerSlide:'작품당 초', secTransition:'전환', vtFade:'페이드', vtNone:'컷',
     secMusic:'배경 음악', musicSoon:'곧 제공',
     settings:'설정', setLang:'언어', menuJump:'이동', setAccount:'계정', setSignin:'로그인 — 곧 제공', setDefaults:'기본값',
@@ -571,7 +587,7 @@ const LANG_EXT = {
     secSeriesStory:'Relato de la serie', lblSeriesNote:'Concepto / declaración', phSeriesNote:'Lo que une esta serie — la idea, el hilo, lo que quieres decir…',
     secUnified:'Estilo unificado', unifiedHint:'Aplica el aspecto de la obra actual — color, marco, firma — a toda la serie para que se lea como un solo cuerpo de trabajo.',
     secLayout:'Presentación', svGrid:'Cuadrícula', svMural:'Mural (en piezas)',
-    secVidFormat:'Formato', secMotion:'Movimiento', vmNone:'Ninguno', vmZoom:'Zoom lento', motionHint:'El zoom lento (Ken Burns) añade un movimiento suave a cada obra.',
+    secVidFormat:'Formato', secMotion:'Movimiento', vmNone:'Ninguno', vmZoom:'Zoom lento', motionHint:'El zoom lento (Ken Burns) añade un movimiento suave a cada obra.', secRhythm:'Ritmo', rhGallery:'Galería', rhStandard:'Estándar', rhDynamic:'Dinámico', rhReel:'Reel', rhythmHint:'Un ritmo con un toque — fija duración, movimiento y transición a la vez. Ajusta abajo.', vmIn:'Acercar', vmOut:'Alejar', vmPan:'Paneo',
     secTiming:'Duración y ritmo', lblPerSlide:'Segundos por obra', secTransition:'Transición', vtFade:'Fundido', vtNone:'Corte',
     secMusic:'Música de fondo', musicSoon:'Próximamente',
     settings:'Ajustes', setLang:'Idioma', menuJump:'Ir a', setAccount:'Cuenta', setSignin:'Iniciar sesión — próximamente', setDefaults:'Predeterminados',
@@ -604,7 +620,7 @@ const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
 const S = saved || {
   lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
-  seriesTitle:'', seriesNote:'', hashtags:DEFAULT_TAGS, mode:'artwork', seriesView:'grid', videoSecs:2.8, videoRatio:'4:5', videoMotion:'none', videoTransition:'fade', format:'auto', slice:'3x3', gridLayout:'auto',
+  seriesTitle:'', seriesNote:'', hashtags:DEFAULT_TAGS, mode:'artwork', seriesView:'grid', videoSecs:2.8, videoRatio:'4:5', videoMotion:'in', videoTransition:'fade', videoRhythm:'standard', format:'auto', slice:'3x3', gridLayout:'auto',
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
 };
 if(!S.works||!S.works.length) S.works=[{id:1,title:'',idea:'',date:new Date().toISOString().slice(0,10),tx:{s:1,x:0,y:0,rot:0},adj:{ex:0,br:0,ct:0,sa:0,tp:0}}];
@@ -613,7 +629,7 @@ S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined
 if(S.mode==='single') S.mode='artwork'; if(S.mode==='grid') S.mode='series'; if(S.mode==='slice'){ S.mode='series'; S.seriesView='mural'; }
 if(!['artwork','series','story'].includes(S.mode)) S.mode='artwork';
 if(S.seriesNote===undefined) S.seriesNote=''; if(!S.seriesView) S.seriesView='grid';
-if(!S.videoRatio) S.videoRatio='4:5'; if(!S.videoMotion) S.videoMotion='none'; if(!S.videoTransition) S.videoTransition='fade';
+if(!S.videoRatio) S.videoRatio='4:5'; if(!S.videoMotion||S.videoMotion==='zoom') S.videoMotion='in'; if(!S.videoTransition) S.videoTransition='fade'; if(!S.videoRhythm) S.videoRhythm='standard';
 uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
 function t(k){ return (LANG[S.lang]||LANG.en)[k]||k; }
@@ -683,13 +699,20 @@ bindSeg('textAlign','align');
 bindSeg('signFont','signFont');
 bindSeg('titleFont','titleFont');
 bindSeg('wmPos','wmPos');
-bindSeg('videoSecs','videoSecs',parseFloat,()=>{});
+bindSeg('videoSecs','videoSecs',parseFloat,()=>clearRhythm());
 bindSeg('format','format', v=> v==='auto'?'auto':parseFloat(v));
 bindSeg('sliceGrid','slice');
 bindSeg('gridLayout','gridLayout');
 bindSeg('vidRatio','videoRatio', v=>v, ()=>draw());
-bindSeg('vidMotion','videoMotion', v=>v, ()=>{});
-bindSeg('vidTrans','videoTransition', v=>v, ()=>{});
+bindSeg('vidMotion','videoMotion', v=>v, ()=>{ clearRhythm(); draw(); });
+bindSeg('vidTrans','videoTransition', v=>v, ()=>clearRhythm());
+// rhythm: one-tap templates that set timing + motion + transition together
+const RHYTHM={ gallery:{videoSecs:4,videoTransition:'fade',videoMotion:'none'}, standard:{videoSecs:2.8,videoTransition:'fade',videoMotion:'in'}, dynamic:{videoSecs:2,videoTransition:'none',videoMotion:'pan'}, reel:{videoSecs:1.5,videoTransition:'fade',videoMotion:'out'} };
+function syncSegOn(id,attr,val){ document.querySelectorAll('#'+id+' button').forEach(b=>b.classList.toggle('on', String(b.dataset[attr])===String(val))); }
+function clearRhythm(){ S.videoRhythm=''; document.querySelectorAll('#vidRhythm button').forEach(b=>b.classList.remove('on')); save(); }
+document.querySelectorAll('#vidRhythm button').forEach(b=>{ b.onclick=()=>{ const r=RHYTHM[b.dataset.rh]; Object.assign(S,r); S.videoRhythm=b.dataset.rh; save();
+  syncSegOn('videoSecs','s',S.videoSecs); syncSegOn('vidTrans','vt',S.videoTransition); syncSegOn('vidMotion','vm',S.videoMotion);
+  document.querySelectorAll('#vidRhythm button').forEach(x=>x.classList.toggle('on',x===b)); draw(); }; });
 bindSeg('seriesView','seriesView', v=>v, ()=>{ applyMode(); draw(); });
 bindSeg('tabbar','mode', v=>v, ()=>{ applyMode(); draw(); buildCaption(); });
 
@@ -1022,8 +1045,14 @@ function drawVideoFrame(g,W,H,work,prog){
   const gap=Math.round(M*0.7), artMaxH=H-2*M-capH-gap;
   const {w:dw,h:dh}=contain(im.width,im.height,W-2*M,artMaxH);
   const blockH=dh+gap+capH, topY=Math.max(M,(H-blockH)/2), dx=(W-dw)/2, dy=topY;
-  const z=(S.videoMotion==='zoom')?1+(prog||0)*0.10:1;
-  if(z!==1){ g.save(); g.beginPath(); g.rect(dx,dy,dw,dh); g.clip(); const zw=dw*z, zh=dh*z; drawImgAdj(g,im,dx-(zw-dw)/2,dy-(zh-dh)/2,zw,zh,work.adj); drawWatermark(g,dx,dy,dw,dh); g.restore(); }
+  // motion (Ken Burns): scale + pan over the slide's progress
+  const m=S.videoMotion, p=prog||0; let s=1, ox=0, oy=0;
+  if(m==='in') s=1+p*0.12;
+  else if(m==='out') s=1.12-p*0.12;
+  else if(m==='pan'){ s=1.10; ox=(p-0.5)*0.12; }
+  else if(m==='panv'){ s=1.10; oy=(p-0.5)*0.12; }
+  if(s!==1||ox||oy){ g.save(); g.beginPath(); g.rect(dx,dy,dw,dh); g.clip();
+    const zw=dw*s, zh=dh*s; drawImgAdj(g,im, dx-(zw-dw)/2+ox*dw, dy-(zh-dh)/2+oy*dh, zw, zh, work.adj); drawWatermark(g,dx,dy,dw,dh); g.restore(); }
   else { drawImgAdj(g,im,dx,dy,dw,dh,work.adj); drawWatermark(g,dx,dy,dw,dh); }
   g.strokeStyle=T.key; g.lineWidth=2; g.strokeRect(dx+1,dy+1,dw-2,dh-2);
   let y=dy+dh+gap; g.textAlign='center'; g.textBaseline='top';
@@ -1286,6 +1315,7 @@ function init(){
   document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
   document.querySelectorAll('#vidRatio button').forEach(b=>b.classList.toggle('on',b.dataset.vr===S.videoRatio));
   document.querySelectorAll('#vidMotion button').forEach(b=>b.classList.toggle('on',b.dataset.vm===S.videoMotion));
+  document.querySelectorAll('#vidRhythm button').forEach(b=>b.classList.toggle('on',b.dataset.rh===S.videoRhythm));
   document.querySelectorAll('#vidTrans button').forEach(b=>b.classList.toggle('on',b.dataset.vt===S.videoTransition));
   document.querySelectorAll('#seriesView button').forEach(b=>b.classList.toggle('on',b.dataset.sv===S.seriesView));
   syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); applyLang(); draw();

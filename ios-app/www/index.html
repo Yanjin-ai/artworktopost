@@ -65,7 +65,7 @@
   .langsel button.on{background:var(--ink); color:#fff; border-color:var(--ink);}
   .field{margin-bottom:15px;} .field:last-child{margin-bottom:0;}
   label{display:block; font-size:12.5px; font-weight:500; color:var(--soft); margin-bottom:6px; letter-spacing:.03em;}
-  input[type=text], input[type=date], textarea{ width:100%; font-family:inherit; font-size:14.5px; color:var(--ink);
+  input[type=text], input[type=date], input[type=password], textarea{ width:100%; font-family:inherit; font-size:14.5px; color:var(--ink);
     background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; transition:border-color .15s; }
   input:focus, textarea:focus{outline:none; border-color:var(--ink);}
   textarea{resize:vertical; min-height:74px; line-height:1.5;}
@@ -383,8 +383,17 @@
     <section class="section" data-modes="story">
       <div class="stitle" data-i18n="secStoryText">Text</div>
       <textarea id="storyText" maxlength="120" style="min-height:54px"></textarea>
-      <button class="btn line" id="aiSuggest" style="margin-top:10px;" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M18 14l.9 2.1L21 17l-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z"/></svg><span data-i18n="aiSoon">AI assist — coming soon</span></button>
-      <p class="shint" data-i18n="storyTextHint">This text floats over your video. Type it now; AI assistance is coming.</p>
+      <button class="btn line" id="aiSuggest" style="margin-top:10px;"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M18 14l.9 2.1L21 17l-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z"/></svg><span id="aiBtnLabel" data-i18n="aiGenerate">Write a line with AI</span></button>
+      <div id="aiSugs" style="display:none; margin-top:9px;"></div>
+      <div id="aiKeyRow" style="display:none; margin-top:9px;">
+        <input id="aiKey" type="password" autocomplete="off" placeholder="sk-ant-..." style="font-family:inherit;">
+        <div style="display:flex; gap:7px; margin-top:7px;">
+          <button class="btn line" id="aiKeySave" style="flex:1;" data-i18n="aiKeySave">Save key</button>
+          <button class="btn line" id="aiKeyForget" style="flex:1; display:none;" data-i18n="aiKeyForget">Remove key</button>
+        </div>
+        <p class="shint" data-i18n="aiKeyHint">Your Anthropic API key is stored only on this device and sent directly to Anthropic — never to us. Get one at console.anthropic.com.</p>
+      </div>
+      <p class="shint" id="aiMsg" data-i18n="storyTextHint">This text floats over your video. Tap “Write a line with AI” to draft one from your artwork, or type your own.</p>
     </section>
 
     <!-- STORY · Rhythm (one-tap templates) -->
@@ -559,7 +568,7 @@ const LANG_EXT = {
     secLayout:'Presentation', svGrid:'Grid', svMural:'Mural (sliced)',
     secVidFormat:'Format', secMotion:'Motion', vmNone:'None', vmZoom:'Slow zoom', motionHint:'Slow zoom (Ken Burns) adds gentle movement to each artwork.', secRhythm:'Rhythm', rhGallery:'Gallery', rhStandard:'Standard', rhDynamic:'Dynamic', rhReel:'Reel', rhythmHint:'A one-tap pace — sets timing, motion and transition together. Fine-tune below.', vmIn:'Zoom in', vmOut:'Zoom out', vmPan:'Pan',
     secTiming:'Timing & rhythm', lblPerSlide:'Seconds per artwork', secTransition:'Transition', vtFade:'Fade', vtNone:'Cut',
-    secMusic:'Background music', musicSoon:'Coming soon', secStoryText:'Text', aiSoon:'AI assist — coming soon', storyTextHint:'This text floats over your video. Type it now; AI assistance is coming.', phStoryText:'A line for your story…',
+    secMusic:'Background music', musicSoon:'Coming soon', secStoryText:'Text', aiGenerate:'Write a line with AI', aiKeySave:'Save key', aiKeyForget:'Remove key', aiKeyHint:'Your Anthropic API key is stored only on this device and sent directly to Anthropic — never to us. Get one at console.anthropic.com.', aiNeedKey:'Add your Anthropic API key to use AI.', aiThinking:'Reading your artwork…', aiError:'Could not reach Anthropic. Check your key and connection.', aiPick:'Tap a line to use it, or regenerate.', aiRegen:'Regenerate', storyTextHint:'This text floats over your video. Tap “Write a line with AI” to draft one from your artwork, or type your own.', phStoryText:'A line for your story…',
     settings:'Settings', setLang:'Language', menuJump:'Jump to', setAccount:'Account', setSignin:'Sign in — coming soon', setDefaults:'Defaults',
     setDefaultsHint:"New works inherit your signature, fonts and format — edit them in Artwork; they're remembered automatically.", setAbout:'About' },
   zh:{ navArtwork:'作品', navSeries:'作品集', navStory:'影像', emptyAdd:'添加你的作品', emptyHint:'拖入图片，或点击选择',
@@ -570,7 +579,7 @@ const LANG_EXT = {
     secLayout:'呈现方式', svGrid:'网格', svMural:'九宫格切图',
     secVidFormat:'画面比例', secMotion:'运动', vmNone:'无', vmZoom:'缓慢推拉', motionHint:'缓慢推拉（Ken Burns）让每幅作品有轻微的动感。', secRhythm:'节奏', rhGallery:'画廊', rhStandard:'标准', rhDynamic:'动感', rhReel:'快剪', rhythmHint:'一键定节奏 —— 同时设定时长、运动与转场，可在下方微调。', vmIn:'推近', vmOut:'拉远', vmPan:'平移',
     secTiming:'时长与节奏', lblPerSlide:'每幅作品秒数', secTransition:'转场', vtFade:'淡入淡出', vtNone:'硬切',
-    secMusic:'背景音乐', musicSoon:'即将上线', secStoryText:'文字', aiSoon:'AI 辅助 — 即将上线', storyTextHint:'这段文字会悬浮在视频上。先手动输入，AI 生成稍后上线。', phStoryText:'给你的故事写一句…',
+    secMusic:'背景音乐', musicSoon:'即将上线', secStoryText:'文字', aiGenerate:'用 AI 写一句', aiKeySave:'保存密钥', aiKeyForget:'移除密钥', aiKeyHint:'你的 Anthropic API 密钥只保存在本机，直接发送给 Anthropic — 不会经过我们。可在 console.anthropic.com 获取。', aiNeedKey:'请先填入你的 Anthropic API 密钥。', aiThinking:'正在读取你的作品…', aiError:'无法连接 Anthropic，请检查密钥与网络。', aiPick:'点一句使用，或重新生成。', aiRegen:'重新生成', storyTextHint:'这段文字会悬浮在视频上。点“用 AI 写一句”可根据作品生成，也可自行输入。', phStoryText:'给你的故事写一句…',
     settings:'设置', setLang:'语言', menuJump:'跳转到', setAccount:'账户', setSignin:'登录 — 即将上线', setDefaults:'默认偏好',
     setDefaultsHint:'新作品会沿用你的签名、字体与画幅——在「作品」里调整即可，会自动记住。', setAbout:'关于' },
   ja:{ navArtwork:'作品', navSeries:'シリーズ', navStory:'映像', emptyAdd:'作品を追加', emptyHint:'画像をドロップ、またはタップして選択',
@@ -581,7 +590,7 @@ const LANG_EXT = {
     secLayout:'見せ方', svGrid:'グリッド', svMural:'分割（モザイク）',
     secVidFormat:'画面比率', secMotion:'モーション', vmNone:'なし', vmZoom:'ゆっくりズーム', motionHint:'ゆっくりズーム（Ken Burns）で各作品に動きを加えます。', secRhythm:'リズム', rhGallery:'ギャラリー', rhStandard:'標準', rhDynamic:'ダイナミック', rhReel:'リール', rhythmHint:'ワンタップでテンポ設定 — 尺・モーション・トランジションをまとめて。下で微調整。', vmIn:'ズームイン', vmOut:'ズームアウト', vmPan:'パン',
     secTiming:'尺とリズム', lblPerSlide:'作品ごとの秒数', secTransition:'トランジション', vtFade:'フェード', vtNone:'カット',
-    secMusic:'BGM', musicSoon:'近日対応', secStoryText:'テキスト', aiSoon:'AI支援 — 近日対応', storyTextHint:'このテキストは動画に重ねて表示。今は手入力、AI生成は近日。', phStoryText:'ストーリーに一言…',
+    secMusic:'BGM', musicSoon:'近日対応', secStoryText:'テキスト', aiGenerate:'AIで一文を書く', aiKeySave:'キーを保存', aiKeyForget:'キーを削除', aiKeyHint:'Anthropic APIキーはこの端末にのみ保存され、Anthropicへ直接送信されます — 当方には送られません。console.anthropic.com で取得。', aiNeedKey:'Anthropic APIキーを入力してください。', aiThinking:'作品を読み取り中…', aiError:'Anthropicに接続できません。キーと接続を確認してください。', aiPick:'一文をタップして使用、または再生成。', aiRegen:'再生成', storyTextHint:'このテキストは動画に重ねて表示。「AIで一文を書く」で作品から下書き、または手入力。', phStoryText:'ストーリーに一言…',
     settings:'設定', setLang:'言語', menuJump:'移動先', setAccount:'アカウント', setSignin:'サインイン — 近日対応', setDefaults:'デフォルト',
     setDefaultsHint:'新しい作品は署名・書体・比率を引き継ぎます——「作品」で編集すれば自動的に記憶されます。', setAbout:'情報' },
   ko:{ navArtwork:'작품', navSeries:'시리즈', navStory:'스토리', emptyAdd:'작품 추가', emptyHint:'이미지를 끌어다 놓거나 탭하여 선택',
@@ -592,7 +601,7 @@ const LANG_EXT = {
     secLayout:'표현 방식', svGrid:'그리드', svMural:'분할(모자이크)',
     secVidFormat:'화면 비율', secMotion:'모션', vmNone:'없음', vmZoom:'느린 줌', motionHint:'느린 줌(켄 번스)으로 각 작품에 은은한 움직임을 더합니다.', secRhythm:'리듬', rhGallery:'갤러리', rhStandard:'표준', rhDynamic:'다이내믹', rhReel:'릴', rhythmHint:'원탭으로 템포 설정 — 길이·모션·전환을 한 번에. 아래에서 미세 조정.', vmIn:'줌 인', vmOut:'줌 아웃', vmPan:'팬',
     secTiming:'길이 & 리듬', lblPerSlide:'작품당 초', secTransition:'전환', vtFade:'페이드', vtNone:'컷',
-    secMusic:'배경 음악', musicSoon:'곧 제공', secStoryText:'텍스트', aiSoon:'AI 도움 — 곧 제공', storyTextHint:'이 텍스트는 영상 위에 표시됩니다. 지금은 직접 입력, AI는 곧.', phStoryText:'스토리 한 줄…',
+    secMusic:'배경 음악', musicSoon:'곧 제공', secStoryText:'텍스트', aiGenerate:'AI로 한 줄 쓰기', aiKeySave:'키 저장', aiKeyForget:'키 삭제', aiKeyHint:'Anthropic API 키는 이 기기에만 저장되며 Anthropic으로 직접 전송됩니다 — 당사로는 전송되지 않습니다. console.anthropic.com 에서 발급.', aiNeedKey:'Anthropic API 키를 입력하세요.', aiThinking:'작품을 읽는 중…', aiError:'Anthropic에 연결할 수 없습니다. 키와 연결을 확인하세요.', aiPick:'한 줄을 눌러 사용하거나 다시 생성하세요.', aiRegen:'다시 생성', storyTextHint:'이 텍스트는 영상 위에 표시됩니다. “AI로 한 줄 쓰기”로 작품에서 초안을 만들거나 직접 입력하세요.', phStoryText:'스토리 한 줄…',
     settings:'설정', setLang:'언어', menuJump:'이동', setAccount:'계정', setSignin:'로그인 — 곧 제공', setDefaults:'기본값',
     setDefaultsHint:'새 작품은 서명·글꼴·비율을 이어받습니다 — 「작품」에서 편집하면 자동 저장됩니다.', setAbout:'정보' },
   es:{ navArtwork:'Obra', navSeries:'Serie', navStory:'Historia', emptyAdd:'Añade tu obra', emptyHint:'Suelta una imagen o toca para elegir',
@@ -603,7 +612,7 @@ const LANG_EXT = {
     secLayout:'Presentación', svGrid:'Cuadrícula', svMural:'Mural (en piezas)',
     secVidFormat:'Formato', secMotion:'Movimiento', vmNone:'Ninguno', vmZoom:'Zoom lento', motionHint:'El zoom lento (Ken Burns) añade un movimiento suave a cada obra.', secRhythm:'Ritmo', rhGallery:'Galería', rhStandard:'Estándar', rhDynamic:'Dinámico', rhReel:'Reel', rhythmHint:'Un ritmo con un toque — fija duración, movimiento y transición a la vez. Ajusta abajo.', vmIn:'Acercar', vmOut:'Alejar', vmPan:'Paneo',
     secTiming:'Duración y ritmo', lblPerSlide:'Segundos por obra', secTransition:'Transición', vtFade:'Fundido', vtNone:'Corte',
-    secMusic:'Música de fondo', musicSoon:'Próximamente', secStoryText:'Texto', aiSoon:'Asistencia IA — próximamente', storyTextHint:'Este texto flota sobre tu vídeo. Escríbelo ahora; la IA llegará pronto.', phStoryText:'Una frase para tu historia…',
+    secMusic:'Música de fondo', musicSoon:'Próximamente', secStoryText:'Texto', aiGenerate:'Escribir una frase con IA', aiKeySave:'Guardar clave', aiKeyForget:'Quitar clave', aiKeyHint:'Tu clave de API de Anthropic se guarda solo en este dispositivo y se envía directamente a Anthropic — nunca a nosotros. Consíguela en console.anthropic.com.', aiNeedKey:'Añade tu clave de API de Anthropic para usar la IA.', aiThinking:'Leyendo tu obra…', aiError:'No se pudo conectar con Anthropic. Revisa tu clave y conexión.', aiPick:'Toca una frase para usarla o vuelve a generar.', aiRegen:'Volver a generar', storyTextHint:'Este texto flota sobre tu vídeo. Toca «Escribir una frase con IA» para crearla a partir de tu obra, o escríbela tú.', phStoryText:'Una frase para tu historia…',
     settings:'Ajustes', setLang:'Idioma', menuJump:'Ir a', setAccount:'Cuenta', setSignin:'Iniciar sesión — próximamente', setDefaults:'Predeterminados',
     setDefaultsHint:'Las obras nuevas heredan tu firma, fuentes y formato — edítalos en Obra; se recuerdan automáticamente.', setAbout:'Acerca de' },
 };
@@ -828,6 +837,90 @@ function perspOf(){ if(!cur().persp)cur().persp={kh:0,kv:0}; return cur().persp;
 
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
 ['sign','seriesTitle','seriesNote','hashtags','wmText','storyText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
+
+// ---------------- AI: draft a Story line from the artwork (client-side; user's own key) ----------------
+(function(){
+  const KEY='anthropic_key';
+  const btn=document.getElementById('aiSuggest'),
+        sugs=document.getElementById('aiSugs'), keyRow=document.getElementById('aiKeyRow'),
+        keyInp=document.getElementById('aiKey'), keySave=document.getElementById('aiKeySave'),
+        keyForget=document.getElementById('aiKeyForget'), msg=document.getElementById('aiMsg');
+  const LANGNAME={en:'English', zh:'Simplified Chinese', ja:'Japanese', ko:'Korean', es:'Spanish'};
+  const getKey=()=>localStorage.getItem(KEY)||'';
+  const setMsg=k=>{ msg.textContent=t(k); };
+  function showKeyRow(focus){ keyRow.style.display=''; keyForget.style.display=getKey()?'':'none'; if(focus) keyInp.focus(); }
+  function hideKeyRow(){ keyRow.style.display='none'; keyInp.value=''; }
+
+  // current artwork → downscaled jpeg base64 (reflects adjustments / cut-out)
+  function artworkB64(){
+    const w=_images[cur().id]?cur():worksWithImg()[0]; if(!w) return null;
+    const im=imgOf(w)||_images[w.id]; if(!im) return null;
+    const r=Math.min(1, 1024/Math.max(im.width,im.height));
+    const cw=Math.max(1,Math.round(im.width*r)), ch=Math.max(1,Math.round(im.height*r));
+    const c=document.createElement('canvas'); c.width=cw; c.height=ch;
+    const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,cw,ch); g.drawImage(im,0,0,cw,ch);
+    return c.toDataURL('image/jpeg',0.85).split(',')[1];
+  }
+
+  function renderSugs(list){
+    sugs.innerHTML=''; sugs.style.display='';
+    list.forEach(txt=>{
+      const b=document.createElement('button'); b.className='btn line'; b.type='button';
+      b.style.cssText='justify-content:flex-start; text-align:left; font-size:13.5px; padding:10px 12px; margin-bottom:6px;';
+      b.textContent=txt;
+      b.onclick=()=>{ const ta=document.getElementById('storyText'); ta.value=txt; S.storyText=txt; save(); draw(); buildCaption(); sugs.style.display='none'; setMsg('storyTextHint'); };
+      sugs.appendChild(b);
+    });
+    const rg=document.createElement('button'); rg.className='btn line'; rg.type='button';
+    rg.style.cssText='font-size:12.5px; padding:8px 12px; opacity:.8;'; rg.textContent=t('aiRegen');
+    rg.onclick=generate; sugs.appendChild(rg);
+    setMsg('aiPick');
+  }
+
+  async function generate(){
+    const key=getKey(); if(!key){ showKeyRow(true); setMsg('aiNeedKey'); return; }
+    const b64=artworkB64(); if(!b64){ alert(t('needImg')); return; }
+    const w=_images[cur().id]?cur():worksWithImg()[0];
+    btn.disabled=true; sugs.style.display='none'; setMsg('aiThinking');
+    const ctx=[];
+    if(w.title) ctx.push('Title: '+w.title);
+    if(w.idea) ctx.push("Artist's statement: "+w.idea);
+    if(S.seriesTitle) ctx.push('Series: '+S.seriesTitle);
+    if(S.seriesNote) ctx.push('Series concept: '+S.seriesNote);
+    if(S.sign) ctx.push('Artist: '+S.sign);
+    const lang=LANGNAME[S.lang]||'English';
+    const prompt='You are a poetic caption writer for a visual artist. Look at this artwork and write 3 different short caption lines that could float over a social-media video of it. '
+      +'Each line must be evocative, specific to what you see, at most 12 words, no hashtags, no quotation marks, no numbering. Write them in '+lang+'.'
+      +(ctx.length?('\n\nContext from the artist:\n'+ctx.join('\n')):'');
+    try{
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({
+          model:'claude-opus-4-8', max_tokens:400,
+          output_config:{format:{type:'json_schema',schema:{type:'object',properties:{captions:{type:'array',items:{type:'string'}}},required:['captions'],additionalProperties:false}}},
+          messages:[{role:'user',content:[
+            {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
+            {type:'text',text:prompt}
+          ]}]
+        })
+      });
+      if(resp.status===401||resp.status===403){ btn.disabled=false; showKeyRow(true); setMsg('aiError'); return; }
+      if(!resp.ok) throw new Error('http '+resp.status);
+      const data=await resp.json();
+      const tb=(data.content||[]).find(x=>x.type==='text');
+      let list=[];
+      try{ list=JSON.parse(tb.text).captions||[]; }catch(e){ list=(tb?tb.text:'').split('\n').map(s=>s.replace(/^[\s\-\d.、)）]+/,'').trim()).filter(Boolean); }
+      list=list.map(s=>s.trim()).filter(Boolean).slice(0,3);
+      if(!list.length) throw new Error('empty');
+      btn.disabled=false; renderSugs(list);
+    }catch(e){ btn.disabled=false; setMsg('aiError'); }
+  }
+
+  btn.onclick=generate;
+  keySave.onclick=()=>{ const v=keyInp.value.trim(); if(!v){ keyInp.focus(); return; } localStorage.setItem(KEY,v); hideKeyRow(); generate(); };
+  keyForget.onclick=()=>{ localStorage.removeItem(KEY); hideKeyRow(); setMsg('storyTextHint'); };
+})();
 
 // ---------------- upload ----------------
 const drop=document.getElementById('drop'), file=document.getElementById('file');

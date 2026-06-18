@@ -1142,6 +1142,29 @@ function drawArtImage(g,im,x,y,w,h,tx,a){
   applyOverlays(g,x,y,w,h,a); g.restore();
 }
 
+// ---------------- monetization scaffold (free vs Pro; gating dormant until PAYWALL=true) ----------------
+const PAYWALL = false;               // master switch — flip to true to start enforcing Pro gates
+const CREDIT_WORDMARK = 'Artwork';   // self-promotion credit drawn on free exports (growth loop)
+function isPro(){ return localStorage.getItem('pro')==='1'; }
+function proAllowed(feat){ return !PAYWALL || isPro(); }   // `feat` reserved for per-feature rules
+function showPaywall(){
+  const m={en:'This is a Pro feature — coming soon.', zh:'这是高级功能 — 即将上线。', ja:'これはProの機能です — 近日対応。', ko:'프로 전용 기능입니다 — 곧 제공.', es:'Función Pro — próximamente.', fr:'Fonction Pro — bientôt.', de:'Pro-Funktion — demnächst.', it:'Funzione Pro — prossimamente.'};
+  alert(m[S.lang]||m.en);
+}
+// StoreKit / native bridge: iOS calls these after a successful purchase / restore (or for testing)
+window.unlockPro = ()=>{ localStorage.setItem('pro','1'); try{draw();}catch(e){} };
+window.lockPro   = ()=>{ localStorage.removeItem('pro'); try{draw();}catch(e){} };
+// free-tier credit: a subtle "made with Artwork" on exports + preview; removed for Pro
+function drawCredit(g,W,H){
+  if(isPro()) return;
+  const T=inkSet(), fs=Math.max(11,Math.round(W*0.0185)), pad=Math.round(W*0.028);
+  g.save();
+  g.font=`500 ${fs}px 'Fredoka', sans-serif`; g.textAlign='right'; g.textBaseline='alphabetic';
+  g.globalAlpha=0.4; g.fillStyle=T.soft;
+  g.fillText('made with '+CREDIT_WORDMARK, W-pad, H-pad);
+  g.restore();
+}
+
 // ---------------- single render ----------------
 let _lay=null, _objs=null, _wmBox=null;
 function drawSingle(g, work){
@@ -1182,6 +1205,7 @@ function drawSingle(g, work){
       else{ g.textAlign='right'; g.fillText(dstr,artX+artW,sb-Math.round(Sg*0.14)); txt.push({type:'date',x:artX+artW-dw,y:sb-Math.round(Sg*0.6),w:dw,h:dh}); }
       g.letterSpacing='0px'; }
     g.textAlign='left'; }
+  drawCredit(g,W,H);
   // interactive object list (single mode): watermark + text + artwork, in hit-priority order
   _objs=[];
   if(_wmBox && S.wmText && S.wmPos!=='tile') _objs.push(Object.assign({type:'wm'},_wmBox));
@@ -1222,6 +1246,7 @@ function drawGrid(g){
   });
   if(!WI.length){ g.fillStyle=T.soft; g.font="500 26px 'Fredoka',sans-serif"; g.textAlign='center'; g.textBaseline='middle'; g.fillText(t('uploadHere'),W/2,top+artBox/2); }
   if(S.sign){ g.fillStyle=A; g.font=`${Math.round(W*0.05)}px ${S.signFont}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(S.sign,W/2,H-pad-footH*0.42); }
+  drawCredit(g,W,H);
   g.textBaseline='alphabetic'; g.textAlign='left';
 }
 
@@ -1277,6 +1302,7 @@ function drawVideoFrame(g,W,H,work,prog){
     if(S.sign){ g.font=`${Sg}px ${S.signFont}`; g.fillStyle=A; g.fillText(S.sign,W/2,sb); }
     if(work.date){ const dBase = S.sign ? sb+Math.round(Sg*0.5)+dsz : y+dsz;
       g.font=`500 ${dsz}px ${FAM}`; g.fillStyle=T.soft; g.letterSpacing='3px'; g.fillText(fmtDate(work.date),W/2,dBase); g.letterSpacing='0px'; } }
+  drawCredit(g,W,H);
   g.textBaseline='alphabetic'; g.textAlign='left';
 }
 
@@ -1332,6 +1358,7 @@ function zipStore(files){
 const tilesBtn=document.getElementById('exportTiles');
 tilesBtn.onclick=async ()=>{
   if(!_images[cur().id]){ alert(t('needImg')); return; }
+  if(!proAllowed('tiles')){ showPaywall(); return; }
   const lbl=tilesBtn.textContent; tilesBtn.disabled=true; tilesBtn.textContent=t('generating');
   try{
     const [cols,rows]=sliceDims(), cell=Math.round(1080/cols), W=cols*cell, H=rows*cell;
@@ -1483,6 +1510,7 @@ async function playPreview(){
 const vBtn=document.getElementById('exportVideo');
 vBtn.onclick=async ()=>{
   const WI=worksWithImg(); if(!WI.length){ alert(t('needImg')); return; }
+  if(!proAllowed('video')){ showPaywall(); return; }
   const [W,H]=vidDims(), fps=30, secs=S.videoSecs, fade=Math.min(0.5,secs*0.3), noFade=S.videoTransition==='none';
   vBtn.disabled=true; const lbl=vBtn.textContent; vBtn.textContent=t('generating');
   try{

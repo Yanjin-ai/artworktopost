@@ -71,7 +71,8 @@
   textarea{resize:vertical; min-height:74px; line-height:1.5;}
   .datefield{ display:block; width:100%; text-align:left; font-family:inherit; font-size:14.5px; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; cursor:pointer; }
   .datefield:hover{ border-color:var(--ink); }
-  .datehidden{ position:absolute; width:1px; height:1px; padding:0; opacity:0; pointer-events:none; border:none; }
+  .datewrap{ position:relative; }
+  .dateover{ position:absolute; inset:0; width:100%; height:100%; margin:0; padding:0; opacity:0; border:none; background:transparent; cursor:pointer; -webkit-appearance:none; appearance:none; }
 
   .drop{border:1.5px dashed var(--line); border-radius:12px; padding:18px; text-align:center; color:var(--soft); cursor:pointer; transition:.18s; background:var(--paper); font-size:14px;}
   .drop:hover,.drop.over{border-color:var(--ink); color:var(--ink); background:#fff;}
@@ -147,7 +148,7 @@
   .btnrow{display:flex; gap:10px; margin-top:10px;}
 
   .canvas-wrap{background:transparent; border:none; padding:0; max-width:100%;}
-  canvas{display:block; max-width:100%; max-height:56vh; width:auto; height:auto; border-radius:3px; box-shadow:0 10px 34px -16px rgba(61,58,68,.45);}
+  canvas{display:block; max-width:100%; max-height:40vh; width:auto; height:auto; border-radius:3px; box-shadow:0 10px 34px -16px rgba(61,58,68,.45);}
   canvas.pan{cursor:grab;} canvas.pan:active{cursor:grabbing;}
   .imgctrl{display:flex; align-items:center; gap:10px; width:100%; font-size:12px; color:var(--soft);}
   .imgctrl input[type=range]{flex:1;}
@@ -198,8 +199,10 @@
       <div class="field"><label data-i18n="lblTitle">Title</label><input type="text" id="title" maxlength="40"></div>
       <div class="field"><label data-i18n="lblIdea">Statement</label><textarea id="idea" maxlength="240"></textarea></div>
       <div class="field"><label data-i18n="lblDate">Date</label>
-        <button type="button" class="datefield" id="dateField"></button>
-        <input type="date" id="date" class="datehidden">
+        <div class="datewrap">
+          <button type="button" class="datefield" id="dateField"></button>
+          <input type="date" id="date" class="dateover" aria-label="Date">
+        </div>
       </div>
     </section>
 

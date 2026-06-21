@@ -858,7 +858,7 @@ function buildJumpList(){
     if(sec.classList.contains('hide')) return;
     const title=sec.querySelector('.stitle'); if(!title) return;
     const b=document.createElement('button'); b.className='jumpitem'; b.textContent=title.textContent.replace(/\s*[（(].*?[)）]\s*/g,'').trim();
-    b.onclick=()=>{ sec.scrollIntoView({behavior:'smooth',block:'start'}); fabmenu.hidden=true; };
+    b.onclick=()=>{ const pv=document.querySelector('.preview'); sec.style.scrollMarginTop=((pv?pv.offsetHeight:0)+14)+'px'; sec.scrollIntoView({behavior:'smooth',block:'start'}); fabmenu.hidden=true; };
     list.appendChild(b);
   });
 }

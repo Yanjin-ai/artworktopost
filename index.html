@@ -296,6 +296,13 @@
         <button data-f="'Sacramento', cursive">Aa</button>
         <button data-f="'Parisienne', cursive">Aa</button>
       </div>
+      <button class="btn line" id="signImport" style="margin-top:11px;"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17c4-7 7-9 9-9M3 19c5 0 9-1 13-5M12 8c2 0 3 1 3 3"/><path d="M16 5l3 3M14 7l3 3"/></svg><span data-i18n="signImport">Import my signature</span></button>
+      <input type="file" id="signFile" accept="image/png,image/jpeg,image/webp" style="display:none">
+      <div id="signImgRow" style="display:none; align-items:center; gap:10px; margin-top:10px;">
+        <img id="signImgPrev" alt="" style="height:36px; max-width:150px; object-fit:contain; background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px;">
+        <button class="btn line" id="signRemove" style="width:auto; padding:8px 13px;" data-i18n="signRemove">Remove</button>
+      </div>
+      <p class="shint" data-i18n="signHint">Type a name above, or import a photo of your real signature — a PNG with a transparent background looks best.</p>
     </section>
 
     <!-- ARTWORK · Text & typography -->
@@ -480,7 +487,7 @@
 const LANG = {
   en:{ appTitle:'Artwork → Post', appSub:'Minimal frame · unified type · signature — true to your original ratio, ready for Instagram',
     secWorks:'Works (add several to form a series)', upload:'Upload / replace current work', lblTitle:'Title', lblIdea:'Statement', lblDate:'Date', datePick:'Pick a date',
-    secStyle:'Shared style (applies to every work)', lblSign:'Signature', lblSignFont:'Signature font', lblTitleFont:'Title font', lblInk:'Ink (text / signature)', lblMargin:'Margin', lblAlign:'Align',
+    secStyle:'Shared style (applies to every work)', lblSign:'Signature', lblSignFont:'Signature font', signImport:'Import my signature', signRemove:'Remove', signHint:'Type a name above, or import a photo of your real signature — a PNG with a transparent background looks best.', lblTitleFont:'Title font', lblInk:'Ink (text / signature)', lblMargin:'Margin', lblAlign:'Align',
     mTight:'Tight', mStd:'Std', mRoomy:'Roomy', aLeft:'Left', aCenter:'Center',
     secScreen:'Background & watermark', lblBg:'Background', lblWm:'Watermark text', lblWmPos:'Position', lblWmOp:'Opacity',
     secCaption:'Caption / hashtags', lblSeries:'Series title (for grid / video)', lblTags:'Hashtags #', lblCaptionPreview:'Caption preview', copyCap:'Copy caption', copied:'✓ Copied',
@@ -495,7 +502,7 @@ const LANG = {
     phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
   zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
     secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期', datePick:'选择日期',
-    secStyle:'统一风格（应用于全部作品）', lblSign:'签名', lblSignFont:'签名字体', lblTitleFont:'标题字体', lblInk:'墨色（文字 / 签名）', lblMargin:'留白', lblAlign:'对齐',
+    secStyle:'统一风格（应用于全部作品）', lblSign:'签名', lblSignFont:'签名字体', signImport:'导入我的签名', signRemove:'移除', signHint:'上面可输入名字，或导入你真实签名的照片 —— 透明背景的 PNG 效果最好。', lblTitleFont:'标题字体', lblInk:'墨色（文字 / 签名）', lblMargin:'留白', lblAlign:'对齐',
     mTight:'紧凑', mStd:'标准', mRoomy:'宽松', aLeft:'左', aCenter:'中',
     secScreen:'背景 & 水印', lblBg:'背景色', lblWm:'水印文字', lblWmPos:'位置', lblWmOp:'透明度',
     secCaption:'发布文案 / 话题标签', lblSeries:'系列标题（用于合集 / 视频）', lblTags:'话题标签 #', lblCaptionPreview:'文案预览', copyCap:'复制文案', copied:'✓ 已复制',
@@ -510,7 +517,7 @@ const LANG = {
     phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
   ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
     secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付', datePick:'日付を選択',
-    secStyle:'共通スタイル（全作品に適用）', lblSign:'署名', lblSignFont:'署名書体', lblTitleFont:'タイトル書体', lblInk:'墨色（文字 / 署名）', lblMargin:'余白', lblAlign:'揃え',
+    secStyle:'共通スタイル（全作品に適用）', lblSign:'署名', lblSignFont:'署名書体', signImport:'自分の署名を読み込む', signRemove:'削除', signHint:'上で名前を入力するか、実際の署名の写真を読み込めます — 背景が透明なPNGが最適です。', lblTitleFont:'タイトル書体', lblInk:'墨色（文字 / 署名）', lblMargin:'余白', lblAlign:'揃え',
     mTight:'狭い', mStd:'標準', mRoomy:'広い', aLeft:'左', aCenter:'中央',
     secScreen:'背景 & 透かし', lblBg:'背景色', lblWm:'透かし文字', lblWmPos:'位置', lblWmOp:'不透明度',
     secCaption:'投稿文 / ハッシュタグ', lblSeries:'シリーズ名（合集 / 動画用）', lblTags:'ハッシュタグ #', lblCaptionPreview:'投稿文プレビュー', copyCap:'投稿文をコピー', copied:'✓ コピー済み',
@@ -525,7 +532,7 @@ const LANG = {
     phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
   ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
     secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜', datePick:'날짜 선택',
-    secStyle:'공통 스타일 (모든 작품에 적용)', lblSign:'서명', lblSignFont:'서명 글꼴', lblTitleFont:'제목 글꼴', lblInk:'잉크색 (텍스트 / 서명)', lblMargin:'여백', lblAlign:'정렬',
+    secStyle:'공통 스타일 (모든 작품에 적용)', lblSign:'서명', lblSignFont:'서명 글꼴', signImport:'내 서명 가져오기', signRemove:'제거', signHint:'위에 이름을 입력하거나, 실제 서명 사진을 가져오세요 — 배경이 투명한 PNG가 가장 좋습니다.', lblTitleFont:'제목 글꼴', lblInk:'잉크색 (텍스트 / 서명)', lblMargin:'여백', lblAlign:'정렬',
     mTight:'좁게', mStd:'표준', mRoomy:'넓게', aLeft:'왼쪽', aCenter:'가운데',
     secScreen:'배경 & 워터마크', lblBg:'배경색', lblWm:'워터마크 문구', lblWmPos:'위치', lblWmOp:'투명도',
     secCaption:'캡션 / 해시태그', lblSeries:'시리즈 제목 (그리드 / 영상용)', lblTags:'해시태그 #', lblCaptionPreview:'캡션 미리보기', copyCap:'캡션 복사', copied:'✓ 복사됨',
@@ -540,7 +547,7 @@ const LANG = {
     phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
   es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
     secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha', datePick:'Elegir fecha',
-    secStyle:'Estilo común (se aplica a todas)', lblSign:'Firma', lblSignFont:'Fuente de firma', lblTitleFont:'Fuente de título', lblInk:'Tinta (texto / firma)', lblMargin:'Margen', lblAlign:'Alinear',
+    secStyle:'Estilo común (se aplica a todas)', lblSign:'Firma', lblSignFont:'Fuente de firma', signImport:'Importar mi firma', signRemove:'Quitar', signHint:'Escribe un nombre arriba, o importa una foto de tu firma real — un PNG con fondo transparente queda mejor.', lblTitleFont:'Fuente de título', lblInk:'Tinta (texto / firma)', lblMargin:'Margen', lblAlign:'Alinear',
     mTight:'Justo', mStd:'Est.', mRoomy:'Amplio', aLeft:'Izq.', aCenter:'Centro',
     secScreen:'Fondo y marca de agua', lblBg:'Color de fondo', lblWm:'Texto de marca de agua', lblWmPos:'Posición', lblWmOp:'Opacidad',
     secCaption:'Descripción / hashtags', lblSeries:'Título de serie (para grid / vídeo)', lblTags:'Hashtags #', lblCaptionPreview:'Vista previa', copyCap:'Copiar texto', copied:'✓ Copiado',
@@ -555,7 +562,7 @@ const LANG = {
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
   fr:{ appTitle:'Œuvre → Post', appSub:'Cadre minimal · typographie unifiée · signature — fidèle à votre format d’origine, prêt pour Instagram',
     secWorks:'Œuvres (ajoutez-en plusieurs pour une série)', upload:'Importer / remplacer l’œuvre actuelle', lblTitle:'Titre', lblIdea:'Texte', lblDate:'Date', datePick:'Choisir une date',
-    secStyle:'Style commun (s’applique à toutes)', lblSign:'Signature', lblSignFont:'Police de signature', lblTitleFont:'Police du titre', lblInk:'Encre (texte / signature)', lblMargin:'Marge', lblAlign:'Aligner',
+    secStyle:'Style commun (s’applique à toutes)', lblSign:'Signature', lblSignFont:'Police de signature', signImport:'Importer ma signature', signRemove:'Retirer', signHint:'Saisissez un nom ci-dessus, ou importez une photo de votre vraie signature — un PNG à fond transparent est idéal.', lblTitleFont:'Police du titre', lblInk:'Encre (texte / signature)', lblMargin:'Marge', lblAlign:'Aligner',
     mTight:'Serré', mStd:'Std', mRoomy:'Ample', aLeft:'Gauche', aCenter:'Centre',
     secScreen:'Fond et filigrane', lblBg:'Couleur de fond', lblWm:'Texte du filigrane', lblWmPos:'Position', lblWmOp:'Opacité',
     secCaption:'Légende / hashtags', lblSeries:'Titre de série (pour grille / vidéo)', lblTags:'Hashtags #', lblCaptionPreview:'Aperçu de la légende', copyCap:'Copier la légende', copied:'✓ Copié',
@@ -570,7 +577,7 @@ const LANG = {
     phTitle:'p. ex. Fenêtre l’après-midi', phIdea:'l’émotion, l’inspiration…', phSign:'votre nom', phSeries:'p. ex. Saisons', phWm:'@votrenom' },
   de:{ appTitle:'Werk → Post', appSub:'Minimaler Rahmen · einheitliche Typografie · Signatur — originalgetreues Format, bereit für Instagram',
     secWorks:'Werke (mehrere für eine Serie hinzufügen)', upload:'Aktuelles Werk hochladen / ersetzen', lblTitle:'Titel', lblIdea:'Text', lblDate:'Datum', datePick:'Datum wählen',
-    secStyle:'Gemeinsamer Stil (gilt für alle)', lblSign:'Signatur', lblSignFont:'Signatur-Schrift', lblTitleFont:'Titel-Schrift', lblInk:'Tinte (Text / Signatur)', lblMargin:'Rand', lblAlign:'Ausrichten',
+    secStyle:'Gemeinsamer Stil (gilt für alle)', lblSign:'Signatur', lblSignFont:'Signatur-Schrift', signImport:'Meine Signatur importieren', signRemove:'Entfernen', signHint:'Gib oben einen Namen ein oder importiere ein Foto deiner echten Signatur — ein PNG mit transparentem Hintergrund sieht am besten aus.', lblTitleFont:'Titel-Schrift', lblInk:'Tinte (Text / Signatur)', lblMargin:'Rand', lblAlign:'Ausrichten',
     mTight:'Eng', mStd:'Std', mRoomy:'Weit', aLeft:'Links', aCenter:'Mitte',
     secScreen:'Hintergrund & Wasserzeichen', lblBg:'Hintergrundfarbe', lblWm:'Wasserzeichen-Text', lblWmPos:'Position', lblWmOp:'Deckkraft',
     secCaption:'Bildunterschrift / Hashtags', lblSeries:'Serientitel (für Raster / Video)', lblTags:'Hashtags #', lblCaptionPreview:'Vorschau', copyCap:'Text kopieren', copied:'✓ Kopiert',
@@ -585,7 +592,7 @@ const LANG = {
     phTitle:'z. B. Fensterbank am Nachmittag', phIdea:'das Gefühl, die Inspiration…', phSign:'dein Name', phSeries:'z. B. Jahreszeiten', phWm:'@deinname' },
   it:{ appTitle:'Opera → Post', appSub:'Cornice minimale · tipografia unificata · firma — fedele al formato originale, pronta per Instagram',
     secWorks:'Opere (aggiungine più d’una per una serie)', upload:'Carica / sostituisci l’opera attuale', lblTitle:'Titolo', lblIdea:'Testo', lblDate:'Data', datePick:'Scegli una data',
-    secStyle:'Stile comune (si applica a tutte)', lblSign:'Firma', lblSignFont:'Carattere firma', lblTitleFont:'Carattere titolo', lblInk:'Inchiostro (testo / firma)', lblMargin:'Margine', lblAlign:'Allinea',
+    secStyle:'Stile comune (si applica a tutte)', lblSign:'Firma', lblSignFont:'Carattere firma', signImport:'Importa la mia firma', signRemove:'Rimuovi', signHint:'Scrivi un nome sopra, o importa una foto della tua firma reale — un PNG con sfondo trasparente è l’ideale.', lblTitleFont:'Carattere titolo', lblInk:'Inchiostro (testo / firma)', lblMargin:'Margine', lblAlign:'Allinea',
     mTight:'Stretto', mStd:'Std', mRoomy:'Ampio', aLeft:'Sinistra', aCenter:'Centro',
     secScreen:'Sfondo e filigrana', lblBg:'Colore di sfondo', lblWm:'Testo filigrana', lblWmPos:'Posizione', lblWmOp:'Opacità',
     secCaption:'Didascalia / hashtag', lblSeries:'Titolo della serie (per griglia / video)', lblTags:'Hashtag #', lblCaptionPreview:'Anteprima', copyCap:'Copia didascalia', copied:'✓ Copiato',
@@ -715,7 +722,7 @@ function loadImg(src){ return new Promise(res=>{ const im=new Image(); im.onload
 // ---------------- state ----------------
 const saved = JSON.parse(localStorage.getItem('postmaker4')||'null');
 const S = saved || {
-  lang:'en', sign:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
+  lang:'en', sign:'', signImg:'', signFont:"'Mr Dafoe', cursive", titleFont:"'Fraunces', serif", accent:'#3d3a44',
   bg:'#f7f3ec', margin:0.085, align:'left', wmText:'', wmPos:'br', wmOp:0.3, wmX:null, wmY:null,
   seriesTitle:'', seriesNote:'', hashtags:DEFAULT_TAGS, mode:'artwork', seriesView:'grid', videoSecs:2.8, videoRatio:'4:5', videoMotion:'in', videoTransition:'fade', videoRhythm:'standard', storyText:'', format:'auto', slice:'3x3', gridLayout:'auto',
   works:[{id:1, title:'', idea:'', date:new Date().toISOString().slice(0,10), tx:{s:1,x:0,y:0,rot:0}, adj:{ex:0,br:0,ct:0,sa:0,tp:0}}], current:0
@@ -726,6 +733,7 @@ S.works.forEach(w=>{ if(!w.tx) w.tx={s:1,x:0,y:0,rot:0}; if(w.tx.rot===undefined
 if(S.mode==='single') S.mode='artwork'; if(S.mode==='grid') S.mode='series'; if(S.mode==='slice'){ S.mode='series'; S.seriesView='mural'; }
 if(!['artwork','series','story'].includes(S.mode)) S.mode='artwork';
 if(S.seriesNote===undefined) S.seriesNote=''; if(!S.seriesView) S.seriesView='grid';
+if(S.signImg===undefined) S.signImg='';
 if(!S.videoRatio) S.videoRatio='4:5'; if(!S.videoMotion||S.videoMotion==='zoom') S.videoMotion='in'; if(!S.videoTransition) S.videoTransition='fade'; if(!S.videoRhythm) S.videoRhythm='standard';
 uid = Math.max(...S.works.map(w=>w.id))+1;
 function save(){ localStorage.setItem('postmaker4', JSON.stringify(S, (k,v)=> k[0]==='_'?undefined:v)); }
@@ -736,12 +744,27 @@ function cur(){ return S.works[S.current]; }
 const CAPP = window.Capacitor;
 const IS_NATIVE = !!(CAPP && CAPP.isNativePlatform && CAPP.isNativePlatform());
 function blobToB64(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(blob); }); }
+// auto-save the exported file into the device Photos library (native only).
+// No-op (and never blocks) if the media plugin isn't installed.
+async function saveToPhotos(fileUri, filename){
+  try{
+    const P = CAPP && CAPP.Plugins;
+    const Media = P && (P.Media || P.CapacitorCommunityMedia);
+    if(!Media) return false;
+    const isVideo = /\.(mp4|mov|m4v|webm)$/i.test(filename);
+    if(isVideo && Media.saveVideo){ await Media.saveVideo({ path:fileUri }); return true; }
+    if(Media.savePhoto){ await Media.savePhoto({ path:fileUri }); return true; }
+    if(Media.savePhotoToAlbum){ await Media.savePhotoToAlbum({ path:fileUri }); return true; }
+  }catch(e){ console.warn('saveToPhotos', e); }
+  return false;
+}
 async function deliver(blob, filename, caption){
   if(IS_NATIVE && CAPP.Plugins && CAPP.Plugins.Filesystem && CAPP.Plugins.Share){
     try{
       const data=await blobToB64(blob);
       const w=await CAPP.Plugins.Filesystem.writeFile({ path:filename, data, directory:'CACHE' });
-      await CAPP.Plugins.Share.share({ text:caption||'', url:w.uri, files:[w.uri] });
+      await saveToPhotos(w.uri, filename);     // 1) auto-save to Photos (if plugin present)
+      await CAPP.Plugins.Share.share({ text:caption||'', url:w.uri, files:[w.uri] });  // 2) then show options
       return true;
     }catch(e){ if(e && /cancel|abort/i.test(e.message||e.name||'')) return true; console.warn('native share',e); }
   }
@@ -911,6 +934,35 @@ function perspOf(){ if(!cur().persp)cur().persp={kh:0,kv:0}; return cur().persp;
 
 ['title','idea','date'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ cur()[id]=e.target.value; save(); draw(); buildCaption(); }));
 ['sign','seriesTitle','seriesNote','hashtags','wmText','storyText'].forEach(id=> document.getElementById(id).addEventListener('input',e=>{ S[id]=e.target.value; save(); draw(); buildCaption(); }));
+
+// ---------------- custom signature image (import a photo of your real signature) ----------------
+let _sigImg=null;
+function loadSigImg(cb){ if(S.signImg){ const im=new Image(); im.onload=()=>{ _sigImg=im; cb&&cb(); }; im.onerror=()=>{ _sigImg=null; cb&&cb(); }; im.src=S.signImg; } else { _sigImg=null; cb&&cb(); } }
+function updateSignUI(){ const row=document.getElementById('signImgRow'); if(!row) return; if(S.signImg){ document.getElementById('signImgPrev').src=S.signImg; row.style.display='flex'; } else row.style.display='none'; }
+function hasSign(){ return !!(S.signImg || S.sign); }
+// draw the signature — imported image if present, else styled text. returns the drawn width.
+function drawSignArt(g, x, baseY, sz, align, maxW){
+  if(_sigImg && _sigImg.width){
+    const h=sz*1.3, w=Math.min(maxW, _sigImg.width*(h/_sigImg.height));
+    g.drawImage(_sigImg, align==='center' ? x-w/2 : x, baseY - h*0.86, w, h);
+    return w;
+  }
+  g.font=`${sz}px ${S.signFont}`; g.textAlign = align==='center'?'center':'left'; g.textBaseline='alphabetic';
+  if(S.sign) g.fillText(S.sign, x, baseY, maxW);
+  return S.sign ? g.measureText(S.sign).width : 0;
+}
+(function(){
+  const fileIn=document.getElementById('signFile');
+  document.getElementById('signImport').onclick=()=>fileIn.click();
+  fileIn.onchange=e=>{ const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader(); r.onload=()=>{ const im=new Image(); im.onload=()=>{
+      const mx=640, sc=Math.min(1, mx/Math.max(im.width,im.height));
+      const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(im.width*sc)); c.height=Math.max(1,Math.round(im.height*sc));
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      S.signImg=c.toDataURL('image/png'); _sigImg=im; save(); updateSignUI(); draw(); buildCaption();
+    }; im.src=r.result; }; r.readAsDataURL(f); fileIn.value=''; };
+  document.getElementById('signRemove').onclick=()=>{ S.signImg=''; _sigImg=null; save(); updateSignUI(); draw(); buildCaption(); };
+})();
 
 // ---------------- upload ----------------
 const drop=document.getElementById('drop'), file=document.getElementById('file');
@@ -1083,10 +1135,10 @@ function drawSingle(g, work){
   const Ts=Math.round(W*0.0335), Is=Math.round(W*0.023), Sg=Math.round(W*0.058), lineH=Math.round(Is*1.6);
   g.font=ideaFont(Is);
   const ideaLines = work.idea ? wrap(work.idea,artW) : [];
-  const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(S.sign||work.date);
+  const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(hasSign()||work.date);
   let capH=0; const gTop=Math.round(M*0.85), bottom=Math.round(M*0.95);
   if(hasT)capH+=Math.round(Ts*1.18); if(hasT&&hasI)capH+=Math.round(Ts*0.35);
-  if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.8); if(hasS)capH+=Math.round(Sg*0.95);
+  if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.8); if(hasS)capH+=Math.round(Sg*(S.signImg?1.2:0.95));
   // canvas height + art box: Auto = native ratio; fixed = chosen IG ratio (image contained & padded — never cropped)
   let H, artBoxY=M, artBoxH, capTop;
   if(S.format==='auto'){ artBoxH=Math.round(artW/imgAR); capTop=artBoxY+artBoxH+gTop; H=capTop+capH+bottom; }
@@ -1106,8 +1158,8 @@ function drawSingle(g, work){
   if(hasI){ const iy0=y; g.fillStyle=T.idea; g.font=ideaFont(Is); ideaLines.forEach(l=>{g.fillText(l,cxL,y,artW); y+=lineH;}); txt.push({type:'idea',x:artX,y:iy0,w:artW,h:ideaLines.length*lineH}); }
   if((hasT||hasI)&&hasS) y+=Math.round(M*0.8);
   if(hasS){ g.textBaseline='alphabetic'; const sb=y+Math.round(Sg*0.7);
-    if(S.sign){ g.font=`${Sg}px ${S.signFont}`; g.fillStyle=A; g.textAlign=alignC?'center':'left'; g.fillText(S.sign,alignC?W/2:artX,sb);
-      const sw=g.measureText(S.sign).width; txt.push({type:'sign',x:alignC?W/2-sw/2:artX,y:sb-Math.round(Sg*0.78),w:sw,h:Math.round(Sg*0.95)}); }
+    if(hasSign()){ g.fillStyle=A; const sw=drawSignArt(g, alignC?W/2:artX, sb, Sg, alignC?'center':'left', artW);
+      txt.push({type:'sign',x:alignC?W/2-sw/2:artX,y:sb-Math.round(Sg*0.78),w:sw,h:Math.round(Sg*0.95)}); }
     if(work.date){ g.font=`500 ${Math.round(W*0.0205)}px ${FAM}`; g.fillStyle=T.soft; g.letterSpacing='3px';
       const dstr=fmtDate(work.date), dw=g.measureText(dstr).width+3*dstr.length, dh=Math.round(W*0.0205*1.4);
       if(alignC){ g.textAlign='center'; g.fillText(dstr,W/2,sb+Math.round(Sg*0.42)); txt.push({type:'date',x:W/2-dw/2,y:sb+Math.round(Sg*0.12),w:dw,h:dh}); }
@@ -1138,7 +1190,7 @@ function drawGrid(g){
   const noteLines = S.seriesNote?wrap(S.seriesNote, W-2*pad):[];
   const noteH = noteLines.length?noteLines.length*noteLH+Math.round(W*0.012):0;
   const headH = (S.seriesTitle||noteLines.length)?(Math.round(W*0.028)+titleH+noteH):0;
-  const footH = S.sign?Math.round(W*0.085):0;
+  const footH = hasSign()?Math.round(W*0.085):0;
   const top=pad+headH, H=top+rows*cellH+(rows-1)*gap+footH+pad;
   cv.width=W; cv.height=H;
   g.fillStyle=S.bg; g.fillRect(0,0,W,H);
@@ -1154,7 +1206,9 @@ function drawGrid(g){
     if(w.title){ g.fillStyle=T.idea; g.font=ideaFont(Math.round(W*0.019)); g.textAlign='center'; g.textBaseline='middle'; g.fillText(w.title,x+cellW/2,y+artBox+tH*0.5,cellW); }
   });
   if(!WI.length){ g.fillStyle=T.soft; g.font="500 26px 'Fredoka',sans-serif"; g.textAlign='center'; g.textBaseline='middle'; g.fillText(t('uploadHere'),W/2,top+artBox/2); }
-  if(S.sign){ g.fillStyle=A; g.font=`${Math.round(W*0.05)}px ${S.signFont}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(S.sign,W/2,H-pad-footH*0.42); }
+  if(hasSign()){ g.fillStyle=A; const sz=Math.round(W*0.05), cy=H-pad-footH*0.42;
+    if(_sigImg&&_sigImg.width){ const h=sz*1.5, w=Math.min(W*0.5,_sigImg.width*(h/_sigImg.height)); g.drawImage(_sigImg,W/2-w/2,cy-h/2,w,h); }
+    else { g.font=`${sz}px ${S.signFont}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(S.sign,W/2,cy); } }
   drawCredit(g,W,H);
   g.textBaseline='alphabetic'; g.textAlign='left';
 }
@@ -1185,10 +1239,10 @@ function drawVideoFrame(g,W,H,work,prog){
   const Ts=Math.round(W*0.04), Is=Math.round(W*0.026), Sg=Math.round(W*0.07), lineH=Math.round(Is*1.55);
   g.font=ideaFont(Is);
   const ideaLines = work.idea?wrap(work.idea,W-2*M):[];
-  const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(S.sign||work.date);
+  const hasT=!!work.title, hasI=ideaLines.length>0, hasS=!!(hasSign()||work.date);
   let capH=0; if(hasT)capH+=Math.round(Ts*1.2); if(hasT&&hasI)capH+=Math.round(Ts*0.4);
   if(hasI)capH+=ideaLines.length*lineH; if((hasT||hasI)&&hasS)capH+=Math.round(M*0.7);
-  const dsz=Math.round(W*0.024); if(hasS)capH+=(S.sign?Math.round(Sg*0.9):0)+(work.date?Math.round(dsz*1.9):0);
+  const dsz=Math.round(W*0.024); if(hasS)capH+=(hasSign()?Math.round(Sg*(S.signImg?1.05:0.9)):0)+(work.date?Math.round(dsz*1.9):0);
   const gap=Math.round(M*0.7), artMaxH=H-2*M-capH-gap;
   const {w:dw,h:dh}=contain(im.width,im.height,W-2*M,artMaxH);
   const blockH=dh+gap+capH, topY=Math.max(M,(H-blockH)/2), dx=(W-dw)/2, dy=topY;
@@ -1208,8 +1262,8 @@ function drawVideoFrame(g,W,H,work,prog){
   if(hasI){ g.fillStyle=T.idea; g.font=ideaFont(Is); ideaLines.forEach(l=>{g.fillText(l,W/2,y,W-2*M);y+=lineH;}); }
   if((hasT||hasI)&&hasS) y+=Math.round(M*0.7);
   if(hasS){ g.textBaseline='alphabetic'; const sb=y+Math.round(Sg*0.7);
-    if(S.sign){ g.font=`${Sg}px ${S.signFont}`; g.fillStyle=A; g.fillText(S.sign,W/2,sb); }
-    if(work.date){ const dBase = S.sign ? sb+Math.round(Sg*0.5)+dsz : y+dsz;
+    if(hasSign()){ g.fillStyle=A; drawSignArt(g, W/2, sb, Sg, 'center', W-2*M); }
+    if(work.date){ const dBase = hasSign() ? sb+Math.round(Sg*0.5)+dsz : y+dsz;
       g.font=`500 ${dsz}px ${FAM}`; g.fillStyle=T.soft; g.letterSpacing='3px'; g.fillText(fmtDate(work.date),W/2,dBase); g.letterSpacing='0px'; } }
   drawCredit(g,W,H);
   g.textBaseline='alphabetic'; g.textAlign='left';
@@ -1471,7 +1525,8 @@ function init(){
   document.querySelectorAll('#vidRhythm button').forEach(b=>b.classList.toggle('on',b.dataset.rh===S.videoRhythm));
   document.querySelectorAll('#vidTrans button').forEach(b=>b.classList.toggle('on',b.dataset.vt===S.videoTransition));
   document.querySelectorAll('#seriesView button').forEach(b=>b.classList.toggle('on',b.dataset.sv===S.seriesView));
-  syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); applyLang(); draw();
+  syncSw(swEl,'accent'); syncSw(bgEl,'bg'); renderWorks(); fillFields(); updateImgCtrl(); updateSignUI(); applyLang(); draw();
+  loadSigImg(draw);
   restoreImages();
 }
 async function restoreImages(){

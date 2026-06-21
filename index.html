@@ -296,8 +296,19 @@
         <button data-f="'Sacramento', cursive">Aa</button>
         <button data-f="'Parisienne', cursive">Aa</button>
       </div>
-      <button class="btn line" id="signImport" style="margin-top:11px;"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17c4-7 7-9 9-9M3 19c5 0 9-1 13-5M12 8c2 0 3 1 3 3"/><path d="M16 5l3 3M14 7l3 3"/></svg><span data-i18n="signImport">Import my signature</span></button>
+      <div class="seg" style="margin-top:11px;">
+        <button class="btn line" id="signDraw" style="flex:1;"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l4-1 11-11-3-3L4 17z"/><path d="M14 5l3 3"/></svg><span data-i18n="signDraw">Draw signature</span></button>
+        <button class="btn line" id="signImport" style="flex:1;"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17c4-7 7-9 9-9M3 19c5 0 9-1 13-5M12 8c2 0 3 1 3 3"/><path d="M16 5l3 3M14 7l3 3"/></svg><span data-i18n="signImport">Import photo</span></button>
+      </div>
       <input type="file" id="signFile" accept="image/png,image/jpeg,image/webp" style="display:none">
+      <div id="signPad" style="display:none; margin-top:10px;">
+        <canvas id="padCanvas" style="display:block; width:100%; height:140px; background:#fff; border:1px dashed var(--line); border-radius:10px; touch-action:none; cursor:crosshair;"></canvas>
+        <div class="seg" style="margin-top:7px;">
+          <button class="btn line" id="padClear" style="flex:1;" data-i18n="padClear">Clear</button>
+          <button class="btn line" id="padCancel" style="flex:1;" data-i18n="padCancel">Cancel</button>
+          <button class="btn primary" id="padDone" style="flex:1;" data-i18n="padDone">Use it</button>
+        </div>
+      </div>
       <div id="signImgRow" style="display:none; align-items:center; gap:10px; margin-top:10px;">
         <img id="signImgPrev" alt="" style="height:36px; max-width:150px; object-fit:contain; background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px;">
         <button class="btn line" id="signRemove" style="width:auto; padding:8px 13px;" data-i18n="signRemove">Remove</button>
@@ -487,7 +498,7 @@
 const LANG = {
   en:{ appTitle:'Artwork → Post', appSub:'Minimal frame · unified type · signature — true to your original ratio, ready for Instagram',
     secWorks:'Works (add several to form a series)', upload:'Upload / replace current work', lblTitle:'Title', lblIdea:'Statement', lblDate:'Date', datePick:'Pick a date',
-    secStyle:'Shared style (applies to every work)', lblSign:'Signature', lblSignFont:'Signature font', signImport:'Import my signature', signRemove:'Remove', signHint:'Type a name above, or import a photo of your real signature — a PNG with a transparent background looks best.', lblTitleFont:'Title font', lblInk:'Ink (text / signature)', lblMargin:'Margin', lblAlign:'Align',
+    secStyle:'Shared style (applies to every work)', lblSign:'Signature', lblSignFont:'Signature font', signDraw:'Draw signature', signImport:'Import photo', padClear:'Clear', padCancel:'Cancel', padDone:'Use it', signRemove:'Remove', signHint:'Type a name above, draw your signature by hand, or import a photo of it — transparent PNG looks best.', lblTitleFont:'Title font', lblInk:'Ink (text / signature)', lblMargin:'Margin', lblAlign:'Align',
     mTight:'Tight', mStd:'Std', mRoomy:'Roomy', aLeft:'Left', aCenter:'Center',
     secScreen:'Background & watermark', lblBg:'Background', lblWm:'Watermark text', lblWmPos:'Position', lblWmOp:'Opacity',
     secCaption:'Caption / hashtags', lblSeries:'Series title (for grid / video)', lblTags:'Hashtags #', lblCaptionPreview:'Caption preview', copyCap:'Copy caption', copied:'✓ Copied',
@@ -502,7 +513,7 @@ const LANG = {
     phTitle:'e.g. Afternoon Windowsill', phIdea:'the feeling, the inspiration…', phSign:'your name', phSeries:'e.g. Seasons', phWm:'@yourname' },
   zh:{ appTitle:'作品 → Post', appSub:'极简画框 · 统一字体 · 个性签名 — 按原图比例呈现，直发 Instagram',
     secWorks:'作品（可添加多幅，组成系列）', upload:'上传 / 替换当前作品', lblTitle:'作品标题', lblIdea:'创作理念', lblDate:'日期', datePick:'选择日期',
-    secStyle:'统一风格（应用于全部作品）', lblSign:'签名', lblSignFont:'签名字体', signImport:'导入我的签名', signRemove:'移除', signHint:'上面可输入名字，或导入你真实签名的照片 —— 透明背景的 PNG 效果最好。', lblTitleFont:'标题字体', lblInk:'墨色（文字 / 签名）', lblMargin:'留白', lblAlign:'对齐',
+    secStyle:'统一风格（应用于全部作品）', lblSign:'签名', lblSignFont:'签名字体', signDraw:'手写签名', signImport:'导入照片', padClear:'清除', padCancel:'取消', padDone:'使用', signRemove:'移除', signHint:'上面可输入名字、手写签名，或导入签名照片 —— 透明背景 PNG 效果最好。', lblTitleFont:'标题字体', lblInk:'墨色（文字 / 签名）', lblMargin:'留白', lblAlign:'对齐',
     mTight:'紧凑', mStd:'标准', mRoomy:'宽松', aLeft:'左', aCenter:'中',
     secScreen:'背景 & 水印', lblBg:'背景色', lblWm:'水印文字', lblWmPos:'位置', lblWmOp:'透明度',
     secCaption:'发布文案 / 话题标签', lblSeries:'系列标题（用于合集 / 视频）', lblTags:'话题标签 #', lblCaptionPreview:'文案预览', copyCap:'复制文案', copied:'✓ 已复制',
@@ -517,7 +528,7 @@ const LANG = {
     phTitle:'例如：午后的窗台', phIdea:'想表达的情绪、灵感来源…', phSign:'你的名字', phSeries:'例如：四季手记', phWm:'@你的名字' },
   ja:{ appTitle:'作品 → Post', appSub:'極簡な額装 · 統一書体 · 署名 — 原図の比率のまま、Instagram へ',
     secWorks:'作品（複数追加でシリーズに）', upload:'現在の作品をアップロード / 差し替え', lblTitle:'タイトル', lblIdea:'制作意図', lblDate:'日付', datePick:'日付を選択',
-    secStyle:'共通スタイル（全作品に適用）', lblSign:'署名', lblSignFont:'署名書体', signImport:'自分の署名を読み込む', signRemove:'削除', signHint:'上で名前を入力するか、実際の署名の写真を読み込めます — 背景が透明なPNGが最適です。', lblTitleFont:'タイトル書体', lblInk:'墨色（文字 / 署名）', lblMargin:'余白', lblAlign:'揃え',
+    secStyle:'共通スタイル（全作品に適用）', lblSign:'署名', lblSignFont:'署名書体', signDraw:'手書き署名', signImport:'写真を読込', padClear:'消去', padCancel:'キャンセル', padDone:'使う', signRemove:'削除', signHint:'上で名前を入力、署名を手書き、または署名写真を読み込めます — 背景が透明なPNGが最適です。', lblTitleFont:'タイトル書体', lblInk:'墨色（文字 / 署名）', lblMargin:'余白', lblAlign:'揃え',
     mTight:'狭い', mStd:'標準', mRoomy:'広い', aLeft:'左', aCenter:'中央',
     secScreen:'背景 & 透かし', lblBg:'背景色', lblWm:'透かし文字', lblWmPos:'位置', lblWmOp:'不透明度',
     secCaption:'投稿文 / ハッシュタグ', lblSeries:'シリーズ名（合集 / 動画用）', lblTags:'ハッシュタグ #', lblCaptionPreview:'投稿文プレビュー', copyCap:'投稿文をコピー', copied:'✓ コピー済み',
@@ -532,7 +543,7 @@ const LANG = {
     phTitle:'例：午後の窓辺', phIdea:'伝えたい感情、着想…', phSign:'あなたの名前', phSeries:'例：四季手帖', phWm:'@yourname' },
   ko:{ appTitle:'작품 → Post', appSub:'미니멀 액자 · 통일된 서체 · 서명 — 원본 비율 그대로, 인스타그램용',
     secWorks:'작품 (여러 점 추가해 시리즈로)', upload:'현재 작품 업로드 / 교체', lblTitle:'제목', lblIdea:'작가 노트', lblDate:'날짜', datePick:'날짜 선택',
-    secStyle:'공통 스타일 (모든 작품에 적용)', lblSign:'서명', lblSignFont:'서명 글꼴', signImport:'내 서명 가져오기', signRemove:'제거', signHint:'위에 이름을 입력하거나, 실제 서명 사진을 가져오세요 — 배경이 투명한 PNG가 가장 좋습니다.', lblTitleFont:'제목 글꼴', lblInk:'잉크색 (텍스트 / 서명)', lblMargin:'여백', lblAlign:'정렬',
+    secStyle:'공통 스타일 (모든 작품에 적용)', lblSign:'서명', lblSignFont:'서명 글꼴', signDraw:'서명 그리기', signImport:'사진 가져오기', padClear:'지우기', padCancel:'취소', padDone:'사용', signRemove:'제거', signHint:'위에 이름을 입력하거나, 직접 서명을 그리거나, 서명 사진을 가져오세요 — 투명 배경 PNG가 가장 좋습니다.', lblTitleFont:'제목 글꼴', lblInk:'잉크색 (텍스트 / 서명)', lblMargin:'여백', lblAlign:'정렬',
     mTight:'좁게', mStd:'표준', mRoomy:'넓게', aLeft:'왼쪽', aCenter:'가운데',
     secScreen:'배경 & 워터마크', lblBg:'배경색', lblWm:'워터마크 문구', lblWmPos:'위치', lblWmOp:'투명도',
     secCaption:'캡션 / 해시태그', lblSeries:'시리즈 제목 (그리드 / 영상용)', lblTags:'해시태그 #', lblCaptionPreview:'캡션 미리보기', copyCap:'캡션 복사', copied:'✓ 복사됨',
@@ -547,7 +558,7 @@ const LANG = {
     phTitle:'예: 오후의 창가', phIdea:'표현하고 싶은 감정, 영감…', phSign:'이름', phSeries:'예: 사계', phWm:'@yourname' },
   es:{ appTitle:'Obra → Post', appSub:'Marco minimalista · tipografía unificada · firma — fiel a tu proporción original, listo para Instagram',
     secWorks:'Obras (añade varias para una serie)', upload:'Subir / reemplazar obra actual', lblTitle:'Título', lblIdea:'Texto', lblDate:'Fecha', datePick:'Elegir fecha',
-    secStyle:'Estilo común (se aplica a todas)', lblSign:'Firma', lblSignFont:'Fuente de firma', signImport:'Importar mi firma', signRemove:'Quitar', signHint:'Escribe un nombre arriba, o importa una foto de tu firma real — un PNG con fondo transparente queda mejor.', lblTitleFont:'Fuente de título', lblInk:'Tinta (texto / firma)', lblMargin:'Margen', lblAlign:'Alinear',
+    secStyle:'Estilo común (se aplica a todas)', lblSign:'Firma', lblSignFont:'Fuente de firma', signDraw:'Dibujar firma', signImport:'Importar foto', padClear:'Borrar', padCancel:'Cancelar', padDone:'Usar', signRemove:'Quitar', signHint:'Escribe un nombre arriba, dibuja tu firma a mano, o importa una foto — un PNG transparente queda mejor.', lblTitleFont:'Fuente de título', lblInk:'Tinta (texto / firma)', lblMargin:'Margen', lblAlign:'Alinear',
     mTight:'Justo', mStd:'Est.', mRoomy:'Amplio', aLeft:'Izq.', aCenter:'Centro',
     secScreen:'Fondo y marca de agua', lblBg:'Color de fondo', lblWm:'Texto de marca de agua', lblWmPos:'Posición', lblWmOp:'Opacidad',
     secCaption:'Descripción / hashtags', lblSeries:'Título de serie (para grid / vídeo)', lblTags:'Hashtags #', lblCaptionPreview:'Vista previa', copyCap:'Copiar texto', copied:'✓ Copiado',
@@ -562,7 +573,7 @@ const LANG = {
     phTitle:'p. ej. Ventana de tarde', phIdea:'la emoción, la inspiración…', phSign:'tu nombre', phSeries:'p. ej. Estaciones', phWm:'@tunombre' },
   fr:{ appTitle:'Œuvre → Post', appSub:'Cadre minimal · typographie unifiée · signature — fidèle à votre format d’origine, prêt pour Instagram',
     secWorks:'Œuvres (ajoutez-en plusieurs pour une série)', upload:'Importer / remplacer l’œuvre actuelle', lblTitle:'Titre', lblIdea:'Texte', lblDate:'Date', datePick:'Choisir une date',
-    secStyle:'Style commun (s’applique à toutes)', lblSign:'Signature', lblSignFont:'Police de signature', signImport:'Importer ma signature', signRemove:'Retirer', signHint:'Saisissez un nom ci-dessus, ou importez une photo de votre vraie signature — un PNG à fond transparent est idéal.', lblTitleFont:'Police du titre', lblInk:'Encre (texte / signature)', lblMargin:'Marge', lblAlign:'Aligner',
+    secStyle:'Style commun (s’applique à toutes)', lblSign:'Signature', lblSignFont:'Police de signature', signDraw:'Dessiner', signImport:'Importer photo', padClear:'Effacer', padCancel:'Annuler', padDone:'Utiliser', signRemove:'Retirer', signHint:'Saisissez un nom, dessinez votre signature à la main, ou importez-en une photo — un PNG transparent est idéal.', lblTitleFont:'Police du titre', lblInk:'Encre (texte / signature)', lblMargin:'Marge', lblAlign:'Aligner',
     mTight:'Serré', mStd:'Std', mRoomy:'Ample', aLeft:'Gauche', aCenter:'Centre',
     secScreen:'Fond et filigrane', lblBg:'Couleur de fond', lblWm:'Texte du filigrane', lblWmPos:'Position', lblWmOp:'Opacité',
     secCaption:'Légende / hashtags', lblSeries:'Titre de série (pour grille / vidéo)', lblTags:'Hashtags #', lblCaptionPreview:'Aperçu de la légende', copyCap:'Copier la légende', copied:'✓ Copié',
@@ -577,7 +588,7 @@ const LANG = {
     phTitle:'p. ex. Fenêtre l’après-midi', phIdea:'l’émotion, l’inspiration…', phSign:'votre nom', phSeries:'p. ex. Saisons', phWm:'@votrenom' },
   de:{ appTitle:'Werk → Post', appSub:'Minimaler Rahmen · einheitliche Typografie · Signatur — originalgetreues Format, bereit für Instagram',
     secWorks:'Werke (mehrere für eine Serie hinzufügen)', upload:'Aktuelles Werk hochladen / ersetzen', lblTitle:'Titel', lblIdea:'Text', lblDate:'Datum', datePick:'Datum wählen',
-    secStyle:'Gemeinsamer Stil (gilt für alle)', lblSign:'Signatur', lblSignFont:'Signatur-Schrift', signImport:'Meine Signatur importieren', signRemove:'Entfernen', signHint:'Gib oben einen Namen ein oder importiere ein Foto deiner echten Signatur — ein PNG mit transparentem Hintergrund sieht am besten aus.', lblTitleFont:'Titel-Schrift', lblInk:'Tinte (Text / Signatur)', lblMargin:'Rand', lblAlign:'Ausrichten',
+    secStyle:'Gemeinsamer Stil (gilt für alle)', lblSign:'Signatur', lblSignFont:'Signatur-Schrift', signDraw:'Zeichnen', signImport:'Foto laden', padClear:'Löschen', padCancel:'Abbrechen', padDone:'Verwenden', signRemove:'Entfernen', signHint:'Gib oben einen Namen ein, zeichne deine Signatur von Hand, oder importiere ein Foto — transparentes PNG sieht am besten aus.', lblTitleFont:'Titel-Schrift', lblInk:'Tinte (Text / Signatur)', lblMargin:'Rand', lblAlign:'Ausrichten',
     mTight:'Eng', mStd:'Std', mRoomy:'Weit', aLeft:'Links', aCenter:'Mitte',
     secScreen:'Hintergrund & Wasserzeichen', lblBg:'Hintergrundfarbe', lblWm:'Wasserzeichen-Text', lblWmPos:'Position', lblWmOp:'Deckkraft',
     secCaption:'Bildunterschrift / Hashtags', lblSeries:'Serientitel (für Raster / Video)', lblTags:'Hashtags #', lblCaptionPreview:'Vorschau', copyCap:'Text kopieren', copied:'✓ Kopiert',
@@ -592,7 +603,7 @@ const LANG = {
     phTitle:'z. B. Fensterbank am Nachmittag', phIdea:'das Gefühl, die Inspiration…', phSign:'dein Name', phSeries:'z. B. Jahreszeiten', phWm:'@deinname' },
   it:{ appTitle:'Opera → Post', appSub:'Cornice minimale · tipografia unificata · firma — fedele al formato originale, pronta per Instagram',
     secWorks:'Opere (aggiungine più d’una per una serie)', upload:'Carica / sostituisci l’opera attuale', lblTitle:'Titolo', lblIdea:'Testo', lblDate:'Data', datePick:'Scegli una data',
-    secStyle:'Stile comune (si applica a tutte)', lblSign:'Firma', lblSignFont:'Carattere firma', signImport:'Importa la mia firma', signRemove:'Rimuovi', signHint:'Scrivi un nome sopra, o importa una foto della tua firma reale — un PNG con sfondo trasparente è l’ideale.', lblTitleFont:'Carattere titolo', lblInk:'Inchiostro (testo / firma)', lblMargin:'Margine', lblAlign:'Allinea',
+    secStyle:'Stile comune (si applica a tutte)', lblSign:'Firma', lblSignFont:'Carattere firma', signDraw:'Disegna firma', signImport:'Importa foto', padClear:'Cancella', padCancel:'Annulla', padDone:'Usa', signRemove:'Rimuovi', signHint:'Scrivi un nome sopra, disegna la tua firma a mano, o importa una foto — un PNG trasparente è l’ideale.', lblTitleFont:'Carattere titolo', lblInk:'Inchiostro (testo / firma)', lblMargin:'Margine', lblAlign:'Allinea',
     mTight:'Stretto', mStd:'Std', mRoomy:'Ampio', aLeft:'Sinistra', aCenter:'Centro',
     secScreen:'Sfondo e filigrana', lblBg:'Colore di sfondo', lblWm:'Testo filigrana', lblWmPos:'Posizione', lblWmOp:'Opacità',
     secCaption:'Didascalia / hashtag', lblSeries:'Titolo della serie (per griglia / video)', lblTags:'Hashtag #', lblCaptionPreview:'Anteprima', copyCap:'Copia didascalia', copied:'✓ Copiato',
@@ -962,6 +973,41 @@ function drawSignArt(g, x, baseY, sz, align, maxW){
       S.signImg=c.toDataURL('image/png'); _sigImg=im; save(); updateSignUI(); draw(); buildCaption();
     }; im.src=r.result; }; r.readAsDataURL(f); fileIn.value=''; };
   document.getElementById('signRemove').onclick=()=>{ S.signImg=''; _sigImg=null; save(); updateSignUI(); draw(); buildCaption(); };
+})();
+
+// ---------------- draw-your-own signature (finger / mouse doodle pad) ----------------
+(function(){
+  const openBtn=document.getElementById('signDraw'), pad=document.getElementById('signPad'), pc=document.getElementById('padCanvas');
+  let g=null, drawing=false, last=null, dirty=false, dpr=1;
+  function setup(){
+    dpr=Math.min(3, window.devicePixelRatio||1);
+    const r=pc.getBoundingClientRect();
+    pc.width=Math.max(1,Math.round(r.width*dpr)); pc.height=Math.max(1,Math.round(r.height*dpr));
+    g=pc.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+    g.lineWidth=2.6; g.lineCap='round'; g.lineJoin='round'; g.strokeStyle='#1a1a1a';
+    g.clearRect(0,0,pc.width,pc.height); dirty=false;
+  }
+  function pt(e){ const r=pc.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-r.left, y:t.clientY-r.top}; }
+  pc.addEventListener('pointerdown',e=>{ e.preventDefault(); drawing=true; last=pt(e); g.beginPath(); g.moveTo(last.x,last.y); g.lineTo(last.x+0.1,last.y+0.1); g.stroke(); dirty=true; });
+  pc.addEventListener('pointermove',e=>{ if(!drawing)return; e.preventDefault(); const p=pt(e); g.beginPath(); g.moveTo(last.x,last.y); g.lineTo(p.x,p.y); g.stroke(); last=p; dirty=true; });
+  window.addEventListener('pointerup',()=>{ drawing=false; });
+  openBtn.onclick=()=>{ const show=pad.style.display==='none'; pad.style.display=show?'block':'none'; if(show) setup(); };
+  document.getElementById('padClear').onclick=setup;
+  document.getElementById('padCancel').onclick=()=>{ pad.style.display='none'; };
+  document.getElementById('padDone').onclick=()=>{
+    if(!dirty){ pad.style.display='none'; return; }
+    const w=pc.width, h=pc.height, d=g.getImageData(0,0,w,h).data;
+    let minX=w,minY=h,maxX=0,maxY=0,found=false;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){ if(d[(y*w+x)*4+3]>16){ found=true; if(x<minX)minX=x; if(x>maxX)maxX=x; if(y<minY)minY=y; if(y>maxY)maxY=y; } }
+    if(!found){ pad.style.display='none'; return; }
+    const m=Math.round(8*dpr); minX=Math.max(0,minX-m); minY=Math.max(0,minY-m); maxX=Math.min(w-1,maxX+m); maxY=Math.min(h-1,maxY+m);
+    const cw=maxX-minX+1, ch=maxY-minY+1;
+    const out=document.createElement('canvas'); out.width=cw; out.height=ch;
+    out.getContext('2d').drawImage(pc, minX,minY,cw,ch, 0,0,cw,ch);   // transparent bg preserved
+    S.signImg=out.toDataURL('image/png'); S.sign=''; _sigImg=null; save();
+    loadSigImg(()=>{ updateSignUI(); draw(); buildCaption(); });
+    pad.style.display='none';
+  };
 })();
 
 // ---------------- upload ----------------

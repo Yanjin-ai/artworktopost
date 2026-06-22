@@ -1151,7 +1151,7 @@ function drawArtImage(g,im,x,y,w,h,tx,a){
 
 // ---------------- monetization scaffold (free vs Pro; gating dormant until PAYWALL=true) ----------------
 const PAYWALL = false;               // master switch — flip to true to start enforcing Pro gates
-const CREDIT_WORDMARK = 'Artwork';   // self-promotion credit drawn on free exports (growth loop)
+const CREDIT_WORDMARK = 'Atelier Post';   // self-promotion credit drawn on free exports (growth loop)
 function isPro(){ return localStorage.getItem('pro')==='1'; }
 function proAllowed(feat){ return !PAYWALL || isPro(); }   // `feat` reserved for per-feature rules
 function showPaywall(){
